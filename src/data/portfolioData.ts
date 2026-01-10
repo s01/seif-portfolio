@@ -1,5 +1,8 @@
 // Portfolio Data Store
-// This file manages all portfolio data with localStorage persistence
+// This file manages all portfolio data with Firestore persistence
+
+import { db } from "../firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export interface Project {
   id: string;
@@ -76,7 +79,7 @@ export interface PortfolioData {
   proTip: string;
 }
 
-// Default data
+// Default data - used as fallback if Firestore is empty
 const DEFAULT_DATA: PortfolioData = {
   name: "Saif Mohsen",
   headline: "Salesforce Developer",
@@ -252,40 +255,61 @@ const DEFAULT_DATA: PortfolioData = {
     "Triggers are routers. Context variables are payload. If your trigger contains logic, it's already getting hard to maintain.",
 };
 
-const STORAGE_KEY = "portfolio_data";
+const FIRESTORE_DOC = "portfolio";
+const FIRESTORE_COLLECTION = "settings";
 const ADMIN_PASSWORD_KEY = "admin_password";
 
-// Get data from localStorage or return defaults
-export function getPortfolioData(): PortfolioData {
+// Get data from Firestore (async)
+export async function getPortfolioDataAsync(): Promise<PortfolioData> {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      return { ...DEFAULT_DATA, ...JSON.parse(stored) };
+    const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      return { ...DEFAULT_DATA, ...docSnap.data() } as PortfolioData;
     }
   } catch (e) {
-    console.error("Error loading portfolio data:", e);
+    console.error("Error loading portfolio data from Firestore:", e);
   }
   return DEFAULT_DATA;
 }
 
-// Save data to localStorage
-export function savePortfolioData(data: PortfolioData): void {
+// Synchronous version for backwards compatibility (returns default data)
+export function getPortfolioData(): PortfolioData {
+  return DEFAULT_DATA;
+}
+
+// Save data to Firestore (async)
+export async function savePortfolioDataAsync(data: PortfolioData): Promise<void> {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC);
+    await setDoc(docRef, data);
   } catch (e) {
-    console.error("Error saving portfolio data:", e);
+    console.error("Error saving portfolio data to Firestore:", e);
+    throw e;
   }
 }
 
-// Reset to defaults
-export function resetPortfolioData(): PortfolioData {
-  localStorage.removeItem(STORAGE_KEY);
+// Legacy sync version (no-op, kept for compatibility)
+export function savePortfolioData(_data: PortfolioData): void {
+  // This is now a no-op - use savePortfolioDataAsync instead
+  console.warn("savePortfolioData is deprecated, use savePortfolioDataAsync");
+}
+
+// Reset to defaults (saves defaults to Firestore)
+export async function resetPortfolioDataAsync(): Promise<PortfolioData> {
+  await savePortfolioDataAsync(DEFAULT_DATA);
   return DEFAULT_DATA;
 }
 
-// Admin password management
+// Legacy sync version
+export function resetPortfolioData(): PortfolioData {
+  console.warn("resetPortfolioData is deprecated, use resetPortfolioDataAsync");
+  return DEFAULT_DATA;
+}
+
+// Admin password management (still uses localStorage - password is per-device)
 export function setAdminPassword(password: string): void {
-  // Simple hash for basic protection (not cryptographically secure, but good enough for this use case)
   const hash = btoa(password);
   localStorage.setItem(ADMIN_PASSWORD_KEY, hash);
 }
@@ -293,7 +317,6 @@ export function setAdminPassword(password: string): void {
 export function checkAdminPassword(password: string): boolean {
   const stored = localStorage.getItem(ADMIN_PASSWORD_KEY);
   if (!stored) {
-    // First time - set the password
     setAdminPassword(password);
     return true;
   }

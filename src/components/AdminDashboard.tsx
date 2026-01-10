@@ -30,8 +30,9 @@ import {
 import { Link } from "react-router-dom";
 import {
   getPortfolioData,
-  savePortfolioData,
-  resetPortfolioData,
+  getPortfolioDataAsync,
+  savePortfolioDataAsync,
+  resetPortfolioDataAsync,
   checkAdminPassword,
   isPasswordSet,
   setAdminPassword,
@@ -841,13 +842,24 @@ export default function AdminDashboard() {
   const [hasChanges, setHasChanges] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null | "new">(null);
   const [saveMessage, setSaveMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
-  // Check if already logged in (session)
+  // Check if already logged in (session) and load data from Firestore
   useEffect(() => {
     const session = sessionStorage.getItem("admin_session");
     if (session === "active") {
       setIsLoggedIn(true);
     }
+    
+    // Load data from Firestore
+    getPortfolioDataAsync().then((firestoreData) => {
+      setData(firestoreData);
+      setIsLoading(false);
+    }).catch((err) => {
+      console.error("Failed to load data:", err);
+      setIsLoading(false);
+    });
   }, []);
 
   const handleLogin = () => {
@@ -865,20 +877,38 @@ export default function AdminDashboard() {
     setHasChanges(true);
   };
 
-  const handleSave = () => {
-    savePortfolioData(data);
-    setHasChanges(false);
-    setSaveMessage("Changes saved!");
-    setTimeout(() => setSaveMessage(""), 3000);
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await savePortfolioDataAsync(data);
+      setHasChanges(false);
+      setSaveMessage("Changes saved to cloud!");
+      setTimeout(() => setSaveMessage(""), 3000);
+    } catch (err) {
+      console.error("Failed to save:", err);
+      setSaveMessage("Failed to save. Please try again.");
+      setTimeout(() => setSaveMessage(""), 3000);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (confirm("Are you sure you want to reset all data to defaults? This cannot be undone.")) {
-      const defaultData = resetPortfolioData();
-      setData(defaultData);
-      setHasChanges(false);
-      setSaveMessage("Data reset to defaults");
-      setTimeout(() => setSaveMessage(""), 3000);
+      setIsSaving(true);
+      try {
+        const defaultData = await resetPortfolioDataAsync();
+        setData(defaultData);
+        setHasChanges(false);
+        setSaveMessage("Data reset to defaults");
+        setTimeout(() => setSaveMessage(""), 3000);
+      } catch (err) {
+        console.error("Failed to reset:", err);
+        setSaveMessage("Failed to reset. Please try again.");
+        setTimeout(() => setSaveMessage(""), 3000);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -1018,6 +1048,17 @@ export default function AdminDashboard() {
     return <LoginScreen onLogin={handleLogin} />;
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0d2035] to-[#032d60]">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-[#00a1e0]"></div>
+          <p className="text-white/60">Loading portfolio data...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0d2035] to-[#032d60]">
       {/* Header */}
@@ -1065,15 +1106,15 @@ export default function AdminDashboard() {
 
             <button
               onClick={handleSave}
-              disabled={!hasChanges}
+              disabled={!hasChanges || isSaving}
               className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition ${
-                hasChanges
+                hasChanges && !isSaving
                   ? "bg-[#00a1e0] text-white hover:bg-[#00a1e0]/90"
                   : "bg-white/10 text-white/40"
               }`}
             >
-              <Save className="h-4 w-4" />
-              Save
+              <Save className={`h-4 w-4 ${isSaving ? "animate-spin" : ""}`} />
+              {isSaving ? "Saving..." : "Save"}
             </button>
 
             <button

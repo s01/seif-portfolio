@@ -37,7 +37,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { getPortfolioData, type PortfolioData, type Project } from "../data/portfolioData";
+import { getPortfolioData, getPortfolioDataAsync, type PortfolioData, type Project } from "../data/portfolioData";
 
 /**
  * ⚡ Salesforce Trailblazer Portfolio
@@ -1030,18 +1030,30 @@ export default function Portfolio() {
   const sectionIds = ["work", "skills", "cred", "journey", "contact"];
   const active = useActiveSection(sectionIds);
 
-  // Load dynamic data from localStorage
+  // Load dynamic data from Firestore
   const [DATA, setDATA] = useState<PortfolioData>(getPortfolioData());
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Refresh data when localStorage changes (e.g., from admin dashboard)
+  // Fetch data from Firestore on mount
   useEffect(() => {
-    const handleStorage = () => setDATA(getPortfolioData());
-    window.addEventListener("storage", handleStorage);
-    // Also check on focus (when coming back from admin tab)
-    const handleFocus = () => setDATA(getPortfolioData());
+    getPortfolioDataAsync()
+      .then((data) => {
+        setDATA(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load portfolio data:", err);
+        setIsLoading(false);
+      });
+  }, []);
+  
+  // Refresh data when window regains focus (in case admin made changes)
+  useEffect(() => {
+    const handleFocus = () => {
+      getPortfolioDataAsync().then(setDATA).catch(console.error);
+    };
     window.addEventListener("focus", handleFocus);
     return () => {
-      window.removeEventListener("storage", handleStorage);
       window.removeEventListener("focus", handleFocus);
     };
   }, []);
@@ -1070,6 +1082,18 @@ export default function Portfolio() {
   function jumpTo(id: string) {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // Show loading spinner while fetching data
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0d2035] to-[#032d60]">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-white/20 border-t-[#00a1e0]"></div>
+          <p className="text-lg text-white/60">Loading portfolio...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
