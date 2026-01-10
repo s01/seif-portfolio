@@ -65,9 +65,9 @@ import {
   getPortfolioDataAsync,
   savePortfolioDataAsync,
   resetPortfolioDataAsync,
-  checkAdminPassword,
-  isPasswordSet,
-  setAdminPassword,
+  checkAdminPasswordAsync,
+  isPasswordSetAsync,
+  setAdminPasswordAsync,
   generateId,
   COLOR_PRESETS,
   ICON_OPTIONS,
@@ -88,31 +88,64 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const isFirstTime = !isPasswordSet();
+  const [isFirstTime, setIsFirstTime] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingStatus, setIsCheckingStatus] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Check if password is set on mount
+  useEffect(() => {
+    isPasswordSetAsync().then((isSet) => {
+      setIsFirstTime(!isSet);
+      setIsCheckingStatus(false);
+    });
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
-    if (isFirstTime) {
-      if (password.length < 4) {
-        setError("Password must be at least 4 characters");
-        return;
-      }
-      if (password !== confirmPassword) {
-        setError("Passwords don't match");
-        return;
-      }
-      setAdminPassword(password);
-      onLogin();
-    } else {
-      if (checkAdminPassword(password)) {
+    try {
+      if (isFirstTime) {
+        if (password.length < 4) {
+          setError("Password must be at least 4 characters");
+          setIsLoading(false);
+          return;
+        }
+        if (password !== confirmPassword) {
+          setError("Passwords don't match");
+          setIsLoading(false);
+          return;
+        }
+        await setAdminPasswordAsync(password);
         onLogin();
       } else {
-        setError("Incorrect password");
+        const isValid = await checkAdminPasswordAsync(password);
+        if (isValid) {
+          onLogin();
+        } else {
+          setError("Incorrect password");
+        }
       }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // Show loading while checking password status
+  if (isCheckingStatus) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0d2035] to-[#032d60]">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-[#00a1e0]"></div>
+          <p className="text-white/60">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0d2035] to-[#032d60] p-4">
@@ -180,9 +213,17 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-[#00a1e0] py-3 font-semibold text-white transition hover:bg-[#00a1e0]/90"
+            disabled={isLoading}
+            className="w-full rounded-xl bg-[#00a1e0] py-3 font-semibold text-white transition hover:bg-[#00a1e0]/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isFirstTime ? "Create Password" : "Login"}
+            {isLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white"></div>
+                {isFirstTime ? "Creating..." : "Logging in..."}
+              </span>
+            ) : (
+              isFirstTime ? "Create Password" : "Login"
+            )}
           </button>
         </form>
 

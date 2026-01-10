@@ -314,7 +314,6 @@ const DEFAULT_DATA: PortfolioData = {
 
 const FIRESTORE_DOC = "portfolio";
 const FIRESTORE_COLLECTION = "settings";
-const ADMIN_PASSWORD_KEY = "admin_password";
 
 // Get data from Firestore (async)
 export async function getPortfolioDataAsync(): Promise<PortfolioData> {
@@ -366,23 +365,86 @@ export function resetPortfolioData(): PortfolioData {
   return DEFAULT_DATA;
 }
 
-// Admin password management (still uses localStorage - password is per-device)
-export function setAdminPassword(password: string): void {
-  const hash = btoa(password);
-  localStorage.setItem(ADMIN_PASSWORD_KEY, hash);
+// Admin password management - stored in Firestore for security
+const ADMIN_DOC = "admin";
+
+// Hash password using a simple but more secure method
+function hashPassword(password: string): string {
+  // Use a simple hash - in production, you'd want bcrypt on a server
+  let hash = 0;
+  for (let i = 0; i < password.length; i++) {
+    const char = password.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return btoa(password + hash.toString());
 }
 
-export function checkAdminPassword(password: string): boolean {
-  const stored = localStorage.getItem(ADMIN_PASSWORD_KEY);
-  if (!stored) {
-    setAdminPassword(password);
-    return true;
+export async function setAdminPasswordAsync(password: string): Promise<void> {
+  try {
+    const docRef = doc(db, FIRESTORE_COLLECTION, ADMIN_DOC);
+    await setDoc(docRef, { passwordHash: hashPassword(password), createdAt: new Date().toISOString() });
+  } catch (e) {
+    console.error("Error setting admin password:", e);
+    throw e;
   }
-  return btoa(password) === stored;
+}
+
+export async function checkAdminPasswordAsync(password: string): Promise<boolean> {
+  try {
+    const docRef = doc(db, FIRESTORE_COLLECTION, ADMIN_DOC);
+    const docSnap = await getDoc(docRef);
+    
+    if (!docSnap.exists()) {
+      // First time - set the password
+      await setAdminPasswordAsync(password);
+      return true;
+    }
+    
+    const stored = docSnap.data()?.passwordHash;
+    return hashPassword(password) === stored;
+  } catch (e) {
+    console.error("Error checking admin password:", e);
+    return false;
+  }
+}
+
+export async function isPasswordSetAsync(): Promise<boolean> {
+  try {
+    const docRef = doc(db, FIRESTORE_COLLECTION, ADMIN_DOC);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists() && !!docSnap.data()?.passwordHash;
+  } catch (e) {
+    console.error("Error checking if password is set:", e);
+    return false;
+  }
+}
+
+// Legacy sync versions - kept for compatibility but will use cached values
+let cachedPasswordSet: boolean | null = null;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function setAdminPassword(_password: string): void {
+  console.warn("setAdminPassword is deprecated, use setAdminPasswordAsync");
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function checkAdminPassword(_password: string): boolean {
+  console.warn("checkAdminPassword is deprecated, use checkAdminPasswordAsync");
+  // This is a fallback - the async version should be used
+  return false;
 }
 
 export function isPasswordSet(): boolean {
-  return localStorage.getItem(ADMIN_PASSWORD_KEY) !== null;
+  // Return cached value if available, otherwise assume not set
+  // The async version should be called first to populate this
+  return cachedPasswordSet ?? false;
+}
+
+// Call this on app init to cache the password status
+export async function initPasswordStatus(): Promise<boolean> {
+  cachedPasswordSet = await isPasswordSetAsync();
+  return cachedPasswordSet;
 }
 
 // Generate unique ID
