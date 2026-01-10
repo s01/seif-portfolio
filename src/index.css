@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Custom smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Remove default body centering that conflicts with portfolio layout */
+body {
+  margin: 0;
+  min-width: 320px;
+}
