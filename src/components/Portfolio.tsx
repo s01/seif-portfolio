@@ -1462,6 +1462,7 @@ export default function Portfolio() {
                       className="h-auto w-80 max-w-none"
                       width="800"
                       height="800"
+                      fetchPriority="high"
                     />
                   </picture>
                   
