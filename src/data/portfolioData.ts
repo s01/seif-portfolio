@@ -1,8 +1,24 @@
 // Portfolio Data Store
 // This file manages all portfolio data with Firestore persistence
 
-import { db } from "../firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+// Lazy-load Firebase to avoid blocking main bundle
+import type { Firestore } from "firebase/firestore";
+
+let firebaseInitialized = false;
+let db: Firestore | null = null;
+
+async function initFirebase(): Promise<Firestore | null> {
+  if (firebaseInitialized && db) return db;
+  try {
+    const { db: firebaseDb } = await import("../firebase");
+    db = firebaseDb;
+    firebaseInitialized = true;
+    return db;
+  } catch (error) {
+    console.error("Failed to load Firebase:", error);
+    return null;
+  }
+}
 
 export interface Project {
   id: string;
@@ -320,7 +336,12 @@ const FIRESTORE_COLLECTION = "settings";
 // Get data from Firestore (async)
 export async function getPortfolioDataAsync(): Promise<PortfolioData> {
   try {
-    const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC);
+    // Lazy-load Firebase and Firestore
+    const firebaseDb = await initFirebase();
+    if (!firebaseDb) return DEFAULT_DATA;
+    
+    const { doc, getDoc } = await import("firebase/firestore");
+    const docRef = doc(firebaseDb, FIRESTORE_COLLECTION, FIRESTORE_DOC);
     const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
@@ -340,7 +361,11 @@ export function getPortfolioData(): PortfolioData {
 // Save data to Firestore (async)
 export async function savePortfolioDataAsync(data: PortfolioData): Promise<void> {
   try {
-    const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC);
+    const firebaseDb = await initFirebase();
+    if (!firebaseDb) throw new Error("Firebase not initialized");
+    
+    const { doc, setDoc } = await import("firebase/firestore");
+    const docRef = doc(firebaseDb, FIRESTORE_COLLECTION, FIRESTORE_DOC);
     await setDoc(docRef, data);
   } catch (e) {
     console.error("Error saving portfolio data to Firestore:", e);
@@ -384,7 +409,11 @@ function hashPassword(password: string): string {
 
 export async function setAdminPasswordAsync(password: string): Promise<void> {
   try {
-    const docRef = doc(db, FIRESTORE_COLLECTION, ADMIN_DOC);
+    const firebaseDb = await initFirebase();
+    if (!firebaseDb) throw new Error("Firebase not initialized");
+    
+    const { doc, setDoc } = await import("firebase/firestore");
+    const docRef = doc(firebaseDb, FIRESTORE_COLLECTION, ADMIN_DOC);
     await setDoc(docRef, { passwordHash: hashPassword(password), createdAt: new Date().toISOString() });
   } catch (e) {
     console.error("Error setting admin password:", e);
@@ -394,7 +423,11 @@ export async function setAdminPasswordAsync(password: string): Promise<void> {
 
 export async function checkAdminPasswordAsync(password: string): Promise<boolean> {
   try {
-    const docRef = doc(db, FIRESTORE_COLLECTION, ADMIN_DOC);
+    const firebaseDb = await initFirebase();
+    if (!firebaseDb) return false;
+    
+    const { doc, getDoc } = await import("firebase/firestore");
+    const docRef = doc(firebaseDb, FIRESTORE_COLLECTION, ADMIN_DOC);
     const docSnap = await getDoc(docRef);
     
     if (!docSnap.exists()) {
@@ -413,7 +446,11 @@ export async function checkAdminPasswordAsync(password: string): Promise<boolean
 
 export async function isPasswordSetAsync(): Promise<boolean> {
   try {
-    const docRef = doc(db, FIRESTORE_COLLECTION, ADMIN_DOC);
+    const firebaseDb = await initFirebase();
+    if (!firebaseDb) return false;
+    
+    const { doc, getDoc } = await import("firebase/firestore");
+    const docRef = doc(firebaseDb, FIRESTORE_COLLECTION, ADMIN_DOC);
     const docSnap = await getDoc(docRef);
     return docSnap.exists() && !!docSnap.data()?.passwordHash;
   } catch (e) {

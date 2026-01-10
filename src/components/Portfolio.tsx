@@ -1247,21 +1247,23 @@ export default function Portfolio() {
   const sectionIds = ["work", "skills", "cred", "journey", "contact"];
   const active = useActiveSection(sectionIds);
 
-  // Load dynamic data from Firestore
+  // Load static data immediately (no blocking!)
   const [DATA, setDATA] = useState<PortfolioData>(getPortfolioData());
-  const [isLoading, setIsLoading] = useState(true);
   
-  // Fetch data from Firestore on mount
+  // Fetch data from Firestore in background (non-blocking)
   useEffect(() => {
-    getPortfolioDataAsync()
-      .then((data) => {
-        setDATA(data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load portfolio data:", err);
-        setIsLoading(false);
-      });
+    // Defer Firebase loading to not block initial render
+    const timer = setTimeout(() => {
+      getPortfolioDataAsync()
+        .then((data) => {
+          setDATA(data);
+        })
+        .catch((err) => {
+          console.error("Failed to load portfolio data:", err);
+        });
+    }, 100); // Small delay to ensure initial render completes first
+    
+    return () => clearTimeout(timer);
   }, []);
   
   // Refresh data when window regains focus (in case admin made changes)
@@ -1299,18 +1301,6 @@ export default function Portfolio() {
   function jumpTo(id: string) {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  // Show loading spinner while fetching data
-  if (isLoading) {
-  return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0d2035] to-[#032d60]">
-        <div className="text-center">
-          <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-white/20 border-t-[#00a1e0]"></div>
-          <p className="text-lg text-white/60">Loading portfolio...</p>
-        </div>
-      </div>
-    );
   }
 
   return (
