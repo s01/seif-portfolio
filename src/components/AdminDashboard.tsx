@@ -58,6 +58,7 @@ import {
   TrendingUp,
   Wrench,
   Puzzle,
+  Key,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -962,6 +963,194 @@ function LinksEditor({
   );
 }
 
+// Change Password Modal
+function ChangePasswordModal({
+  onClose,
+  onSuccess,
+}: {
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    // Validate new password
+    if (newPassword.length < 4) {
+      setError("New password must be at least 4 characters");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError("New passwords don't match");
+      return;
+    }
+
+    if (currentPassword === newPassword) {
+      setError("New password must be different from current password");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Verify current password
+      const isValid = await checkAdminPasswordAsync(currentPassword);
+      if (!isValid) {
+        setError("Current password is incorrect");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Set new password
+      await setAdminPasswordAsync(newPassword);
+      onSuccess();
+    } catch (err) {
+      console.error("Password change error:", err);
+      setError("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0a1628] p-6 shadow-2xl">
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#00a1e0]/20">
+              <Key className="h-5 w-5 text-[#00a1e0]" />
+            </div>
+            <h2 className="text-xl font-bold text-white">Change Password</h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="rounded-lg p-2 text-white/40 hover:bg-white/10 hover:text-white"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Current Password */}
+          <div>
+            <label className="mb-2 block text-sm font-medium text-white/70">
+              Current Password
+            </label>
+            <div className="relative">
+              <input
+                type={showCurrent ? "text" : "password"}
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 pr-12 text-white placeholder-white/30 outline-none focus:border-[#00a1e0]/50"
+                placeholder="Enter current password"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowCurrent(!showCurrent)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
+              >
+                {showCurrent ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
+
+          {/* New Password */}
+          <div>
+            <label className="mb-2 block text-sm font-medium text-white/70">
+              New Password
+            </label>
+            <div className="relative">
+              <input
+                type={showNew ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 pr-12 text-white placeholder-white/30 outline-none focus:border-[#00a1e0]/50"
+                placeholder="Enter new password"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowNew(!showNew)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
+              >
+                {showNew ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm New Password */}
+          <div>
+            <label className="mb-2 block text-sm font-medium text-white/70">
+              Confirm New Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirm ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 pr-12 text-white placeholder-white/30 outline-none focus:border-[#00a1e0]/50"
+                placeholder="Confirm new password"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirm(!showConfirm)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
+              >
+                {showConfirm ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
+
+          {error && (
+            <div className="rounded-lg bg-red-500/20 px-4 py-3 text-sm text-red-400">
+              {error}
+            </div>
+          )}
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 rounded-lg border border-white/10 py-3 text-white/70 hover:bg-white/5"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting || !currentPassword || !newPassword || !confirmPassword}
+              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#00a1e0] py-3 font-semibold text-white hover:bg-[#00a1e0]/90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Changing...
+                </>
+              ) : (
+                <>
+                  <Key className="h-4 w-4" />
+                  Change Password
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // Project Editor Modal
 function ProjectEditor({
   project,
@@ -1143,6 +1332,7 @@ export default function AdminDashboard() {
   const [saveMessage, setSaveMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   // Check if already logged in (session) and load data from Firestore
   useEffect(() => {
@@ -1801,6 +1991,30 @@ export default function AdminDashboard() {
           </div>
         </Section>
 
+        {/* Settings */}
+        <Section title="Settings" icon={Settings}>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-4">
+              <div className="flex items-center gap-3">
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#00a1e0]/20">
+                  <Key className="h-5 w-5 text-[#00a1e0]" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-white">Admin Password</h4>
+                  <p className="text-sm text-white/50">Change your dashboard access password</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowChangePassword(true)}
+                className="flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20"
+              >
+                <Key className="h-4 w-4" />
+                Change Password
+              </button>
+            </div>
+          </div>
+        </Section>
+
         {/* Pro Tip */}
         <Section title="Pro Tip" icon={Lightbulb}>
           <Field
@@ -1819,6 +2033,18 @@ export default function AdminDashboard() {
           project={editingProject === "new" ? null : editingProject}
           onSave={saveProject}
           onCancel={() => setEditingProject(null)}
+        />
+      )}
+
+      {/* Change Password Modal */}
+      {showChangePassword && (
+        <ChangePasswordModal
+          onClose={() => setShowChangePassword(false)}
+          onSuccess={() => {
+            setShowChangePassword(false);
+            setSaveMessage("Password changed successfully!");
+            setTimeout(() => setSaveMessage(""), 3000);
+          }}
         />
       )}
     </div>
