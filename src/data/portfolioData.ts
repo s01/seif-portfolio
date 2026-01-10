@@ -14,8 +14,8 @@ async function initFirebase(): Promise<Firestore | null> {
     db = firebaseDb;
     firebaseInitialized = true;
     return db;
-  } catch (error) {
-    console.error("Failed to load Firebase:", error);
+  } catch {
+    // Firebase failed to load - not critical, static data works fine
     return null;
   }
 }
@@ -347,8 +347,9 @@ export async function getPortfolioDataAsync(): Promise<PortfolioData> {
     if (docSnap.exists()) {
       return { ...DEFAULT_DATA, ...docSnap.data() } as PortfolioData;
     }
-  } catch (e) {
-    console.error("Error loading portfolio data from Firestore:", e);
+  } catch {
+    // Silently fail for network errors - static data works fine
+    // No need to spam console with Firebase connection errors
   }
   return DEFAULT_DATA;
 }

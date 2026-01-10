@@ -1250,16 +1250,22 @@ export default function Portfolio() {
   // Load static data immediately (no blocking!)
   const [DATA, setDATA] = useState<PortfolioData>(getPortfolioData());
   
-  // Fetch data from Firestore in background (non-blocking)
+  // Fetch data from Firestore in background (non-blocking, with timeout)
   useEffect(() => {
     // Defer Firebase loading to not block initial render
     const timer = setTimeout(() => {
-      getPortfolioDataAsync()
+      // Add timeout to prevent hanging connections
+      const timeoutPromise = new Promise<PortfolioData>((resolve) => {
+        setTimeout(() => resolve(getPortfolioData()), 5000); // 5s timeout
+      });
+      
+      Promise.race([getPortfolioDataAsync(), timeoutPromise])
         .then((data) => {
           setDATA(data);
         })
-        .catch((err) => {
-          console.error("Failed to load portfolio data:", err);
+        .catch(() => {
+          // Silently fail - static data already loaded
+          // No need to log errors that don't affect UX
         });
     }, 100); // Small delay to ensure initial render completes first
     
@@ -1269,7 +1275,9 @@ export default function Portfolio() {
   // Refresh data when window regains focus (in case admin made changes)
   useEffect(() => {
     const handleFocus = () => {
-      getPortfolioDataAsync().then(setDATA).catch(console.error);
+      getPortfolioDataAsync().then(setDATA).catch(() => {
+        // Silently fail - don't spam console with Firebase errors
+      });
     };
     window.addEventListener("focus", handleFocus);
     return () => {
