@@ -1322,34 +1322,34 @@ export default function Portfolio() {
             </div>
           </div>
 
-                {/* Astro character - hidden on mobile to prevent overflow */}
+                {/* Astro character - positioned inside on mobile, outside on desktop */}
             <motion.div
-                  className="absolute -left-16 -top-8 hidden md:block"
+                  className="absolute -top-6 left-0 md:-left-16 md:-top-8"
                   animate={reduced ? undefined : { y: [0, -10, 0] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <AstroCharacter className="h-32 w-32" waving />
+                  <AstroCharacter className="h-24 w-24 md:h-32 md:w-32" waving />
             </motion.div>
 
-                {/* Codey character - hidden on mobile to prevent overflow */}
+                {/* Codey character - positioned inside on mobile, outside on desktop */}
                 <motion.div
-                  className="absolute -bottom-4 -right-12 hidden md:block"
+                  className="absolute -bottom-3 right-0 md:-bottom-4 md:-right-12"
                   animate={reduced ? undefined : { y: [0, -8, 0] }}
                   transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
                 >
-                  <CodeyCharacter className="h-28 w-28" />
+                  <CodeyCharacter className="h-20 w-20 md:h-28 md:w-28" />
                 </motion.div>
 
-                {/* Trailhead Ranger badge - hidden on mobile to prevent overflow */}
+                {/* Trailhead Ranger badge - positioned inside on mobile, outside on desktop */}
                 <motion.div
-                  className="absolute -right-8 top-0 hidden md:block"
+                  className="absolute right-0 top-2 md:-right-8 md:top-0"
                   animate={reduced ? undefined : { rotate: [0, 5, 0] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 >
                   <img 
                     src="/ranger.png" 
                     alt="Trailhead Ranger Badge" 
-                    className="h-24 w-24 drop-shadow-lg"
+                    className="h-20 w-20 md:h-24 md:w-24 drop-shadow-lg"
                   />
                 </motion.div>
                 </div>
