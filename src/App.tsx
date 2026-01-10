@@ -1,13 +1,35 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import Portfolio from "./components/Portfolio";
-import AdminDashboard from "./components/AdminDashboard";
+
+// Lazy-load admin dashboard (only loads when user visits /admin)
+const AdminDashboard = lazy(() => import("./components/AdminDashboard"));
+
+// Loading fallback
+function LoadingScreen() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#032d60] to-[#0d2035]">
+      <div className="text-center">
+        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-[#00a1e0]" />
+        <p className="text-white/60">Loading...</p>
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Portfolio />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route 
+          path="/admin" 
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <AdminDashboard />
+            </Suspense>
+          } 
+        />
       </Routes>
     </BrowserRouter>
   );
