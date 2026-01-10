@@ -1068,7 +1068,10 @@ function ProjectCard({ p, onOpen, index }: { p: Project; onOpen: (project: Proje
                 className="grid h-12 w-12 place-items-center rounded-xl transition-transform group-hover:scale-110"
                 style={{ background: `${p.colors.accent}20` }}
               >
-                <Code2 className="h-5 w-5" style={{ color: p.colors.accent }} />
+                {(() => {
+                  const ProjectIcon = PROJECT_ICONS[p.icon || "Workflow"] || Workflow;
+                  return <ProjectIcon className="h-5 w-5" style={{ color: p.colors.accent }} />;
+                })()}
               </div>
             )}
           </div>
