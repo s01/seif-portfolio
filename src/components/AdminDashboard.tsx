@@ -26,6 +26,7 @@ import {
   ArrowDown,
   Image as ImageIcon,
   Upload,
+  Link2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -697,6 +698,94 @@ function ListEditor({
   );
 }
 
+// Links Editor for project links (label + href pairs)
+function LinksEditor({
+  links,
+  onChange,
+}: {
+  links: { label: string; href: string }[];
+  onChange: (links: { label: string; href: string }[]) => void;
+}) {
+  const [newLabel, setNewLabel] = useState("");
+  const [newHref, setNewHref] = useState("");
+
+  const addLink = () => {
+    if (newLabel.trim() && newHref.trim()) {
+      onChange([...links, { label: newLabel.trim(), href: newHref.trim() }]);
+      setNewLabel("");
+      setNewHref("");
+    }
+  };
+
+  const removeLink = (index: number) => {
+    onChange(links.filter((_, i) => i !== index));
+  };
+
+  const updateLink = (index: number, field: "label" | "href", value: string) => {
+    const newLinks = [...links];
+    newLinks[index] = { ...newLinks[index], [field]: value };
+    onChange(newLinks);
+  };
+
+  return (
+    <div>
+      <label className="mb-2 flex items-center gap-2 text-sm font-medium text-white/70">
+        <Link2 className="h-4 w-4" />
+        Project Links
+      </label>
+      <div className="space-y-3">
+        {links.map((link, i) => (
+          <div key={i} className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 p-2">
+            <input
+              value={link.label}
+              onChange={(e) => updateLink(i, "label", e.target.value)}
+              placeholder="Link text (e.g., Demo)"
+              className="w-1/3 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#00a1e0]/50"
+            />
+            <input
+              value={link.href}
+              onChange={(e) => updateLink(i, "href", e.target.value)}
+              placeholder="URL (e.g., https://...)"
+              className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#00a1e0]/50"
+            />
+            <button
+              onClick={() => removeLink(i)}
+              className="rounded-lg p-2 text-red-400 hover:bg-red-400/10"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+        <div className="flex items-center gap-2 rounded-lg border border-dashed border-white/20 p-2">
+          <input
+            value={newLabel}
+            onChange={(e) => setNewLabel(e.target.value)}
+            placeholder="Link text"
+            className="w-1/3 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#00a1e0]/50"
+          />
+          <input
+            value={newHref}
+            onChange={(e) => setNewHref(e.target.value)}
+            placeholder="URL"
+            onKeyDown={(e) => e.key === "Enter" && addLink()}
+            className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#00a1e0]/50"
+          />
+          <button
+            onClick={addLink}
+            disabled={!newLabel.trim() || !newHref.trim()}
+            className="rounded-lg bg-[#00a1e0]/20 px-4 py-2 text-[#00a1e0] hover:bg-[#00a1e0]/30 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Plus className="h-4 w-4" />
+          </button>
+        </div>
+        <p className="text-xs text-white/40">
+          Add links like Demo, GitHub, Case Study, etc. Use "#" for placeholder URLs.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // Project Editor Modal
 function ProjectEditor({
   project,
@@ -785,6 +874,11 @@ function ProjectEditor({
             items={data.stack}
             onChange={(v) => updateField("stack", v)}
             placeholder="Add technology..."
+          />
+
+          <LinksEditor
+            links={data.links}
+            onChange={(v) => updateField("links", v)}
           />
 
           <ColorPicker
