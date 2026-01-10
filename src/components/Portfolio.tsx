@@ -1909,8 +1909,8 @@ export default function Portfolio() {
                   rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
                 >
-                <Download className="h-5 w-5" />
-                Download Resume
+                <MessageSquare className="h-5 w-5" />
+                Ask For Resume
                 </a>
               </div>
 
