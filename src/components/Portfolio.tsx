@@ -698,9 +698,11 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
             className="flex items-center gap-3"
           >
             <img 
-              src="/SeifMohsenLogo.png" 
+              src="/SeifMohsenLogo-optimized.png" 
               alt="Seif Mohsen" 
               className="h-10 w-10 rounded-full object-cover"
+              width="40"
+              height="40"
             />
             <span className="hidden text-sm font-semibold text-white sm:block">Seif Mohsen</span>
         </button>
@@ -1452,11 +1454,16 @@ export default function Portfolio() {
                   style={{ boxShadow: `0 20px 60px ${SF.blue}30` }}
                 >
                   {/* Your Salesforce photo - full size, no cropping */}
-                  <img
-                    src="/saif-salesforce.jpg"
-                    alt="Saif Mohsen at Salesforce"
-                    className="h-auto w-80 max-w-none"
-                  />
+                  <picture>
+                    <source srcSet="/saif-salesforce.webp" type="image/webp" />
+                    <img
+                      src="/saif-salesforce-optimized.jpg"
+                      alt="Saif Mohsen at Salesforce"
+                      className="h-auto w-80 max-w-none"
+                      width="800"
+                      height="800"
+                    />
+                  </picture>
                   
                   {/* Overlay gradient */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
