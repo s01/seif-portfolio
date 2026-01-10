@@ -125,6 +125,7 @@ const PROJECT_ICONS: Record<string, React.ElementType> = {
 // Official Salesforce Colors
 const SF = {
   blue: "#00a1e0",
+  blueAccessible: "#0082b8", // Darker blue for WCAG AA contrast with white text
   darkBlue: "#032d60",
   navy: "#0d2035",
   cloud: "#1b96ff",
@@ -703,7 +704,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
           >
             <img 
               src="/SeifMohsenLogo.png" 
-              alt="Seif Mohsen" 
+              alt="Logo" 
               className="h-10 w-10 rounded-full object-cover"
               width="40"
               height="40"
@@ -774,7 +775,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
             <a
               href={`mailto:${email}`}
               className="rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition hover:scale-105 md:px-5"
-              style={{ background: SF.blue }}
+              style={{ background: SF.blueAccessible }}
             >
               Hire Me
             </a>
@@ -1150,16 +1151,15 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
       transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ y: -4 }}
     >
-      <article
+      <button
         onClick={() => onOpen(p)}
-      className={cx(
+        className={cx(
           "group relative cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm",
-          "transition-all duration-300 hover:border-white/20 hover:bg-white/10",
-        p.featured ? "md:col-span-2" : ""
-      )}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => e.key === "Enter" && onOpen(p)}
+          "transition-all duration-300 hover:border-white/20 hover:bg-white/10 w-full text-left",
+          p.featured ? "md:col-span-2" : ""
+        )}
+        type="button"
+        aria-label={`View details for ${p.title} project`}
       >
         <div
           className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-full blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-40"
@@ -1240,7 +1240,7 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
           <Sparkles className="h-4 w-4" />
       </div>
         </div>
-      </article>
+      </button>
     </motion.div>
   );
 });
@@ -1346,6 +1346,7 @@ export default function Portfolio() {
         <SalesforceBackground reduced={reduced} />
         <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} />
 
+      <main>
       {/* HERO */}
       <header className="relative min-h-screen overflow-x-hidden pt-24">
         <div className="mx-auto max-w-6xl px-4 py-16">
@@ -1427,7 +1428,7 @@ export default function Portfolio() {
               <a
                 href={`mailto:${DATA.email}`}
                   className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white transition hover:scale-105 hover:shadow-lg"
-                  style={{ background: SF.blue, boxShadow: `0 8px 30px ${SF.blue}40` }}
+                  style={{ background: SF.blueAccessible, boxShadow: `0 8px 30px ${SF.blueAccessible}40` }}
               >
                 <Mail className="h-4 w-4" />
                   Let's Connect
@@ -1953,6 +1954,7 @@ export default function Portfolio() {
               </div>
             </div>
           </footer>
+      </main>
 
       <ProjectDrawer project={drawer} onClose={handleCloseDrawer} />
 
