@@ -5,6 +5,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Prevent horizontal overflow on mobile */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 /* Remove default body centering that conflicts with portfolio layout */
 body {
   margin: 0;

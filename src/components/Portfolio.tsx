@@ -894,8 +894,8 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                                 : "bg-white/40 hover:bg-white/60"
                             )}
                           />
-                        ))}
-                      </div>
+                    ))}
+                  </div>
                     </>
                   )}
 
@@ -904,8 +904,8 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                     <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm">
                       <Maximize2 className="h-5 w-5 text-white" />
                       <span className="text-sm font-medium text-white">Click to view full</span>
-                    </div>
                   </div>
+                </div>
                 </div>
               )}
 
@@ -961,17 +961,17 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                   {project.links?.map((l) => {
                     const LinkIcon = LINK_ICONS[l.icon || "ExternalLink"] || ExternalLink;
                     return (
-                      <a
-                        key={l.label}
-                        href={l.href}
-                        target="_blank"
-                        rel="noreferrer"
+                    <a
+                      key={l.label}
+                      href={l.href}
+                      target="_blank"
+                      rel="noreferrer"
                         className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white transition hover:scale-[1.02]"
                         style={{ background: project.colors.accent }}
-                      >
-                        {l.label}
+                    >
+                      {l.label}
                         <LinkIcon className="h-4 w-4" />
-                      </a>
+                    </a>
                     );
                   })}
                 </div>
@@ -1007,11 +1007,11 @@ function ProjectCard({ p, onOpen, index }: { p: Project; onOpen: (project: Proje
     >
       <article
         onClick={() => onOpen(p)}
-        className={cx(
+      className={cx(
           "group relative cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm",
           "transition-all duration-300 hover:border-white/20 hover:bg-white/10",
-          p.featured ? "md:col-span-2" : ""
-        )}
+        p.featured ? "md:col-span-2" : ""
+      )}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === "Enter" && onOpen(p)}
@@ -1041,27 +1041,27 @@ function ProjectCard({ p, onOpen, index }: { p: Project; onOpen: (project: Proje
         )}
 
         <div className="relative p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
                 <span
                   className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
                   style={{ background: `${p.colors.accent}20`, color: p.colors.accent }}
                 >
-                  {p.category}
-                </span>
+              {p.category}
+            </span>
                 {p.featured && (
                   <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold text-white"
                     style={{ background: SF.orange }}
                   >
                     <Star className="h-3 w-3" /> Featured
-                  </span>
+              </span>
                 )}
-              </div>
+          </div>
 
               <h3 className="mt-3 text-xl font-bold text-white">{p.title}</h3>
               <p className="mt-2 text-sm text-white/60">{p.impact}</p>
-            </div>
+        </div>
 
             {(!p.images || p.images.length === 0) && (
               <div
@@ -1072,28 +1072,28 @@ function ProjectCard({ p, onOpen, index }: { p: Project; onOpen: (project: Proje
                   const ProjectIcon = PROJECT_ICONS[p.icon || "Workflow"] || Workflow;
                   return <ProjectIcon className="h-5 w-5" style={{ color: p.colors.accent }} />;
                 })()}
-              </div>
+        </div>
             )}
-          </div>
+      </div>
 
-          <div className="mt-5 flex flex-wrap gap-2">
+      <div className="mt-5 flex flex-wrap gap-2">
             {p.stack.slice(0, 4).map((t) => (
               <span
                 key={t}
                 className="rounded-lg border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/70"
               >
-                {t}
-              </span>
-            ))}
-          </div>
+            {t}
+          </span>
+        ))}
+      </div>
 
           <div
             className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white transition-all group-hover:scale-[1.02]"
             style={{ background: p.colors.accent }}
           >
             View Details
-            <Sparkles className="h-4 w-4" />
-          </div>
+          <Sparkles className="h-4 w-4" />
+      </div>
         </div>
       </article>
     </motion.div>
@@ -1162,7 +1162,7 @@ export default function Portfolio() {
 
   // Show loading spinner while fetching data
   if (isLoading) {
-    return (
+  return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0d2035] to-[#032d60]">
         <div className="text-center">
           <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-white/20 border-t-[#00a1e0]"></div>
@@ -1173,12 +1173,12 @@ export default function Portfolio() {
   }
 
   return (
-    <div id="top" className="min-h-screen font-sans text-white">
+    <div id="top" className="min-h-screen overflow-x-hidden font-sans text-white">
       <SalesforceBackground reduced={reduced} />
       <Navbar active={active} onJump={jumpTo} email={DATA.email} />
 
       {/* HERO */}
-      <header className="relative min-h-screen overflow-hidden pt-24">
+      <header className="relative min-h-screen overflow-x-hidden pt-24">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             {/* Left - Content */}
@@ -1322,27 +1322,27 @@ export default function Portfolio() {
             </div>
           </div>
 
-                {/* Astro character */}
+                {/* Astro character - hidden on mobile to prevent overflow */}
             <motion.div
-                  className="absolute -left-16 -top-8"
+                  className="absolute -left-16 -top-8 hidden md:block"
                   animate={reduced ? undefined : { y: [0, -10, 0] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 >
                   <AstroCharacter className="h-32 w-32" waving />
             </motion.div>
 
-                {/* Codey character */}
+                {/* Codey character - hidden on mobile to prevent overflow */}
                 <motion.div
-                  className="absolute -bottom-4 -right-12"
+                  className="absolute -bottom-4 -right-12 hidden md:block"
                   animate={reduced ? undefined : { y: [0, -8, 0] }}
                   transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
                 >
                   <CodeyCharacter className="h-28 w-28" />
                 </motion.div>
 
-                {/* Trailhead Ranger badge */}
+                {/* Trailhead Ranger badge - hidden on mobile to prevent overflow */}
                 <motion.div
-                  className="absolute -right-8 top-0"
+                  className="absolute -right-8 top-0 hidden md:block"
                   animate={reduced ? undefined : { rotate: [0, 5, 0] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 >
@@ -1569,9 +1569,9 @@ export default function Portfolio() {
                         <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm">
                           <Maximize2 className="h-4 w-4 text-white" />
                           <span className="text-sm font-medium text-white">View Certificate</span>
-                        </div>
-                      </div>
-                    </div>
+                </div>
+                </div>
+              </div>
                   ) : (
                     <div
                       className="grid h-32 w-full place-items-center"
@@ -1586,11 +1586,11 @@ export default function Portfolio() {
                     <h4 className="font-bold text-white">{cert.title}</h4>
                     <p className="mt-1 text-sm text-white/60">{cert.issuer}</p>
                     <p className="mt-2 text-xs font-semibold" style={{ color: cert.color }}>{cert.year}</p>
-                  </div>
+                      </div>
                 </SFCard>
               </motion.div>
             ))}
-          </div>
+            </div>
           </div>
         </section>
 
