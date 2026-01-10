@@ -679,8 +679,11 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
   ];
 
   const handleNavClick = (id: string) => {
+    // Scroll first, then close menu after a brief delay
     onJump(id);
-    setMobileMenuOpen(false);
+    setTimeout(() => {
+      setMobileMenuOpen(false);
+    }, 300); // Small delay to ensure scroll initiates before menu closes
   };
 
   return (
@@ -698,7 +701,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
             className="flex items-center gap-3"
           >
             <img 
-              src="/SeifMohsenLogo-optimized.png" 
+              src="/SeifMohsenLogo.png" 
               alt="Seif Mohsen" 
               className="h-10 w-10 rounded-full object-cover"
               width="40"
