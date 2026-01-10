@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, memo, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, domAnimation, m as motion, AnimatePresence } from "framer-motion";
 import {
   BadgeCheck,
   BarChart,
@@ -1293,6 +1293,18 @@ export default function Portfolio() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [certImageLightbox, setCertImageLightbox] = useState<{ src: string; alt: string } | null>(null);
+  
+  // Defer animations until after first paint to reduce render delay
+  const [animationsEnabled, setAnimationsEnabled] = useState(false);
+  
+  useEffect(() => {
+    // Enable animations after first paint
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        setAnimationsEnabled(true);
+      }, 0);
+    });
+  }, []);
 
   const categories = useMemo(() => {
     const c = new Set(["All"]);
@@ -1329,9 +1341,10 @@ export default function Portfolio() {
   }, []);
 
   return (
-    <div id="top" className="min-h-screen overflow-x-hidden font-sans text-white">
-      <SalesforceBackground reduced={reduced} />
-      <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} />
+    <LazyMotion features={domAnimation} strict>
+      <div id="top" className="min-h-screen overflow-x-hidden font-sans text-white">
+        <SalesforceBackground reduced={reduced} />
+        <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} />
 
       {/* HERO */}
       <header className="relative min-h-screen overflow-x-hidden pt-24">
@@ -1341,7 +1354,7 @@ export default function Portfolio() {
             <div className="relative z-10">
               {/* Trailblazer badge */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={animationsEnabled ? { opacity: 0, scale: 0.8 } : false}
                 animate={{ opacity: 1, scale: 1 }}
                 className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm"
               >
@@ -1351,18 +1364,18 @@ export default function Portfolio() {
             </motion.div>
 
             <motion.h1
-                initial={{ opacity: 0, y: 30 }}
+                initial={animationsEnabled ? { opacity: 0, y: 30 } : false}
               animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
+                transition={animationsEnabled ? { delay: 0.1 } : { duration: 0 }}
                 className="text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl"
             >
                 {DATA.name}
             </motion.h1>
 
             <motion.p
-                initial={{ opacity: 0, y: 20 }}
+                initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
+                transition={animationsEnabled ? { delay: 0.2 } : { duration: 0 }}
                 className="mt-3 text-2xl font-semibold md:text-3xl"
                 style={{ color: SF.blue }}
               >
@@ -1370,18 +1383,18 @@ export default function Portfolio() {
               </motion.p>
 
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
+                initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+                transition={animationsEnabled ? { delay: 0.3 } : { duration: 0 }}
                 className="mt-2 text-xl text-white/70"
               >
                 {DATA.tagline}
               </motion.p>
 
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
+                initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={animationsEnabled ? { delay: 0.4 } : { duration: 0 }}
                 className="mt-6 max-w-lg text-base leading-relaxed text-white/60"
             >
               {DATA.subheadline}
@@ -1389,9 +1402,9 @@ export default function Portfolio() {
 
               {/* Location & Email */}
             <motion.div
-                initial={{ opacity: 0 }}
+                initial={animationsEnabled ? { opacity: 0 } : false}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={animationsEnabled ? { delay: 0.5 } : { duration: 0 }}
                 className="mt-6 flex flex-wrap gap-3"
               >
                 <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm backdrop-blur-sm">
@@ -1406,9 +1419,9 @@ export default function Portfolio() {
 
               {/* CTAs */}
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
+                transition={animationsEnabled ? { delay: 0.6 } : { duration: 0 }}
                 className="mt-8 flex flex-wrap gap-4"
             >
               <a
@@ -1451,9 +1464,9 @@ export default function Portfolio() {
 
             {/* Right - Photo + Characters */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={animationsEnabled ? { opacity: 0, scale: 0.9 } : false}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
+              transition={animationsEnabled ? { delay: 0.3, duration: 0.8 } : { duration: 0 }}
               className="relative"
             >
               {/* Your photo */}
@@ -1496,8 +1509,8 @@ export default function Portfolio() {
                 {/* Astro character - positioned inside on mobile, outside on desktop */}
             <motion.div
                   className="absolute -top-6 left-0 md:-left-16 md:-top-8"
-                  animate={reduced ? undefined : { y: [0, -10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  animate={reduced || !animationsEnabled ? undefined : { y: [0, -10, 0] }}
+                  transition={animationsEnabled ? { duration: 3, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
                 >
                   <AstroCharacter className="h-24 w-24 md:h-32 md:w-32" waving />
             </motion.div>
@@ -1505,8 +1518,8 @@ export default function Portfolio() {
                 {/* Codey character - positioned inside on mobile, outside on desktop */}
                 <motion.div
                   className="absolute -bottom-3 right-0 md:-bottom-4 md:-right-12"
-                  animate={reduced ? undefined : { y: [0, -8, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                  animate={reduced || !animationsEnabled ? undefined : { y: [0, -8, 0] }}
+                  transition={animationsEnabled ? { duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 } : { duration: 0 }}
                 >
                   <CodeyCharacter className="h-20 w-20 md:h-28 md:w-28" />
                 </motion.div>
@@ -1514,8 +1527,8 @@ export default function Portfolio() {
                 {/* Trailhead Ranger badge - positioned inside on mobile, outside on desktop */}
                 <motion.div
                   className="absolute right-0 top-2 md:-right-8 md:top-0"
-                  animate={reduced ? undefined : { rotate: [0, 5, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  animate={reduced || !animationsEnabled ? undefined : { rotate: [0, 5, 0] }}
+                  transition={animationsEnabled ? { duration: 4, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
                 >
                   <img 
                     src="/ranger.png" 
@@ -1582,7 +1595,7 @@ export default function Portfolio() {
       </header>
 
       {/* WORK SECTION */}
-      <section id="work" className="relative py-24">
+      <section id="work" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 3000px' }}>
         <div className="mx-auto max-w-6xl px-4">
           <SectionHeader
             kicker="Featured Projects"
@@ -1628,7 +1641,7 @@ export default function Portfolio() {
         </section>
 
       {/* SKILLS SECTION */}
-      <section id="skills" className="relative py-24">
+      <section id="skills" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 2000px' }}>
         <div className="mx-auto max-w-6xl px-4">
           <div className="grid gap-12 lg:grid-cols-2">
             <div>
@@ -1706,7 +1719,7 @@ export default function Portfolio() {
         </section>
 
       {/* CREDENTIALS SECTION */}
-      <section id="cred" className="relative py-24">
+      <section id="cred" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 1500px' }}>
         <div className="mx-auto max-w-6xl px-4">
           <SectionHeader
             kicker="Credentials"
@@ -1768,7 +1781,7 @@ export default function Portfolio() {
         </section>
 
       {/* JOURNEY SECTION */}
-      <section id="journey" className="relative py-24">
+      <section id="journey" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 2500px' }}>
         <div className="mx-auto max-w-6xl px-4">
           <SectionHeader
             kicker="My Journey"
@@ -1849,7 +1862,7 @@ export default function Portfolio() {
         </section>
 
       {/* CONTACT SECTION */}
-      <section id="contact" className="relative py-24">
+      <section id="contact" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 1000px' }}>
         <div className="mx-auto max-w-4xl px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1952,6 +1965,7 @@ export default function Portfolio() {
           />
         )}
       </AnimatePresence>
-    </div>
+      </div>
+    </LazyMotion>
   );
 }
