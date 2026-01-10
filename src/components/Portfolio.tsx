@@ -1709,7 +1709,7 @@ export default function Portfolio() {
                       <Zap className="h-5 w-5" style={{ color: SF.purple }} />
                     </div>
               <div>
-                      <p className="font-semibold text-white">💡 Einstein's Pro Tip</p>
+                      <p className="font-semibold text-white">💡 My Salesforce Rule</p>
                       <p className="mt-2 text-sm text-white/70">{DATA.proTip}</p>
                 </div>
               </div>
