@@ -668,13 +668,20 @@ function SectionHeader({
 
 // Navbar
 function Navbar({ active, onJump, email }: { active: string; onJump: (id: string) => void; email: string }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
   const items = [
-    { id: "work", label: "Projects" },
-    { id: "skills", label: "Skills" },
-    { id: "cred", label: "Credentials" },
-    { id: "journey", label: "Journey" },
-    { id: "contact", label: "Contact" },
+    { id: "work", label: "Projects", icon: Briefcase },
+    { id: "skills", label: "Skills", icon: Layers },
+    { id: "cred", label: "Credentials", icon: Award },
+    { id: "journey", label: "Journey", icon: Rocket },
+    { id: "contact", label: "Contact", icon: Mail },
   ];
+
+  const handleNavClick = (id: string) => {
+    onJump(id);
+    setMobileMenuOpen(false);
+  };
 
   return (
     <motion.nav
@@ -682,44 +689,167 @@ function Navbar({ active, onJump, email }: { active: string; onJump: (id: string
       animate={{ y: 0, opacity: 1 }}
       className="fixed left-0 right-0 top-0 z-50 px-4 py-4"
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-white/10 bg-black/30 px-6 py-3 backdrop-blur-xl">
-        <button
-          onClick={() => onJump("top")}
-          className="flex items-center gap-3"
-        >
-          <SalesforceCloudLogo size="sm" animate={false} />
-        </button>
+      <div className="mx-auto max-w-6xl">
+        {/* Main navbar bar */}
+        <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/30 px-4 py-3 backdrop-blur-xl md:px-6">
+          {/* Logo */}
+          <button
+            onClick={() => handleNavClick("top")}
+            className="flex items-center gap-3"
+          >
+            <img 
+              src="/SeifMohsenLogo.png" 
+              alt="Seif Mohsen" 
+              className="h-10 w-10 rounded-full object-cover"
+            />
+            <span className="hidden text-sm font-semibold text-white sm:block">Seif Mohsen</span>
+          </button>
 
-        <div className="hidden items-center gap-1 md:flex">
-          {items.map((item) => (
+          {/* Desktop nav items */}
+          <div className="hidden items-center gap-1 md:flex">
+            {items.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => onJump(item.id)}
+                className={cx(
+                  "relative rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                  active === item.id ? "text-white" : "text-white/60 hover:text-white"
+                )}
+              >
+                {item.label}
+                {active === item.id && (
+                  <motion.div
+                    layoutId="nav-active"
+                    className="absolute inset-0 -z-10 rounded-lg"
+                    style={{ background: `${SF.blue}30` }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Right side - Hamburger (mobile) + Hire Me */}
+          <div className="flex items-center gap-3">
+            {/* Hamburger menu button - mobile only */}
             <button
-              key={item.id}
-              onClick={() => onJump(item.id)}
-              className={cx(
-                "relative rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-                active === item.id ? "text-white" : "text-white/60 hover:text-white"
-              )}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white md:hidden"
+              aria-label="Toggle menu"
             >
-              {item.label}
-              {active === item.id && (
-                <motion.div
-                  layoutId="nav-active"
-                  className="absolute inset-0 -z-10 rounded-lg"
-                  style={{ background: `${SF.blue}30` }}
+              <motion.div
+                animate={mobileMenuOpen ? "open" : "closed"}
+                className="flex flex-col gap-1.5"
+              >
+                <motion.span
+                  variants={{
+                    closed: { rotate: 0, y: 0 },
+                    open: { rotate: 45, y: 6 },
+                  }}
+                  className="block h-0.5 w-5 bg-white"
                 />
-              )}
+                <motion.span
+                  variants={{
+                    closed: { opacity: 1 },
+                    open: { opacity: 0 },
+                  }}
+                  className="block h-0.5 w-5 bg-white"
+                />
+                <motion.span
+                  variants={{
+                    closed: { rotate: 0, y: 0 },
+                    open: { rotate: -45, y: -6 },
+                  }}
+                  className="block h-0.5 w-5 bg-white"
+                />
+              </motion.div>
             </button>
-          ))}
+
+            {/* Hire Me button */}
+            <a
+              href={`mailto:${email}`}
+              className="rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition hover:scale-105 md:px-5"
+              style={{ background: SF.blue }}
+            >
+              Hire Me
+            </a>
+          </div>
         </div>
 
-        <a
-          href={`mailto:${email}`}
-          className="rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition hover:scale-105"
-          style={{ background: SF.blue }}
-        >
-          Hire Me
-          </a>
-        </div>
+        {/* Mobile menu dropdown */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0, y: -10 }}
+              animate={{ opacity: 1, height: "auto", y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="mt-2 overflow-hidden rounded-2xl border border-white/10 bg-black/50 backdrop-blur-xl md:hidden"
+            >
+              <div className="p-4">
+                {/* Nav items */}
+                <div className="space-y-1">
+                  {items.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => handleNavClick(item.id)}
+                        className={cx(
+                          "flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium transition-colors",
+                          active === item.id
+                            ? "bg-white/10 text-white"
+                            : "text-white/60 hover:bg-white/5 hover:text-white"
+                        )}
+                      >
+                        <Icon className="h-5 w-5" style={{ color: active === item.id ? SF.blue : undefined }} />
+                        {item.label}
+                        {active === item.id && (
+                          <span className="ml-auto h-2 w-2 rounded-full" style={{ background: SF.blue }} />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Divider */}
+                <div className="my-4 h-px bg-white/10" />
+
+                {/* Social links */}
+                <div className="flex items-center justify-center gap-4">
+                  <a
+                    href="https://github.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
+                  >
+                    <Github className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="https://linkedin.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
+                  >
+                    <Linkedin className="h-5 w-5" />
+                  </a>
+                  <a
+                    href={`mailto:${email}`}
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
+                  >
+                    <Mail className="h-5 w-5" />
+                  </a>
+                </div>
+
+                {/* Trailblazer badge */}
+                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-white/40">
+                  <Cloud className="h-4 w-4" style={{ color: SF.blue }} />
+                  <span>Salesforce Trailblazer</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </motion.nav>
   );
 }
