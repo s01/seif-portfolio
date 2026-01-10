@@ -1680,7 +1680,7 @@ export default function Portfolio() {
               <span className="font-semibold text-white/80">{DATA.name}</span>
               </div>
             <p className="text-sm text-white/40">
-              Built with Love • by Saif Mohsen ❤️
+              Built with Love • by Seif Mohsen ❤️
             </p>
               </div>
             </div>

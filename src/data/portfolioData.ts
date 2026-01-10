@@ -81,21 +81,21 @@ export interface PortfolioData {
 
 // Default data - used as fallback if Firestore is empty
 const DEFAULT_DATA: PortfolioData = {
-  name: "Saif Mohsen",
+  name: "Seif Mohsen",
   headline: "Salesforce Developer",
   tagline: "Admin • Apex • LWC",
   subheadline:
     "I ship maintainable Salesforce solutions: clean trigger architecture, bulk-safe Apex, and delightful automations with Flow + LWC.",
-  location: "Cairo, Egypt",
-  email: "hello@yourdomain.com",
-  linkedin: "https://www.linkedin.com/in/your-handle",
-  github: "https://github.com/your-handle",
-  resumeUrl: "#",
+  location: "6th of October City, Giza, Egypt",
+  email: "saifmohsen65@gmail.com",
+  linkedin: "https://www.linkedin.com/in/saif-mohsen",
+  github: "https://github.com/s01",
+  resumeUrl: "",
   trailblazerRank: "Ranger",
 
   stats: [
     { id: "1", label: "Certifications", value: "2", icon: "Award" },
-    { id: "2", label: "Trail Badges", value: "45+", icon: "Target" },
+    { id: "2", label: "Trail Badges", value: "120+", icon: "Target" },
     { id: "3", label: "Focus Area", value: "Apex + Flow", icon: "Zap" },
     { id: "4", label: "Code Style", value: "Bulk-safe", icon: "Shield" },
   ],
@@ -233,8 +233,8 @@ const DEFAULT_DATA: PortfolioData = {
   timeline: [
     {
       id: "1",
-      year: "2025",
-      title: "ITI — Salesforce Track",
+      year: "(July 2025 – Jan 2026)",
+      title: "Trainee — ITI Salesforce Track",
       subtitle: "Admin → Apex → LWC → Intro Integrations",
       details:
         "Built projects with platform fundamentals, automation decisions, and clean trigger patterns.",
@@ -242,12 +242,21 @@ const DEFAULT_DATA: PortfolioData = {
     },
     {
       id: "2",
-      year: "2024",
-      title: "Family Business (Ops + Tech)",
+      year: "(October 2023 – May 2025)",
+      title: "Operations Manager — October Pneumatic",
       subtitle: "Sales, consulting, inventory, systems",
       details:
-        "Learned stakeholder communication, real-world processes, and practical problem solving.",
+        "Managed customer inquiries and matched product specifications to client needs. - Maintained inventory records and processed invoices using Excel, improved order documentation efficiency.",
       icon: "Briefcase",
+    },
+    {
+      id: "mk7wg96wikhl6db41y9",
+      year: "(September 2019 – July 2023)",
+      title: "Student — Business Information Systems",
+      subtitle: "Misr University For Science And Technology ",
+      details:
+        "GPA: 3.55 — Grade: Very Good with Honors",
+      icon: "GraduationCap",
     },
   ],
 
