@@ -1356,7 +1356,7 @@ export default function Portfolio() {
               <motion.div
                 initial={animationsEnabled ? { opacity: 0, scale: 0.8 } : false}
                 animate={{ opacity: 1, scale: 1 }}
-                className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm"
+                className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/15 px-4 py-2"
               >
                 <Cloud className="h-5 w-5" style={{ color: SF.blue }} />
                 <span className="text-sm font-semibold">Trailblazer • Open to Work</span>
@@ -1407,11 +1407,11 @@ export default function Portfolio() {
                 transition={animationsEnabled ? { delay: 0.5 } : { duration: 0 }}
                 className="mt-6 flex flex-wrap gap-3"
               >
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm backdrop-blur-sm">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm">
                   <MapPin className="h-4 w-4" style={{ color: SF.blue }} />
                   {DATA.location}
                 </span>
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm backdrop-blur-sm">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm">
                   <Mail className="h-4 w-4" style={{ color: SF.blue }} />
                   {DATA.email}
                 </span>
@@ -1436,7 +1436,7 @@ export default function Portfolio() {
                   href={DATA.linkedin}
                 target="_blank"
                 rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
               >
                   <Linkedin className="h-4 w-4" />
                   LinkedIn
@@ -1445,7 +1445,7 @@ export default function Portfolio() {
                 href={DATA.trailhead}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
               >
                 <Cloud className="h-4 w-4" style={{ color: SF.blue }} />
                 Trailhead
@@ -1454,7 +1454,7 @@ export default function Portfolio() {
                 href={DATA.github}
                 target="_blank"
                 rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
               >
                 <Github className="h-4 w-4" />
                 GitHub
@@ -1463,18 +1463,17 @@ export default function Portfolio() {
             </div>
 
             {/* Right - Photo + Characters */}
-            <motion.div
-              initial={animationsEnabled ? { opacity: 0, scale: 0.9 } : false}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={animationsEnabled ? { delay: 0.3, duration: 0.8 } : { duration: 0 }}
-              className="relative"
-            >
+            <div className="relative">
               {/* Your photo */}
               <div className="relative mx-auto w-fit">
-                {/* Glow behind photo */}
+                {/* Glow behind photo - simplified gradient for performance */}
                 <div
-                  className="absolute inset-0 -z-10 blur-3xl"
-                  style={{ background: `radial-gradient(circle, ${SF.blue}50, transparent 70%)` }}
+                  className="absolute inset-0 -z-10 opacity-30"
+                  style={{ 
+                    background: `radial-gradient(circle, ${SF.blue}, transparent 60%)`,
+                    transform: 'scale(1.5)',
+                    willChange: 'transform'
+                  }}
                 />
                 
                 {/* Photo frame with Salesforce cloud shape */}
@@ -1491,6 +1490,8 @@ export default function Portfolio() {
                       width="800"
                       height="800"
                       fetchPriority="high"
+                      loading="eager"
+                      decoding="async"
                     />
                   </picture>
                   
@@ -1499,7 +1500,7 @@ export default function Portfolio() {
                   
                   {/* Name badge on photo */}
                   <div className="absolute bottom-4 left-4 right-4">
-                    <div className="rounded-xl border border-white/20 bg-black/50 px-4 py-2 backdrop-blur-sm">
+                    <div className="rounded-xl border border-white/20 bg-black/80 px-4 py-2">
                       <p className="text-sm font-semibold text-white">{DATA.name}</p>
                       <p className="text-xs text-white/70">Salesforce Developer</p>
                     </div>
@@ -1539,7 +1540,7 @@ export default function Portfolio() {
                   />
                 </motion.div>
                 </div>
-            </motion.div>
+            </div>
               </div>
 
           {/* Stats row */}
