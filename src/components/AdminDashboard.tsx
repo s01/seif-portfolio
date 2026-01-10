@@ -7,13 +7,11 @@ import {
   Trash2,
   Edit2,
   X,
-  Check,
   Lock,
   Eye,
   EyeOff,
   ArrowLeft,
   User,
-  Briefcase,
   Award,
   Layers,
   FolderKanban,
@@ -24,7 +22,6 @@ import {
   ChevronDown,
   ChevronUp,
   GripVertical,
-  ExternalLink,
   ArrowUp,
   ArrowDown,
   Image as ImageIcon,
@@ -49,12 +46,6 @@ import {
   type Stat,
 } from "../data/portfolioData";
 
-// Salesforce colors
-const SF = {
-  blue: "#00a1e0",
-  darkBlue: "#032d60",
-  navy: "#0d2035",
-};
 
 // Login Screen
 function LoginScreen({ onLogin }: { onLogin: () => void }) {
