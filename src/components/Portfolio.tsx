@@ -8,21 +8,29 @@ import {
   Code2,
   Download,
   ExternalLink,
+  Eye,
+  FileText,
   Filter,
   Github,
+  Globe,
   GraduationCap,
   Layers,
   Linkedin,
   Mail,
   MapPin,
+  Play,
+  Presentation,
   Rocket,
   Search,
   Sparkles,
   Star,
   TerminalSquare,
+  Twitter,
+  Video,
   Workflow,
   Wrench,
   X,
+  Youtube,
   Zap,
   Shield,
   Database,
@@ -54,6 +62,25 @@ const STAT_ICONS: Record<string, React.ElementType> = {
   Star,
   Heart,
   CheckCircle,
+};
+
+// Icon mapping for project links
+const LINK_ICONS: Record<string, React.ElementType> = {
+  ExternalLink,
+  Github,
+  Globe,
+  Play,
+  FileText,
+  BookOpen,
+  Video,
+  Presentation,
+  Download,
+  Eye,
+  Code2,
+  Rocket,
+  Linkedin,
+  Twitter,
+  Youtube,
 };
 
 // Official Salesforce Colors
@@ -888,19 +915,22 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
 
               <div className="border-t border-white/10 p-6">
                 <div className="flex flex-wrap gap-3">
-                  {project.links?.map((l) => (
-                    <a
-                      key={l.label}
-                      href={l.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white transition hover:scale-[1.02]"
-                      style={{ background: project.colors.accent }}
-                    >
-                      {l.label}
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  ))}
+                  {project.links?.map((l) => {
+                    const LinkIcon = LINK_ICONS[l.icon || "ExternalLink"] || ExternalLink;
+                    return (
+                      <a
+                        key={l.label}
+                        href={l.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white transition hover:scale-[1.02]"
+                        style={{ background: project.colors.accent }}
+                      >
+                        {l.label}
+                        <LinkIcon className="h-4 w-4" />
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
             </div>

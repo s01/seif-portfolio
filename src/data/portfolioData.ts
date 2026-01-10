@@ -12,7 +12,7 @@ export interface Project {
   description: string;
   bullets: string[];
   stack: string[];
-  links: { label: string; href: string }[];
+  links: { label: string; href: string; icon?: string }[];
   featured: boolean;
   images?: string[]; // Multiple project images/screenshots
   colors: {
@@ -20,6 +20,25 @@ export interface Project {
     accent: string;
   };
 }
+
+// Available icons for project links
+export const LINK_ICON_OPTIONS = [
+  "ExternalLink",
+  "Github",
+  "Globe",
+  "Play",
+  "FileText",
+  "BookOpen",
+  "Video",
+  "Presentation",
+  "Download",
+  "Eye",
+  "Code2",
+  "Rocket",
+  "Linkedin",
+  "Twitter",
+  "Youtube",
+];
 
 export interface Certification {
   id: string;
@@ -300,6 +319,7 @@ export async function savePortfolioDataAsync(data: PortfolioData): Promise<void>
 }
 
 // Legacy sync version (no-op, kept for compatibility)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function savePortfolioData(_data: PortfolioData): void {
   // This is now a no-op - use savePortfolioDataAsync instead
   console.warn("savePortfolioData is deprecated, use savePortfolioDataAsync");
