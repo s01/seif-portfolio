@@ -1665,6 +1665,13 @@ export default function AdminDashboard() {
               type="url"
             />
             <Field
+              label="Trailhead Profile URL"
+              value={data.trailhead}
+              onChange={(v) => updateData({ trailhead: v })}
+              type="url"
+              placeholder="https://www.salesforce.com/trailblazer/yourname"
+            />
+            <Field
               label="Resume URL"
               value={data.resumeUrl}
               onChange={(v) => updateData({ resumeUrl: v })}

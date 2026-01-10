@@ -114,6 +114,7 @@ export interface PortfolioData {
   email: string;
   linkedin: string;
   github: string;
+  trailhead: string;
   resumeUrl: string;
   trailblazerRank: string;
   
@@ -138,6 +139,7 @@ const DEFAULT_DATA: PortfolioData = {
   email: "saifmohsen65@gmail.com",
   linkedin: "https://www.linkedin.com/in/saif-mohsen",
   github: "https://github.com/s01",
+  trailhead: "https://www.salesforce.com/trailblazer/seifmohsen",
   resumeUrl: "",
   trailblazerRank: "Ranger",
 

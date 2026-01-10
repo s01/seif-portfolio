@@ -667,7 +667,7 @@ function SectionHeader({
 }
 
 // Navbar
-function Navbar({ active, onJump, email }: { active: string; onJump: (id: string) => void; email: string }) {
+function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active: string; onJump: (id: string) => void; email: string; github: string; linkedin: string; trailhead: string }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const items = [
@@ -703,15 +703,15 @@ function Navbar({ active, onJump, email }: { active: string; onJump: (id: string
               className="h-10 w-10 rounded-full object-cover"
             />
             <span className="hidden text-sm font-semibold text-white sm:block">Seif Mohsen</span>
-          </button>
+        </button>
 
           {/* Desktop nav items */}
-          <div className="hidden items-center gap-1 md:flex">
+        <div className="hidden items-center gap-1 md:flex">
             {items.map((item) => (
-              <button
+            <button
                 key={item.id}
                 onClick={() => onJump(item.id)}
-                className={cx(
+              className={cx(
                   "relative rounded-lg px-4 py-2 text-sm font-medium transition-colors",
                   active === item.id ? "text-white" : "text-white/60 hover:text-white"
                 )}
@@ -724,9 +724,9 @@ function Navbar({ active, onJump, email }: { active: string; onJump: (id: string
                     style={{ background: `${SF.blue}30` }}
                   />
                 )}
-              </button>
-            ))}
-          </div>
+            </button>
+          ))}
+        </div>
 
           {/* Right side - Hamburger (mobile) + Hire Me */}
           <div className="flex items-center gap-3">
@@ -817,39 +817,48 @@ function Navbar({ active, onJump, email }: { active: string; onJump: (id: string
                 {/* Social links */}
                 <div className="flex items-center justify-center gap-4">
                   <a
-                    href="https://github.com"
-                    target="_blank"
-                    rel="noreferrer"
+                    href={github}
+            target="_blank"
+            rel="noreferrer"
                     className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
+                    title="GitHub"
                   >
                     <Github className="h-5 w-5" />
                   </a>
                   <a
-                    href="https://linkedin.com"
+                    href={linkedin}
                     target="_blank"
                     rel="noreferrer"
                     className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
+                    title="LinkedIn"
                   >
                     <Linkedin className="h-5 w-5" />
                   </a>
                   <a
                     href={`mailto:${email}`}
                     className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
+                    title="Email"
                   >
                     <Mail className="h-5 w-5" />
-                  </a>
-                </div>
+          </a>
+        </div>
 
-                {/* Trailblazer badge */}
-                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-white/40">
+                {/* Trailblazer badge - clickable link to Trailhead profile */}
+                <a
+                  href={trailhead}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-gradient-to-r from-[#00a1e0]/20 to-[#1b96ff]/20 px-4 py-2.5 text-sm font-medium text-white transition hover:from-[#00a1e0]/30 hover:to-[#1b96ff]/30"
+                >
                   <Cloud className="h-4 w-4" style={{ color: SF.blue }} />
-                  <span>Salesforce Trailblazer</span>
-                </div>
-              </div>
+                  <span>View Trailhead Profile</span>
+                  <ExternalLink className="h-3.5 w-3.5 text-white/50" />
+                </a>
+      </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+    </div>
     </motion.nav>
   );
 }
@@ -1305,7 +1314,7 @@ export default function Portfolio() {
   return (
     <div id="top" className="min-h-screen overflow-x-hidden font-sans text-white">
       <SalesforceBackground reduced={reduced} />
-      <Navbar active={active} onJump={jumpTo} email={DATA.email} />
+      <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} />
 
       {/* HERO */}
       <header className="relative min-h-screen overflow-x-hidden pt-24">
@@ -1394,15 +1403,6 @@ export default function Portfolio() {
                   Let's Connect
               </a>
               <a
-                href={DATA.github}
-                target="_blank"
-                rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
-              >
-                <Github className="h-4 w-4" />
-                GitHub
-              </a>
-              <a
                   href={DATA.linkedin}
                 target="_blank"
                 rel="noreferrer"
@@ -1410,6 +1410,24 @@ export default function Portfolio() {
               >
                   <Linkedin className="h-4 w-4" />
                   LinkedIn
+              </a>
+              <a
+                href={DATA.trailhead}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+              >
+                <Cloud className="h-4 w-4" style={{ color: SF.blue }} />
+                Trailhead
+              </a>
+              <a
+                href={DATA.github}
+                target="_blank"
+                rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+              >
+                <Github className="h-4 w-4" />
+                GitHub
               </a>
             </motion.div>
             </div>
@@ -1858,23 +1876,28 @@ export default function Portfolio() {
 
             <div className="mt-12 flex items-center justify-center gap-6">
               {[
-                { icon: Github, href: DATA.github, key: "github" },
-                { icon: Linkedin, href: DATA.linkedin, key: "linkedin" },
-                { icon: Mail, href: `mailto:${DATA.email}`, key: "mail" },
-              ].map(({ icon: Icon, href, key }) => (
+                { icon: Mail, href: `mailto:${DATA.email}`, key: "mail", label: "Email" },
+                { icon: Linkedin, href: DATA.linkedin, key: "linkedin", label: "LinkedIn" },
+                { icon: Cloud, href: DATA.trailhead, key: "trailhead", label: "Trailhead", color: SF.blue },
+                { icon: Github, href: DATA.github, key: "github", label: "GitHub" },
+              ].map(({ icon: Icon, href, key, label, color }) => (
                 <a
                   key={key}
                   href={href}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl border border-white/10 bg-white/5 p-4 text-white/60 transition hover:bg-white/10 hover:text-white"
+                  className="group flex flex-col items-center gap-2"
+                  title={label}
                 >
-                  <Icon className="h-6 w-6" />
+                  <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-white/60 transition group-hover:bg-white/10 group-hover:text-white">
+                    <Icon className="h-6 w-6" style={color ? { color } : undefined} />
+                </div>
+                  <span className="text-xs text-white/40 group-hover:text-white/60">{label}</span>
                 </a>
               ))}
-                </div>
-          </motion.div>
             </div>
+          </motion.div>
+          </div>
       </section>
 
       {/* Footer */}
