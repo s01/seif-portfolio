@@ -1516,7 +1516,9 @@ export default function Portfolio() {
                   <img 
                     src="/ranger.png" 
                     alt="Trailhead Ranger Badge" 
-                    className="h-20 w-20 md:h-24 md:w-24 drop-shadow-lg"
+                    className="h-20 w-auto md:h-24 drop-shadow-lg"
+                    width="177"
+                    height="142"
                   />
                 </motion.div>
                 </div>
