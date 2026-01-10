@@ -679,11 +679,12 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
   ];
 
   const handleNavClick = (id: string) => {
-    // Scroll first, then close menu after a brief delay
-    onJump(id);
+    // Close menu first
+    setMobileMenuOpen(false);
+    // Then scroll after menu animation completes
     setTimeout(() => {
-      setMobileMenuOpen(false);
-    }, 300); // Small delay to ensure scroll initiates before menu closes
+      onJump(id);
+    }, 350); // Wait for menu close animation to complete
   };
 
   return (
