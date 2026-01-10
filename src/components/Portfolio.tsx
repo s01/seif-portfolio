@@ -2,30 +2,41 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BadgeCheck,
+  BarChart,
   BookOpen,
+  Box,
   Briefcase,
   Cloud,
   Code2,
+  Cpu,
   Download,
   ExternalLink,
   Eye,
+  FileCode,
   FileText,
   Filter,
+  GitBranch,
   Github,
   Globe,
   GraduationCap,
   Layers,
+  Lightbulb,
   Linkedin,
   Mail,
   MapPin,
+  MessageSquare,
+  PieChart,
   Play,
   Presentation,
+  Puzzle,
   Rocket,
   Search,
   Sparkles,
   Star,
+  Terminal,
   TerminalSquare,
   Twitter,
+  Users,
   Video,
   Workflow,
   Wrench,
@@ -81,6 +92,34 @@ const LINK_ICONS: Record<string, React.ElementType> = {
   Linkedin,
   Twitter,
   Youtube,
+};
+
+// Icon mapping for project cards
+const PROJECT_ICONS: Record<string, React.ElementType> = {
+  Workflow,
+  Code2,
+  Zap,
+  Rocket,
+  Database,
+  Cloud,
+  Shield,
+  Layers,
+  Settings,
+  Terminal,
+  FileCode,
+  GitBranch,
+  Box,
+  Cpu,
+  Globe,
+  Users,
+  MessageSquare,
+  BarChart,
+  PieChart,
+  TrendingUp,
+  Lightbulb,
+  BookOpen,
+  Wrench,
+  Puzzle,
 };
 
 // Official Salesforce Colors
@@ -876,6 +915,10 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                     className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
                     style={{ background: `${project.colors.accent}30`, color: project.colors.accent }}
                   >
+                    {(() => {
+                      const ProjectIcon = PROJECT_ICONS[project.icon || "Workflow"] || Workflow;
+                      return <ProjectIcon className="h-3.5 w-3.5" />;
+                    })()}
                     {project.category}
                   </span>
                   <h3 className="mt-3 text-2xl font-bold text-white">{project.title}</h3>

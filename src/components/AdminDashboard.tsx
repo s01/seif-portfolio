@@ -41,6 +41,23 @@ import {
   Linkedin,
   Twitter,
   Youtube,
+  Workflow,
+  Zap,
+  Database,
+  Cloud,
+  Shield,
+  Terminal,
+  FileCode,
+  GitBranch,
+  Box,
+  Cpu,
+  Users,
+  MessageSquare,
+  BarChart,
+  PieChart,
+  TrendingUp,
+  Wrench,
+  Puzzle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -55,6 +72,7 @@ import {
   COLOR_PRESETS,
   ICON_OPTIONS,
   LINK_ICON_OPTIONS,
+  PROJECT_ICON_OPTIONS,
   type PortfolioData,
   type Project,
   type Certification,
@@ -732,6 +750,34 @@ const LINK_ICONS: Record<string, React.ElementType> = {
   Youtube,
 };
 
+// Icon mapping for project cards
+const PROJECT_ICONS: Record<string, React.ElementType> = {
+  Workflow,
+  Code2,
+  Zap,
+  Rocket,
+  Database,
+  Cloud,
+  Shield,
+  Layers,
+  Settings,
+  Terminal,
+  FileCode,
+  GitBranch,
+  Box,
+  Cpu,
+  Globe,
+  Users,
+  MessageSquare,
+  BarChart,
+  PieChart,
+  TrendingUp,
+  Lightbulb,
+  BookOpen,
+  Wrench,
+  Puzzle,
+};
+
 // Links Editor for project links (label + href + icon)
 function LinksEditor({
   links,
@@ -934,6 +980,35 @@ function ProjectEditor({
               onChange={(v) => updateField("category", v)}
               placeholder="e.g., Flow + UX"
             />
+          </div>
+
+          {/* Project Icon Selector */}
+          <div>
+            <label className="mb-2 block text-sm font-medium text-white/70">
+              Project Icon
+            </label>
+            <div className="flex flex-wrap gap-2 rounded-lg border border-white/10 bg-white/5 p-3">
+              {PROJECT_ICON_OPTIONS.map((iconName) => {
+                const IconComponent = PROJECT_ICONS[iconName] || Workflow;
+                const isSelected = (data.icon || "Workflow") === iconName;
+                return (
+                  <button
+                    key={iconName}
+                    type="button"
+                    onClick={() => updateField("icon", iconName)}
+                    className={`flex flex-col items-center gap-1 rounded-lg p-2 transition ${
+                      isSelected
+                        ? "bg-[#00a1e0] text-white"
+                        : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70"
+                    }`}
+                    title={iconName}
+                  >
+                    <IconComponent className="h-5 w-5" />
+                    <span className="text-[10px]">{iconName}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <Field

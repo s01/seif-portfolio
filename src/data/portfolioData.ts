@@ -8,6 +8,7 @@ export interface Project {
   id: string;
   title: string;
   category: string;
+  icon?: string; // Icon for the project card
   impact: string;
   description: string;
   bullets: string[];
@@ -38,6 +39,34 @@ export const LINK_ICON_OPTIONS = [
   "Linkedin",
   "Twitter",
   "Youtube",
+];
+
+// Available icons for project cards
+export const PROJECT_ICON_OPTIONS = [
+  "Workflow",
+  "Code2",
+  "Zap",
+  "Rocket",
+  "Database",
+  "Cloud",
+  "Shield",
+  "Layers",
+  "Settings",
+  "Terminal",
+  "FileCode",
+  "GitBranch",
+  "Box",
+  "Cpu",
+  "Globe",
+  "Users",
+  "MessageSquare",
+  "BarChart",
+  "PieChart",
+  "TrendingUp",
+  "Lightbulb",
+  "BookOpen",
+  "Wrench",
+  "Puzzle",
 ];
 
 export interface Certification {
