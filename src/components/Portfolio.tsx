@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, memo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BadgeCheck,
@@ -1136,8 +1136,8 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
   );
 }
 
-// Project card
-function ProjectCard({ p, onOpen, index }: { p: Project; onOpen: (project: Project) => void; index: number }) {
+// Project card - Memoized to prevent unnecessary re-renders
+const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project; onOpen: (project: Project) => void; index: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -1239,7 +1239,7 @@ function ProjectCard({ p, onOpen, index }: { p: Project; onOpen: (project: Proje
       </article>
     </motion.div>
   );
-}
+});
 
 // Main component
 export default function Portfolio() {
@@ -1298,10 +1298,23 @@ export default function Portfolio() {
     });
   }, [query, category, DATA.projects]);
 
-  function jumpTo(id: string) {
+  // Memoize callbacks to prevent re-renders
+  const jumpTo = useCallback((id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  }, []);
+  
+  const handleOpenProject = useCallback((project: Project) => {
+    setDrawer(project);
+  }, []);
+  
+  const handleCloseDrawer = useCallback(() => {
+    setDrawer(null);
+  }, []);
+  
+  const handleCloseLightbox = useCallback(() => {
+    setCertImageLightbox(null);
+  }, []);
 
   return (
     <div id="top" className="min-h-screen overflow-x-hidden font-sans text-white">
@@ -1594,7 +1607,7 @@ export default function Portfolio() {
 
           <div className="grid gap-6 md:grid-cols-2">
             {filtered.map((p, i) => (
-              <ProjectCard key={p.title} p={p} onOpen={setDrawer} index={i} />
+              <ProjectCard key={p.title} p={p} onOpen={handleOpenProject} index={i} />
             ))}
             </div>
           </div>
@@ -1913,7 +1926,7 @@ export default function Portfolio() {
             </div>
           </footer>
 
-      <ProjectDrawer project={drawer} onClose={() => setDrawer(null)} />
+      <ProjectDrawer project={drawer} onClose={handleCloseDrawer} />
 
       {/* Certificate Image Lightbox */}
       <AnimatePresence>
@@ -1921,7 +1934,7 @@ export default function Portfolio() {
           <ImageLightbox
             src={certImageLightbox.src}
             alt={certImageLightbox.alt}
-            onClose={() => setCertImageLightbox(null)}
+            onClose={handleCloseLightbox}
           />
         )}
       </AnimatePresence>
