@@ -419,7 +419,7 @@ export async function savePortfolioDataAsync(data: PortfolioData): Promise<void>
     const firebaseDb = await initFirebase();
     if (!firebaseDb) throw new Error("Firebase not initialized");
     
-    const { doc, setDoc, collection, writeBatch } = await import("firebase/firestore");
+    const { doc, setDoc, writeBatch } = await import("firebase/firestore");
     
     // Extract large arrays from main data
     const { projects, certifications, skillGroups, timeline, ...mainData } = data;
