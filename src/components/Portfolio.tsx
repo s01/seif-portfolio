@@ -176,7 +176,7 @@ function SalesforceCloudLogo({ className = "", animate = true, size = "md" }: { 
     md: "h-12",
     lg: "h-20",
   };
-  
+
   return (
     <motion.svg
       viewBox="0 0 460 320"
@@ -190,7 +190,7 @@ function SalesforceCloudLogo({ className = "", animate = true, size = "md" }: { 
         d="M191.2 64.5c15.1-15.7 36.2-25.5 59.6-25.5 32.4 0 60.5 18.8 73.9 46.1 10.4-4.5 21.8-7 33.9-7 47.1 0 85.3 38.2 85.3 85.3s-38.2 85.3-85.3 85.3c-6.3 0-12.4-0.7-18.3-2-12.8 21.2-36.1 35.4-62.8 35.4-17.3 0-33.2-6-45.8-16-14.3 19.5-37.3 32.2-63.3 32.2-33.5 0-62-21.2-72.9-50.9-4.7 0.8-9.5 1.2-14.4 1.2-47.1 0-85.3-38.2-85.3-85.3 0-40.1 27.7-73.8 65-83 5.6-38.4 38.6-67.9 78.5-67.9 24.4 0 46.3 11 60.9 28.3z"
         fill="#00A1E0"
       />
-      
+
       {/* "salesforce" text */}
       <text
         x="230"
@@ -220,17 +220,17 @@ function AstroCharacter({ className = "", waving = false }: { className?: string
     >
       {/* Astro's body - blue spacesuit */}
       <ellipse cx="100" cy="180" rx="55" ry="50" fill="#00a1e0" />
-      
+
       {/* Astro's head */}
       <circle cx="100" cy="90" r="55" fill="#00a1e0" />
-      
+
       {/* Helmet visor */}
       <ellipse cx="100" cy="85" rx="42" ry="38" fill="#032d60" />
       <ellipse cx="100" cy="82" rx="36" ry="32" fill="#1a1a2e" />
-      
+
       {/* Face */}
       <circle cx="100" cy="85" r="28" fill="#ffd4a3" />
-      
+
       {/* Eyes */}
       <ellipse cx="88" cy="80" rx="8" ry="10" fill="white" />
       <ellipse cx="112" cy="80" rx="8" ry="10" fill="white" />
@@ -238,7 +238,7 @@ function AstroCharacter({ className = "", waving = false }: { className?: string
       <circle cx="114" cy="82" r="4" fill="#032d60" />
       <circle cx="91" cy="81" r="1.5" fill="white" />
       <circle cx="115" cy="81" r="1.5" fill="white" />
-      
+
       {/* Smile */}
       <path
         d="M88 95 Q100 108 112 95"
@@ -247,11 +247,11 @@ function AstroCharacter({ className = "", waving = false }: { className?: string
         fill="none"
         strokeLinecap="round"
       />
-      
+
       {/* Cheeks */}
       <circle cx="78" cy="90" r="5" fill="#ffb6c1" opacity="0.6" />
       <circle cx="122" cy="90" r="5" fill="#ffb6c1" opacity="0.6" />
-      
+
       {/* Antenna */}
       <line x1="100" y1="35" x2="100" y2="20" stroke="#00a1e0" strokeWidth="4" />
       <motion.circle
@@ -262,7 +262,7 @@ function AstroCharacter({ className = "", waving = false }: { className?: string
         animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 1.5, repeat: Infinity }}
       />
-      
+
       {/* Arms */}
       <motion.g
         animate={waving ? { rotate: [0, -20, 0] } : undefined}
@@ -274,11 +274,11 @@ function AstroCharacter({ className = "", waving = false }: { className?: string
       </motion.g>
       <ellipse cx="165" cy="170" rx="18" ry="25" fill="#00a1e0" />
       <circle cx="170" cy="195" r="12" fill="#ffd4a3" />
-      
+
       {/* Boots */}
       <ellipse cx="75" cy="225" rx="20" ry="12" fill="#ff6b35" />
       <ellipse cx="125" cy="225" rx="20" ry="12" fill="#ff6b35" />
-      
+
       {/* Chest badge */}
       <circle cx="100" cy="165" r="15" fill="white" />
       <path
@@ -301,19 +301,19 @@ function CodeyCharacter({ className = "" }: { className?: string }) {
     >
       {/* Body */}
       <ellipse cx="100" cy="160" rx="50" ry="45" fill="#1b96ff" />
-      
+
       {/* Head */}
       <circle cx="100" cy="80" r="50" fill="#1b96ff" />
-      
+
       {/* Ears */}
       <circle cx="55" cy="45" r="18" fill="#1b96ff" />
       <circle cx="55" cy="45" r="10" fill="#032d60" />
       <circle cx="145" cy="45" r="18" fill="#1b96ff" />
       <circle cx="145" cy="45" r="10" fill="#032d60" />
-      
+
       {/* Face/muzzle */}
       <ellipse cx="100" cy="95" rx="28" ry="22" fill="#e8f4fc" />
-      
+
       {/* Eyes */}
       <ellipse cx="78" cy="70" rx="12" ry="14" fill="white" />
       <ellipse cx="122" cy="70" rx="12" ry="14" fill="white" />
@@ -321,11 +321,11 @@ function CodeyCharacter({ className = "" }: { className?: string }) {
       <circle cx="124" cy="72" r="6" fill="#032d60" />
       <circle cx="82" cy="70" r="2" fill="white" />
       <circle cx="126" cy="70" r="2" fill="white" />
-      
+
       {/* Nose */}
       <ellipse cx="100" cy="90" rx="8" ry="6" fill="#032d60" />
       <ellipse cx="98" cy="88" rx="2" ry="1.5" fill="white" opacity="0.5" />
-      
+
       {/* Mouth */}
       <path
         d="M90 100 Q100 110 110 100"
@@ -334,19 +334,19 @@ function CodeyCharacter({ className = "" }: { className?: string }) {
         fill="none"
         strokeLinecap="round"
       />
-      
+
       {/* Arms */}
       <ellipse cx="45" cy="155" rx="15" ry="25" fill="#1b96ff" />
       <ellipse cx="155" cy="155" rx="15" ry="25" fill="#1b96ff" />
-      
+
       {/* Paws */}
       <circle cx="40" cy="180" r="12" fill="#e8f4fc" />
       <circle cx="160" cy="180" r="12" fill="#e8f4fc" />
-      
+
       {/* Feet */}
       <ellipse cx="75" cy="200" rx="18" ry="12" fill="#e8f4fc" />
       <ellipse cx="125" cy="200" rx="18" ry="12" fill="#e8f4fc" />
-      
+
       {/* Hoodie strings */}
       <line x1="85" y1="130" x2="85" y2="150" stroke="#032d60" strokeWidth="2" />
       <line x1="115" y1="130" x2="115" y2="150" stroke="#032d60" strokeWidth="2" />
@@ -369,33 +369,33 @@ function EinsteinCharacter({ className = "" }: { className?: string }) {
       {/* Body - Lab coat */}
       <ellipse cx="100" cy="170" rx="45" ry="40" fill="white" />
       <ellipse cx="100" cy="175" rx="40" ry="35" fill="#f0f0f0" />
-      
+
       {/* Head */}
       <circle cx="100" cy="75" r="45" fill="#8b5cf6" />
-      
+
       {/* Wild hair */}
       <ellipse cx="60" cy="50" rx="20" ry="25" fill="white" />
       <ellipse cx="140" cy="50" rx="20" ry="25" fill="white" />
       <ellipse cx="75" cy="35" rx="15" ry="20" fill="white" />
       <ellipse cx="125" cy="35" rx="15" ry="20" fill="white" />
       <ellipse cx="100" cy="30" rx="18" ry="15" fill="white" />
-      
+
       {/* Face */}
       <circle cx="100" cy="80" r="32" fill="#ffd4a3" />
-      
+
       {/* Glasses */}
       <circle cx="82" cy="75" r="14" fill="none" stroke="#032d60" strokeWidth="3" />
       <circle cx="118" cy="75" r="14" fill="none" stroke="#032d60" strokeWidth="3" />
       <line x1="96" y1="75" x2="104" y2="75" stroke="#032d60" strokeWidth="3" />
       <line x1="68" y1="72" x2="55" y2="68" stroke="#032d60" strokeWidth="3" />
       <line x1="132" y1="72" x2="145" y2="68" stroke="#032d60" strokeWidth="3" />
-      
+
       {/* Eyes behind glasses */}
       <circle cx="82" cy="75" r="5" fill="#032d60" />
       <circle cx="118" cy="75" r="5" fill="#032d60" />
       <circle cx="84" cy="73" r="1.5" fill="white" />
       <circle cx="120" cy="73" r="1.5" fill="white" />
-      
+
       {/* Mustache */}
       <path
         d="M80 95 Q90 88 100 95 Q110 88 120 95"
@@ -410,15 +410,15 @@ function EinsteinCharacter({ className = "" }: { className?: string }) {
         fill="none"
         strokeLinecap="round"
       />
-      
+
       {/* Arms */}
       <ellipse cx="50" cy="165" rx="12" ry="22" fill="white" />
       <ellipse cx="150" cy="165" rx="12" ry="22" fill="white" />
-      
+
       {/* Hands */}
       <circle cx="45" cy="185" r="10" fill="#ffd4a3" />
       <circle cx="155" cy="185" r="10" fill="#ffd4a3" />
-      
+
       {/* Lightbulb (idea!) */}
       <motion.g
         animate={{ opacity: [0.5, 1, 0.5], y: [0, -3, 0] }}
@@ -440,7 +440,7 @@ function SalesforceBackground({ reduced }: { reduced: boolean }) {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       {/* Sky gradient - Salesforce blue theme */}
-      <div 
+      <div
         className="absolute inset-0"
         style={{
           background: `linear-gradient(180deg, 
@@ -451,7 +451,7 @@ function SalesforceBackground({ reduced }: { reduced: boolean }) {
           )`,
         }}
       />
-      
+
       {/* Animated Salesforce clouds - using official cloud shape */}
       {[
         { left: -10, top: 5, size: 180, duration: 80, delay: 0, opacity: 0.08 },
@@ -478,20 +478,20 @@ function SalesforceBackground({ reduced }: { reduced: boolean }) {
           }}
         >
           {/* Official Salesforce Cloud Shape */}
-          <svg 
-            width={cloud.size} 
-            height={cloud.size * 0.7} 
-            viewBox="0 0 460 320" 
+          <svg
+            width={cloud.size}
+            height={cloud.size * 0.7}
+            viewBox="0 0 460 320"
             style={{ opacity: cloud.opacity }}
           >
-      <path
+            <path
               d="M191.2 64.5c15.1-15.7 36.2-25.5 59.6-25.5 32.4 0 60.5 18.8 73.9 46.1 10.4-4.5 21.8-7 33.9-7 47.1 0 85.3 38.2 85.3 85.3s-38.2 85.3-85.3 85.3c-6.3 0-12.4-0.7-18.3-2-12.8 21.2-36.1 35.4-62.8 35.4-17.3 0-33.2-6-45.8-16-14.3 19.5-37.3 32.2-63.3 32.2-33.5 0-62-21.2-72.9-50.9-4.7 0.8-9.5 1.2-14.4 1.2-47.1 0-85.3-38.2-85.3-85.3 0-40.1 27.7-73.8 65-83 5.6-38.4 38.6-67.9 78.5-67.9 24.4 0 46.3 11 60.9 28.3z"
               fill="#00A1E0"
             />
           </svg>
         </motion.div>
       ))}
-      
+
       {/* Glowing orbs */}
       <motion.div
         className="absolute -left-32 top-1/4 h-[500px] w-[500px] rounded-full opacity-20"
@@ -504,7 +504,7 @@ function SalesforceBackground({ reduced }: { reduced: boolean }) {
         }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
-      
+
       <motion.div
         className="absolute -right-32 top-1/2 h-[400px] w-[400px] rounded-full opacity-15"
         style={{
@@ -516,7 +516,7 @@ function SalesforceBackground({ reduced }: { reduced: boolean }) {
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
       />
-      
+
       <motion.div
         className="absolute bottom-0 left-1/3 h-[300px] w-[300px] rounded-full opacity-10"
         style={{
@@ -539,7 +539,7 @@ function SalesforceBackground({ reduced }: { reduced: boolean }) {
           backgroundSize: "50px 50px",
         }}
       />
-      
+
       {/* Floating particles - using fixed positions for purity */}
       {[
         { left: 10, top: 15, opacity: 0.3, duration: 4, delay: 0 },
@@ -577,19 +577,19 @@ function SalesforceBackground({ reduced }: { reduced: boolean }) {
 }
 
 // Salesforce-style card
-function SFCard({ 
-  children, 
-  className = "", 
+function SFCard({
+  children,
+  className = "",
   glow = false,
   glowColor = SF.blue,
-}: { 
-  children: React.ReactNode; 
+}: {
+  children: React.ReactNode;
   className?: string;
   glow?: boolean;
   glowColor?: string;
 }) {
   return (
-        <motion.div
+    <motion.div
       className={cx(
         "relative overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl",
         "transition-all duration-300 hover:border-white/20 hover:bg-white/10",
@@ -610,14 +610,14 @@ function SFCard({
 }
 
 // Section header with Trailhead style
-function SectionHeader({ 
-  kicker, 
-  title, 
+function SectionHeader({
+  kicker,
+  title,
   subtitle,
   icon: Icon = Sparkles,
-}: { 
-  kicker: string; 
-  title: string; 
+}: {
+  kicker: string;
+  title: string;
   subtitle?: string;
   icon?: typeof Sparkles;
 }) {
@@ -631,8 +631,8 @@ function SectionHeader({
       >
         <Icon className="h-4 w-4" style={{ color: SF.blue }} />
         <span className="text-sm font-semibold text-white/90">{kicker}</span>
-        </motion.div>
-      
+      </motion.div>
+
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -642,7 +642,7 @@ function SectionHeader({
       >
         {title}
       </motion.h2>
-      
+
       <motion.div
         className="mt-3 h-1 rounded-full"
         style={{ background: `linear-gradient(90deg, ${SF.blue}, ${SF.purple}, ${SF.orange}, transparent)` }}
@@ -651,7 +651,7 @@ function SectionHeader({
         viewport={{ once: true }}
         transition={{ delay: 0.3, duration: 0.8 }}
       />
-      
+
       {subtitle && (
         <motion.p
           initial={{ opacity: 0 }}
@@ -670,7 +670,7 @@ function SectionHeader({
 // Navbar
 function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active: string; onJump: (id: string) => void; email: string; github: string; linkedin: string; trailhead: string }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   const items = [
     { id: "work", label: "Projects", icon: Briefcase },
     { id: "skills", label: "Skills", icon: Layers },
@@ -702,23 +702,23 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
             onClick={() => handleNavClick("top")}
             className="flex items-center gap-3"
           >
-            <img 
-              src="/SeifMohsenLogo.png" 
-              alt="Logo" 
+            <img
+              src="/SeifMohsenLogo.png"
+              alt="Logo"
               className="h-10 w-10 rounded-full object-cover"
               width="40"
               height="40"
             />
             <span className="hidden text-sm font-semibold text-white sm:block">Seif Mohsen</span>
-        </button>
+          </button>
 
           {/* Desktop nav items */}
-        <div className="hidden items-center gap-1 md:flex">
+          <div className="hidden items-center gap-1 md:flex">
             {items.map((item) => (
-            <button
+              <button
                 key={item.id}
                 onClick={() => onJump(item.id)}
-              className={cx(
+                className={cx(
                   "relative rounded-lg px-4 py-2 text-sm font-medium transition-colors",
                   active === item.id ? "text-white" : "text-white/60 hover:text-white"
                 )}
@@ -731,9 +731,9 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
                     style={{ background: `${SF.blue}30` }}
                   />
                 )}
-            </button>
-          ))}
-        </div>
+              </button>
+            ))}
+          </div>
 
           {/* Right side - Hamburger (mobile) + Hire Me */}
           <div className="flex items-center gap-3">
@@ -825,8 +825,8 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
                 <div className="flex items-center justify-center gap-4">
                   <a
                     href={github}
-            target="_blank"
-            rel="noreferrer"
+                    target="_blank"
+                    rel="noreferrer"
                     className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
                     title="GitHub"
                   >
@@ -847,8 +847,8 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
                     title="Email"
                   >
                     <Mail className="h-5 w-5" />
-          </a>
-        </div>
+                  </a>
+                </div>
 
                 {/* Trailblazer badge - clickable link to Trailhead profile */}
                 <a
@@ -861,11 +861,11 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
                   <span>View Trailhead Profile</span>
                   <ExternalLink className="h-3.5 w-3.5 text-white/50" />
                 </a>
-      </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-    </div>
+      </div>
     </motion.nav>
   );
 }
@@ -874,7 +874,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
 function useActiveSection(sectionIds: string[]) {
   const [active, setActive] = useState(sectionIds[0]);
   const sectionKey = useMemo(() => sectionIds.join(","), [sectionIds]);
-  
+
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) => {
@@ -891,28 +891,28 @@ function useActiveSection(sectionIds: string[]) {
     });
     return () => obs.disconnect();
   }, [sectionKey, sectionIds]);
-  
+
   return active;
 }
 
 // Project drawer
 // Full screen image lightbox with navigation
-function ImageLightbox({ 
-  images, 
-  currentIndex, 
-  onClose, 
-  onNext, 
-  onPrev 
-}: { 
-  images: string[]; 
-  currentIndex: number; 
+function ImageLightbox({
+  images,
+  currentIndex,
+  onClose,
+  onNext,
+  onPrev
+}: {
+  images: string[];
+  currentIndex: number;
   onClose: () => void;
   onNext?: () => void;
   onPrev?: () => void;
 }) {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  
+
   const hasMultiple = images.length > 1;
   const src = images[currentIndex];
   const alt = `Image ${currentIndex + 1} of ${images.length}`;
@@ -928,7 +928,7 @@ function ImageLightbox({
 
   const handleTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
-    
+
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 50;
     const isRightSwipe = distance < -50;
@@ -978,7 +978,7 @@ function ImageLightbox({
           onClick={(e) => e.stopPropagation()}
         />
       </AnimatePresence>
-      
+
       {/* Navigation arrows */}
       {hasMultiple && (
         <>
@@ -1004,14 +1004,14 @@ function ImageLightbox({
       >
         <X className="h-6 w-6" />
       </button>
-      
+
       {/* Image counter */}
       {hasMultiple && (
         <div className="absolute left-1/2 top-6 -translate-x-1/2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-white backdrop-blur-sm">
           {currentIndex + 1} / {images.length}
         </div>
       )}
-      
+
       {/* Instructions */}
       <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-sm text-white/60">
         {hasMultiple ? "Use arrows or swipe to navigate • " : ""}Click anywhere to close
@@ -1056,7 +1056,7 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
 
   const handleTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
-    
+
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 50;
     const isRightSwipe = distance < -50;
@@ -1104,7 +1104,7 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
 
               {/* Project Image Gallery - Large & Clickable */}
               {hasImages && (
-                <div 
+                <div
                   className="relative h-64 w-full shrink-0 cursor-pointer overflow-hidden group"
                   onClick={() => setShowFullImage(true)}
                   onTouchStart={handleTouchStart}
@@ -1124,7 +1124,7 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                     />
                   </AnimatePresence>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#032d60] via-transparent to-black/20" />
-                  
+
                   {/* Navigation arrows for multiple images - always visible on mobile */}
                   {hasMultipleImages && (
                     <>
@@ -1140,7 +1140,7 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                       >
                         <ChevronRight className="h-5 w-5" />
                       </button>
-                      
+
                       {/* Image counter */}
                       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/60 px-3 py-1 backdrop-blur-sm">
                         <span className="text-xs text-white">
@@ -1159,13 +1159,13 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                             }}
                             className={cx(
                               "h-2 w-2 rounded-full transition-all",
-                              i === currentImageIndex 
-                                ? "bg-white w-4" 
+                              i === currentImageIndex
+                                ? "bg-white w-4"
                                 : "bg-white/40 hover:bg-white/60"
                             )}
                           />
-                    ))}
-                  </div>
+                        ))}
+                      </div>
                     </>
                   )}
 
@@ -1174,8 +1174,8 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                     <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm">
                       <Maximize2 className="h-5 w-5 text-white" />
                       <span className="text-sm font-medium text-white">Click to view full</span>
+                    </div>
                   </div>
-                </div>
                 </div>
               )}
 
@@ -1198,7 +1198,7 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
               <div className="flex-1 overflow-auto p-6">
                 {/* Impact statement - now scrollable */}
                 <p className="mb-4 text-sm font-medium leading-relaxed text-white/80 italic">{project.impact}</p>
-                
+
                 <p className="text-sm leading-relaxed text-white/70">{project.description}</p>
 
                 <div className="mt-6">
@@ -1233,17 +1233,17 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                   {project.links?.map((l) => {
                     const LinkIcon = LINK_ICONS[l.icon || "ExternalLink"] || ExternalLink;
                     return (
-                    <a
-                      key={l.label}
-                      href={l.href}
-                      target="_blank"
-                      rel="noreferrer"
+                      <a
+                        key={l.label}
+                        href={l.href}
+                        target="_blank"
+                        rel="noreferrer"
                         className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white transition hover:scale-[1.02]"
                         style={{ background: project.colors.accent }}
-                    >
-                      {l.label}
+                      >
+                        {l.label}
                         <LinkIcon className="h-4 w-4" />
-                    </a>
+                      </a>
                     );
                   })}
                 </div>
@@ -1273,7 +1273,7 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
 const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project; onOpen: (project: Project) => void; index: number }) {
   const [cardImageIndex, setCardImageIndex] = useState(0);
   const hasMultipleImages = p.images && p.images.length > 1;
-  
+
   const nextCardImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (p.images && p.images.length > 0) {
@@ -1327,7 +1327,7 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-            
+
             {/* Image navigation arrows - visible on hover */}
             {hasMultipleImages && (
               <>
@@ -1345,7 +1345,7 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
-                
+
                 {/* Image counter and dots */}
                 <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1">
                   {p.images.map((_, i) => (
@@ -1360,7 +1360,7 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
                 </div>
               </>
             )}
-            
+
             {/* Image count badge */}
             {hasMultipleImages && (
               <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-xs text-white backdrop-blur-sm pointer-events-none">
@@ -1372,27 +1372,27 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
         )}
 
         <div className="relative p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
                 <span
                   className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
                   style={{ background: `${p.colors.accent}20`, color: p.colors.accent }}
                 >
-              {p.category}
-            </span>
+                  {p.category}
+                </span>
                 {p.featured && (
                   <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold text-white"
                     style={{ background: SF.orange }}
                   >
                     <Star className="h-3 w-3" /> Featured
-              </span>
+                  </span>
                 )}
-          </div>
+              </div>
 
               <h3 className="mt-3 text-xl font-bold text-white">{p.title}</h3>
               <p className="mt-2 text-sm text-white/60">{p.impact}</p>
-        </div>
+            </div>
 
             {(!p.images || p.images.length === 0) && (
               <div
@@ -1403,28 +1403,28 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
                   const ProjectIcon = PROJECT_ICONS[p.icon || "Workflow"] || Workflow;
                   return <ProjectIcon className="h-5 w-5" style={{ color: p.colors.accent }} />;
                 })()}
-        </div>
+              </div>
             )}
-      </div>
+          </div>
 
-      <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-5 flex flex-wrap gap-2">
             {p.stack.slice(0, 4).map((t) => (
               <span
                 key={t}
                 className="rounded-lg border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/70"
               >
-            {t}
-          </span>
-        ))}
-      </div>
+                {t}
+              </span>
+            ))}
+          </div>
 
           <div
             className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white transition-all group-hover:scale-[1.02]"
             style={{ background: p.colors.accent }}
           >
             View Details
-          <Sparkles className="h-4 w-4" />
-      </div>
+            <Sparkles className="h-4 w-4" />
+          </div>
         </div>
       </button>
     </motion.div>
@@ -1437,31 +1437,29 @@ export default function Portfolio() {
   const sectionIds = ["work", "skills", "cred", "journey", "contact"];
   const active = useActiveSection(sectionIds);
 
-  // Load static data immediately (no blocking!)
+  // Loading state to prevent flash of default content
+  const [isDataLoading, setIsDataLoading] = useState(true);
   const [DATA, setDATA] = useState<PortfolioData>(getPortfolioData());
-  
-  // Fetch data from Firestore in background (non-blocking, with timeout)
+
+  // Fetch data from Firestore immediately (with timeout fallback)
   useEffect(() => {
-    // Defer Firebase loading to not block initial render
-    const timer = setTimeout(() => {
-      // Add timeout to prevent hanging connections
-      const timeoutPromise = new Promise<PortfolioData>((resolve) => {
-        setTimeout(() => resolve(getPortfolioData()), 5000); // 5s timeout
+    // Add timeout to prevent hanging connections
+    const timeoutPromise = new Promise<PortfolioData>((resolve) => {
+      setTimeout(() => resolve(getPortfolioData()), 3000); // 3s timeout
+    });
+
+    Promise.race([getPortfolioDataAsync(), timeoutPromise])
+      .then((data) => {
+        setDATA(data);
+        setIsDataLoading(false);
+      })
+      .catch(() => {
+        // Silently fail - use default data
+        setDATA(getPortfolioData());
+        setIsDataLoading(false);
       });
-      
-      Promise.race([getPortfolioDataAsync(), timeoutPromise])
-        .then((data) => {
-          setDATA(data);
-        })
-        .catch(() => {
-          // Silently fail - static data already loaded
-          // No need to log errors that don't affect UX
-        });
-    }, 100); // Small delay to ensure initial render completes first
-    
-    return () => clearTimeout(timer);
   }, []);
-  
+
   // Refresh data when window regains focus (in case admin made changes)
   useEffect(() => {
     const handleFocus = () => {
@@ -1479,10 +1477,10 @@ export default function Portfolio() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [certImageLightbox, setCertImageLightbox] = useState<{ src: string; alt: string } | null>(null);
-  
+
   // Defer animations until after first paint to reduce render delay
   const [animationsEnabled, setAnimationsEnabled] = useState(false);
-  
+
   useEffect(() => {
     // Enable animations after first paint
     requestAnimationFrame(() => {
@@ -1513,18 +1511,45 @@ export default function Portfolio() {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
-  
+
   const handleOpenProject = useCallback((project: Project) => {
     setDrawer(project);
   }, []);
-  
+
   const handleCloseDrawer = useCallback(() => {
     setDrawer(null);
   }, []);
-  
+
   const handleCloseLightbox = useCallback(() => {
     setCertImageLightbox(null);
   }, []);
+
+  // Show loading screen while data is being fetched
+  if (isDataLoading) {
+    return (
+      <div className="min-h-screen overflow-x-hidden font-sans text-white">
+        <SalesforceBackground reduced={reduced} />
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              className="mx-auto mb-6"
+            >
+              <Cloud className="h-16 w-16" style={{ color: SF.blue }} />
+            </motion.div>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-lg font-semibold text-white/80"
+            >
+              Loading portfolio...
+            </motion.p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <LazyMotion features={domAnimation} strict>
@@ -1532,628 +1557,628 @@ export default function Portfolio() {
         <SalesforceBackground reduced={reduced} />
         <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} />
 
-      <main>
-      {/* HERO */}
-      <header className="relative min-h-screen overflow-x-hidden pt-24">
-        <div className="mx-auto max-w-6xl px-4 py-16">
-          <div className="grid items-center gap-8 lg:grid-cols-2">
-            {/* Left - Content */}
-            <div className="relative z-10">
-              {/* Trailblazer badge */}
-              <motion.div
-                initial={animationsEnabled ? { opacity: 0, scale: 0.8 } : false}
-                animate={{ opacity: 1, scale: 1 }}
-                className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/15 px-4 py-2"
-              >
-                <Cloud className="h-5 w-5" style={{ color: SF.blue }} />
-                <span className="text-sm font-semibold">Trailblazer • Open to Work</span>
-                <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
-            </motion.div>
+        <main>
+          {/* HERO */}
+          <header className="relative min-h-screen overflow-x-hidden pt-24">
+            <div className="mx-auto max-w-6xl px-4 py-16">
+              <div className="grid items-center gap-8 lg:grid-cols-2">
+                {/* Left - Content */}
+                <div className="relative z-10">
+                  {/* Trailblazer badge */}
+                  <motion.div
+                    initial={animationsEnabled ? { opacity: 0, scale: 0.8 } : false}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/15 px-4 py-2"
+                  >
+                    <Cloud className="h-5 w-5" style={{ color: SF.blue }} />
+                    <span className="text-sm font-semibold">Trailblazer • Open to Work</span>
+                    <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
+                  </motion.div>
 
-            <motion.h1
-                initial={animationsEnabled ? { opacity: 0, y: 30 } : false}
-              animate={{ opacity: 1, y: 0 }}
-                transition={animationsEnabled ? { delay: 0.1 } : { duration: 0 }}
-                className="text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl"
-            >
-                {DATA.name}
-            </motion.h1>
+                  <motion.h1
+                    initial={animationsEnabled ? { opacity: 0, y: 30 } : false}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={animationsEnabled ? { delay: 0.1 } : { duration: 0 }}
+                    className="text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl"
+                  >
+                    {DATA.name}
+                  </motion.h1>
 
-            <motion.p
-                initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
-              animate={{ opacity: 1, y: 0 }}
-                transition={animationsEnabled ? { delay: 0.2 } : { duration: 0 }}
-                className="mt-3 text-2xl font-semibold md:text-3xl"
-                style={{ color: SF.blue }}
-              >
-                {DATA.headline}
-              </motion.p>
+                  <motion.p
+                    initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={animationsEnabled ? { delay: 0.2 } : { duration: 0 }}
+                    className="mt-3 text-2xl font-semibold md:text-3xl"
+                    style={{ color: SF.blue }}
+                  >
+                    {DATA.headline}
+                  </motion.p>
 
-              <motion.p
-                initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
-                animate={{ opacity: 1, y: 0 }}
-                transition={animationsEnabled ? { delay: 0.3 } : { duration: 0 }}
-                className="mt-2 text-xl text-white/70"
-              >
-                {DATA.tagline}
-              </motion.p>
+                  <motion.p
+                    initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={animationsEnabled ? { delay: 0.3 } : { duration: 0 }}
+                    className="mt-2 text-xl text-white/70"
+                  >
+                    {DATA.tagline}
+                  </motion.p>
 
-              <motion.p
-                initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
-                animate={{ opacity: 1, y: 0 }}
-                transition={animationsEnabled ? { delay: 0.4 } : { duration: 0 }}
-                className="mt-6 max-w-lg text-base leading-relaxed text-white/60"
-            >
-              {DATA.subheadline}
-            </motion.p>
+                  <motion.p
+                    initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={animationsEnabled ? { delay: 0.4 } : { duration: 0 }}
+                    className="mt-6 max-w-lg text-base leading-relaxed text-white/60"
+                  >
+                    {DATA.subheadline}
+                  </motion.p>
 
-              {/* Location & Email */}
-            <motion.div
-                initial={animationsEnabled ? { opacity: 0 } : false}
-                animate={{ opacity: 1 }}
-                transition={animationsEnabled ? { delay: 0.5 } : { duration: 0 }}
-                className="mt-6 flex flex-wrap gap-3"
-              >
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm">
-                  <MapPin className="h-4 w-4" style={{ color: SF.blue }} />
-                  {DATA.location}
-                </span>
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm">
-                  <Mail className="h-4 w-4" style={{ color: SF.blue }} />
-                  {DATA.email}
-                </span>
-            </motion.div>
+                  {/* Location & Email */}
+                  <motion.div
+                    initial={animationsEnabled ? { opacity: 0 } : false}
+                    animate={{ opacity: 1 }}
+                    transition={animationsEnabled ? { delay: 0.5 } : { duration: 0 }}
+                    className="mt-6 flex flex-wrap gap-3"
+                  >
+                    <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm">
+                      <MapPin className="h-4 w-4" style={{ color: SF.blue }} />
+                      {DATA.location}
+                    </span>
+                    <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm">
+                      <Mail className="h-4 w-4" style={{ color: SF.blue }} />
+                      {DATA.email}
+                    </span>
+                  </motion.div>
 
-              {/* CTAs */}
-            <motion.div
-                initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
-              animate={{ opacity: 1, y: 0 }}
-                transition={animationsEnabled ? { delay: 0.6 } : { duration: 0 }}
-                className="mt-8 flex flex-wrap gap-4"
-            >
-              <a
-                href={`mailto:${DATA.email}`}
-                  className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white transition hover:scale-105 hover:shadow-lg"
-                  style={{ background: SF.blueAccessible, boxShadow: `0 8px 30px ${SF.blueAccessible}40` }}
-              >
-                <Mail className="h-4 w-4" />
-                  Let's Connect
-              </a>
-              <a
-                  href={DATA.linkedin}
-                target="_blank"
-                rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
-              >
-                  <Linkedin className="h-4 w-4" />
-                  LinkedIn
-              </a>
-              <a
-                href={DATA.trailhead}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
-              >
-                <Cloud className="h-4 w-4" style={{ color: SF.blue }} />
-                Trailhead
-              </a>
-              <a
-                href={DATA.github}
-                target="_blank"
-                rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
-              >
-                <Github className="h-4 w-4" />
-                GitHub
-              </a>
-            </motion.div>
-            </div>
+                  {/* CTAs */}
+                  <motion.div
+                    initial={animationsEnabled ? { opacity: 0, y: 20 } : false}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={animationsEnabled ? { delay: 0.6 } : { duration: 0 }}
+                    className="mt-8 flex flex-wrap gap-4"
+                  >
+                    <a
+                      href={`mailto:${DATA.email}`}
+                      className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white transition hover:scale-105 hover:shadow-lg"
+                      style={{ background: SF.blueAccessible, boxShadow: `0 8px 30px ${SF.blueAccessible}40` }}
+                    >
+                      <Mail className="h-4 w-4" />
+                      Let's Connect
+                    </a>
+                    <a
+                      href={DATA.linkedin}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                    >
+                      <Linkedin className="h-4 w-4" />
+                      LinkedIn
+                    </a>
+                    <a
+                      href={DATA.trailhead}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                    >
+                      <Cloud className="h-4 w-4" style={{ color: SF.blue }} />
+                      Trailhead
+                    </a>
+                    <a
+                      href={DATA.github}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                    >
+                      <Github className="h-4 w-4" />
+                      GitHub
+                    </a>
+                  </motion.div>
+                </div>
 
-            {/* Right - Photo + Characters */}
-            <div className="relative">
-              {/* Your photo */}
-              <div className="relative mx-auto w-fit">
-                {/* Glow behind photo - simplified gradient for performance */}
-                <div
-                  className="absolute inset-0 -z-10 opacity-30"
-                  style={{ 
-                    background: `radial-gradient(circle, ${SF.blue}, transparent 60%)`,
-                    transform: 'scale(1.5)',
-                    willChange: 'transform'
-                  }}
-                />
-                
-                {/* Photo frame with Salesforce cloud shape */}
-                <div className="relative overflow-hidden rounded-3xl border-4 border-white/20 shadow-2xl"
-                  style={{ boxShadow: `0 20px 60px ${SF.blue}30` }}
-                >
-                  {/* Your Salesforce photo - full size, no cropping */}
-                  <picture>
-                    <source srcSet="/saif-salesforce.webp" type="image/webp" />
-                    <img
-                      src="/saif-salesforce-optimized.jpg"
-                      alt="Saif Mohsen at Salesforce"
-                      className="h-auto w-80 max-w-none"
-                      width="800"
-                      height="800"
-                      fetchPriority="high"
-                      loading="eager"
-                      decoding="async"
+                {/* Right - Photo + Characters */}
+                <div className="relative">
+                  {/* Your photo */}
+                  <div className="relative mx-auto w-fit">
+                    {/* Glow behind photo - simplified gradient for performance */}
+                    <div
+                      className="absolute inset-0 -z-10 opacity-30"
+                      style={{
+                        background: `radial-gradient(circle, ${SF.blue}, transparent 60%)`,
+                        transform: 'scale(1.5)',
+                        willChange: 'transform'
+                      }}
                     />
-                  </picture>
-                  
-                  {/* Overlay gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
-                  
-                  {/* Name badge on photo */}
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="rounded-xl border border-white/20 bg-black/80 px-4 py-2">
-                      <p className="text-sm font-semibold text-white">{DATA.name}</p>
-                      <p className="text-xs text-white/70">Salesforce Developer</p>
-                    </div>
-            </div>
-          </div>
 
-                {/* Astro character - positioned inside on mobile, outside on desktop */}
-            <motion.div
-                  className="absolute -top-6 left-0 md:-left-16 md:-top-8"
-                  animate={reduced || !animationsEnabled ? undefined : { y: [0, -10, 0] }}
-                  transition={animationsEnabled ? { duration: 3, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
-                >
-                  <AstroCharacter className="h-24 w-24 md:h-32 md:w-32" waving />
-            </motion.div>
-
-                {/* Codey character - positioned inside on mobile, outside on desktop */}
-                <motion.div
-                  className="absolute -bottom-3 right-0 md:-bottom-4 md:-right-12"
-                  animate={reduced || !animationsEnabled ? undefined : { y: [0, -8, 0] }}
-                  transition={animationsEnabled ? { duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 } : { duration: 0 }}
-                >
-                  <CodeyCharacter className="h-20 w-20 md:h-28 md:w-28" />
-                </motion.div>
-
-                {/* Trailhead Ranger badge - positioned inside on mobile, outside on desktop */}
-                <motion.div
-                  className="absolute right-0 top-2 md:-right-8 md:top-0"
-                  animate={reduced || !animationsEnabled ? undefined : { rotate: [0, 5, 0] }}
-                  transition={animationsEnabled ? { duration: 4, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
-                >
-                  <img 
-                    src="/ranger.png" 
-                    alt="Trailhead Ranger Badge" 
-                    className="h-20 w-auto md:h-24 drop-shadow-lg"
-                    width="177"
-                    height="142"
-                  />
-                </motion.div>
-                </div>
-            </div>
-              </div>
-
-          {/* Stats row */}
-              <motion.div
-            initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="mt-16 grid grid-cols-2 gap-4 md:grid-cols-4"
-          >
-            {DATA.stats.map((stat) => {
-              const Icon = STAT_ICONS[stat.icon] || Award;
-              return (
-                <SFCard key={stat.label} className="p-5" glow glowColor={SF.blue}>
-                  <div className="flex items-center gap-4">
-                    <div
-                      className="grid h-12 w-12 place-items-center rounded-xl"
-                      style={{ background: `${SF.blue}20` }}
+                    {/* Photo frame with Salesforce cloud shape */}
+                    <div className="relative overflow-hidden rounded-3xl border-4 border-white/20 shadow-2xl"
+                      style={{ boxShadow: `0 20px 60px ${SF.blue}30` }}
                     >
-                      <Icon className="h-5 w-5" style={{ color: SF.blue }} />
-                </div>
-                      <div>
-                      <p className="text-2xl font-bold text-white">{stat.value}</p>
-                      <p className="text-sm text-white/60">{stat.label}</p>
+                      {/* Your Salesforce photo - full size, no cropping */}
+                      <picture>
+                        <source srcSet="/saif-salesforce.webp" type="image/webp" />
+                        <img
+                          src="/saif-salesforce-optimized.jpg"
+                          alt="Saif Mohsen at Salesforce"
+                          className="h-auto w-80 max-w-none"
+                          width="800"
+                          height="800"
+                          fetchPriority="high"
+                          loading="eager"
+                          decoding="async"
+                        />
+                      </picture>
+
+                      {/* Overlay gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+
+                      {/* Name badge on photo */}
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <div className="rounded-xl border border-white/20 bg-black/80 px-4 py-2">
+                          <p className="text-sm font-semibold text-white">{DATA.name}</p>
+                          <p className="text-xs text-white/70">Salesforce Developer</p>
+                        </div>
                       </div>
                     </div>
-                </SFCard>
-              );
-            })}
-              </motion.div>
 
-          {/* Principles */}
-              <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="mt-8 flex flex-wrap justify-center gap-3"
-          >
-            {DATA.principles.map((p, i) => (
-              <motion.span
-                key={p}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.9 + i * 0.1 }}
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm backdrop-blur-sm"
-              >
-                <CheckCircle className="h-4 w-4" style={{ color: SF.green }} />
-                {p}
-              </motion.span>
-            ))}
-            </motion.div>
-          </div>
-
-      </header>
-
-      {/* WORK SECTION */}
-      <section id="work" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 3000px' }}>
-        <div className="mx-auto max-w-6xl px-4">
-          <SectionHeader
-            kicker="Featured Projects"
-            title="What I've Built"
-            subtitle="From Flow automations to bulk-safe Apex triggers — real solutions for real problems."
-            icon={Rocket}
-          />
-
-          {/* Filters */}
-          <div className="mb-8 flex flex-col gap-4 md:flex-row">
-            <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search projects..."
-                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-11 pr-4 text-sm text-white placeholder-white/40 outline-none backdrop-blur-sm transition focus:border-white/30"
-              />
-            </div>
-            <div className="relative">
-              <Filter className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full appearance-none rounded-xl border border-white/10 bg-white/5 py-3 pl-11 pr-10 text-sm text-white outline-none backdrop-blur-sm transition focus:border-white/30 md:w-48"
-                style={{ background: "rgba(255,255,255,0.05)" }}
-              >
-                {categories.map((c) => (
-                  <option key={c} value={c} style={{ background: SF.navy }}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {filtered.map((p, i) => (
-              <ProjectCard key={p.title} p={p} onOpen={handleOpenProject} index={i} />
-            ))}
-            </div>
-          </div>
-        </section>
-
-      {/* SKILLS SECTION */}
-      <section id="skills" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 2000px' }}>
-        <div className="mx-auto max-w-6xl px-4">
-          <div className="grid gap-12 lg:grid-cols-2">
-            <div>
-          <SectionHeader
-                kicker="Technical Skills"
-                title="My Salesforce Toolkit"
-                subtitle="A solid foundation across the entire platform."
-                icon={Layers}
-              />
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                {DATA.skillGroups.map((group, i) => {
-                  const Icon = ICONS[group.icon] || Sparkles;
-              return (
-                <motion.div
-                      key={group.group}
-                      initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                >
-                      <SFCard className="h-full p-5" glow glowColor={group.color}>
-                    <div className="flex items-center gap-3">
-                          <div
-                            className="grid h-10 w-10 place-items-center rounded-xl"
-                            style={{ background: `${group.color}20` }}
-                          >
-                            <Icon className="h-5 w-5" style={{ color: group.color }} />
-                      </div>
-                          <h3 className="font-bold text-white">{group.group}</h3>
-                      </div>
-                        <ul className="mt-4 space-y-2">
-                          {group.items.map((item) => (
-                            <li key={item} className="flex items-center gap-2 text-sm text-white/70">
-                              <span className="h-1.5 w-1.5 rounded-full" style={{ background: group.color }} />
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </SFCard>
-                </motion.div>
-              );
-            })}
-              </div>
-          </div>
-
-            {/* Einstein character + Pro tip */}
-            <div className="flex flex-col items-center justify-center">
-              <EinsteinCharacter className="h-64 w-64" />
-              
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="mt-8 w-full"
-              >
-                <SFCard className="p-6" glow glowColor={SF.purple}>
-                  <div className="flex items-start gap-4">
-                    <div
-                      className="grid h-10 w-10 shrink-0 place-items-center rounded-xl"
-                      style={{ background: `${SF.purple}20` }}
+                    {/* Astro character - positioned inside on mobile, outside on desktop */}
+                    <motion.div
+                      className="absolute -top-6 left-0 md:-left-16 md:-top-8"
+                      animate={reduced || !animationsEnabled ? undefined : { y: [0, -10, 0] }}
+                      transition={animationsEnabled ? { duration: 3, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
                     >
-                      <Zap className="h-5 w-5" style={{ color: SF.purple }} />
-                    </div>
-              <div>
-                      <p className="font-semibold text-white">💡 My Salesforce Rule</p>
-                      <p className="mt-2 text-sm text-white/70">{DATA.proTip}</p>
-                </div>
-              </div>
-                </SFCard>
-              </motion.div>
-                </div>
-            </div>
-          </div>
-        </section>
+                      <AstroCharacter className="h-24 w-24 md:h-32 md:w-32" waving />
+                    </motion.div>
 
-      {/* CREDENTIALS SECTION */}
-      <section id="cred" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 1500px' }}>
-        <div className="mx-auto max-w-6xl px-4">
-          <SectionHeader
-            kicker="Credentials"
-            title="Certifications & Training"
-            subtitle="Verified expertise from Salesforce and intensive training programs."
-            icon={Award}
-          />
+                    {/* Codey character - positioned inside on mobile, outside on desktop */}
+                    <motion.div
+                      className="absolute -bottom-3 right-0 md:-bottom-4 md:-right-12"
+                      animate={reduced || !animationsEnabled ? undefined : { y: [0, -8, 0] }}
+                      transition={animationsEnabled ? { duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 } : { duration: 0 }}
+                    >
+                      <CodeyCharacter className="h-20 w-20 md:h-28 md:w-28" />
+                    </motion.div>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {DATA.certifications.map((cert, i) => (
-              <motion.div
-                key={cert.title}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-              >
-                <SFCard className="overflow-hidden" glow glowColor={cert.color}>
-                  {/* Certificate Image - Large & Clickable */}
-                  {cert.image ? (
-                    <div 
-                      className="relative h-48 w-full cursor-pointer overflow-hidden group"
-                      onClick={() => setCertImageLightbox({ src: cert.image!, alt: cert.title })}
+                    {/* Trailhead Ranger badge - positioned inside on mobile, outside on desktop */}
+                    <motion.div
+                      className="absolute right-0 top-2 md:-right-8 md:top-0"
+                      animate={reduced || !animationsEnabled ? undefined : { rotate: [0, 5, 0] }}
+                      transition={animationsEnabled ? { duration: 4, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
                     >
                       <img
-                        src={cert.image}
-                        alt={cert.title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        src="/ranger.png"
+                        alt="Trailhead Ranger Badge"
+                        className="h-20 w-auto md:h-24 drop-shadow-lg"
+                        width="177"
+                        height="142"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      {/* Click to view hint */}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all group-hover:bg-black/30 group-hover:opacity-100">
-                        <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm">
-                          <Maximize2 className="h-4 w-4 text-white" />
-                          <span className="text-sm font-medium text-white">View Certificate</span>
-                </div>
+                    </motion.div>
+                  </div>
                 </div>
               </div>
-                  ) : (
-                    <div
-                      className="grid h-32 w-full place-items-center"
-                      style={{ background: `linear-gradient(135deg, ${cert.color}40, ${cert.color}20)` }}
-                    >
-                      <BadgeCheck className="h-16 w-16" style={{ color: cert.color }} />
-                    </div>
-                  )}
-                  
-                  {/* Certificate Info */}
-                  <div className="p-5">
-                    <h4 className="font-bold text-white">{cert.title}</h4>
-                    <p className="mt-1 text-sm text-white/60">{cert.issuer}</p>
-                    <p className="mt-2 text-xs font-semibold" style={{ color: cert.color }}>{cert.year}</p>
-                      </div>
-                </SFCard>
-              </motion.div>
-            ))}
-            </div>
-          </div>
-        </section>
 
-      {/* JOURNEY SECTION */}
-      <section id="journey" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 2500px' }}>
-        <div className="mx-auto max-w-6xl px-4">
-          <SectionHeader
-            kicker="My Journey"
-            title="The Trail So Far"
-            subtitle="Every Trailblazer has a story. Here's mine."
-            icon={TrendingUp}
-          />
-
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-8 top-0 hidden h-full w-0.5 bg-gradient-to-b from-transparent via-white/20 to-transparent md:left-1/2 md:block" />
-
-            <div className="space-y-12">
-              {DATA.timeline.map((item, i) => {
-                const Icon = ICONS[item.icon] || Sparkles;
-                const isLeft = i % 2 === 0;
-
-                return (
-                  <motion.div
-                    key={item.year}
-                    initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.2 }}
-                    className={cx(
-                      "relative flex flex-col gap-4 md:flex-row md:items-center",
-                      isLeft ? "" : "md:flex-row-reverse"
-                    )}
-                  >
-                    {/* Year badge - desktop */}
-                    <div className={cx("hidden w-1/2 md:flex", isLeft ? "justify-end pr-8" : "justify-start pl-8")}>
-                      <span
-                        className="rounded-full px-4 py-2 text-sm font-bold text-white"
-                        style={{ background: SF.blue }}
-                      >
-                        {item.year}
-                      </span>
-                    </div>
-
-                    {/* Center dot */}
-                    <div
-                      className="absolute left-8 hidden h-4 w-4 -translate-x-1/2 rounded-full border-4 md:left-1/2 md:block"
-                      style={{ borderColor: SF.blue, background: SF.navy }}
-                    />
-
-                    {/* Content */}
-                    <div className="w-full md:w-1/2">
-                      <SFCard className="p-6" glow glowColor={SF.blue}>
-                        {/* Year badge - mobile */}
-                        <span
-                          className="mb-3 inline-block rounded-full px-3 py-1 text-xs font-bold text-white md:hidden"
-                          style={{ background: SF.blue }}
+              {/* Stats row */}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="mt-16 grid grid-cols-2 gap-4 md:grid-cols-4"
+              >
+                {DATA.stats.map((stat) => {
+                  const Icon = STAT_ICONS[stat.icon] || Award;
+                  return (
+                    <SFCard key={stat.label} className="p-5" glow glowColor={SF.blue}>
+                      <div className="flex items-center gap-4">
+                        <div
+                          className="grid h-12 w-12 place-items-center rounded-xl"
+                          style={{ background: `${SF.blue}20` }}
                         >
-                          {item.year}
-                        </span>
-
-                    <div className="flex items-start gap-4">
-                          <div
-                            className="grid h-12 w-12 shrink-0 place-items-center rounded-xl"
-                            style={{ background: `${SF.blue}20` }}
-                          >
-                            <Icon className="h-5 w-5" style={{ color: SF.blue }} />
+                          <Icon className="h-5 w-5" style={{ color: SF.blue }} />
+                        </div>
+                        <div>
+                          <p className="text-2xl font-bold text-white">{stat.value}</p>
+                          <p className="text-sm text-white/60">{stat.label}</p>
+                        </div>
                       </div>
-                          <div>
-                            <h4 className="text-lg font-bold text-white">{item.title}</h4>
-                            <p className="mt-1 text-sm font-medium" style={{ color: SF.blue }}>{item.subtitle}</p>
-                            <p className="mt-2 text-sm text-white/60">{item.details}</p>
+                    </SFCard>
+                  );
+                })}
+              </motion.div>
+
+              {/* Principles */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="mt-8 flex flex-wrap justify-center gap-3"
+              >
+                {DATA.principles.map((p, i) => (
+                  <motion.span
+                    key={p}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.9 + i * 0.1 }}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm backdrop-blur-sm"
+                  >
+                    <CheckCircle className="h-4 w-4" style={{ color: SF.green }} />
+                    {p}
+                  </motion.span>
+                ))}
+              </motion.div>
+            </div>
+
+          </header>
+
+          {/* WORK SECTION */}
+          <section id="work" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 3000px' }}>
+            <div className="mx-auto max-w-6xl px-4">
+              <SectionHeader
+                kicker="Featured Projects"
+                title="What I've Built"
+                subtitle="From Flow automations to bulk-safe Apex triggers — real solutions for real problems."
+                icon={Rocket}
+              />
+
+              {/* Filters */}
+              <div className="mb-8 flex flex-col gap-4 md:flex-row">
+                <div className="relative flex-1">
+                  <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                  <input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search projects..."
+                    className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-11 pr-4 text-sm text-white placeholder-white/40 outline-none backdrop-blur-sm transition focus:border-white/30"
+                  />
+                </div>
+                <div className="relative">
+                  <Filter className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full appearance-none rounded-xl border border-white/10 bg-white/5 py-3 pl-11 pr-10 text-sm text-white outline-none backdrop-blur-sm transition focus:border-white/30 md:w-48"
+                    style={{ background: "rgba(255,255,255,0.05)" }}
+                  >
+                    {categories.map((c) => (
+                      <option key={c} value={c} style={{ background: SF.navy }}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-2">
+                {filtered.map((p, i) => (
+                  <ProjectCard key={p.title} p={p} onOpen={handleOpenProject} index={i} />
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* SKILLS SECTION */}
+          <section id="skills" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 2000px' }}>
+            <div className="mx-auto max-w-6xl px-4">
+              <div className="grid gap-12 lg:grid-cols-2">
+                <div>
+                  <SectionHeader
+                    kicker="Technical Skills"
+                    title="My Salesforce Toolkit"
+                    subtitle="A solid foundation across the entire platform."
+                    icon={Layers}
+                  />
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {DATA.skillGroups.map((group, i) => {
+                      const Icon = ICONS[group.icon] || Sparkles;
+                      return (
+                        <motion.div
+                          key={group.group}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: i * 0.1 }}
+                        >
+                          <SFCard className="h-full p-5" glow glowColor={group.color}>
+                            <div className="flex items-center gap-3">
+                              <div
+                                className="grid h-10 w-10 place-items-center rounded-xl"
+                                style={{ background: `${group.color}20` }}
+                              >
+                                <Icon className="h-5 w-5" style={{ color: group.color }} />
+                              </div>
+                              <h3 className="font-bold text-white">{group.group}</h3>
+                            </div>
+                            <ul className="mt-4 space-y-2">
+                              {group.items.map((item) => (
+                                <li key={item} className="flex items-center gap-2 text-sm text-white/70">
+                                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: group.color }} />
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </SFCard>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Einstein character + Pro tip */}
+                <div className="flex flex-col items-center justify-center">
+                  <EinsteinCharacter className="h-64 w-64" />
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mt-8 w-full"
+                  >
+                    <SFCard className="p-6" glow glowColor={SF.purple}>
+                      <div className="flex items-start gap-4">
+                        <div
+                          className="grid h-10 w-10 shrink-0 place-items-center rounded-xl"
+                          style={{ background: `${SF.purple}20` }}
+                        >
+                          <Zap className="h-5 w-5" style={{ color: SF.purple }} />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white">💡 My Salesforce Rule</p>
+                          <p className="mt-2 text-sm text-white/70">{DATA.proTip}</p>
+                        </div>
+                      </div>
+                    </SFCard>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* CREDENTIALS SECTION */}
+          <section id="cred" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 1500px' }}>
+            <div className="mx-auto max-w-6xl px-4">
+              <SectionHeader
+                kicker="Credentials"
+                title="Certifications & Training"
+                subtitle="Verified expertise from Salesforce and intensive training programs."
+                icon={Award}
+              />
+
+              <div className="grid gap-6 md:grid-cols-3">
+                {DATA.certifications.map((cert, i) => (
+                  <motion.div
+                    key={cert.title}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <SFCard className="overflow-hidden" glow glowColor={cert.color}>
+                      {/* Certificate Image - Large & Clickable */}
+                      {cert.image ? (
+                        <div
+                          className="relative h-48 w-full cursor-pointer overflow-hidden group"
+                          onClick={() => setCertImageLightbox({ src: cert.image!, alt: cert.title })}
+                        >
+                          <img
+                            src={cert.image}
+                            alt={cert.title}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                          {/* Click to view hint */}
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all group-hover:bg-black/30 group-hover:opacity-100">
+                            <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm">
+                              <Maximize2 className="h-4 w-4 text-white" />
+                              <span className="text-sm font-medium text-white">View Certificate</span>
+                            </div>
                           </div>
                         </div>
-                      </SFCard>
-                    </div>
+                      ) : (
+                        <div
+                          className="grid h-32 w-full place-items-center"
+                          style={{ background: `linear-gradient(135deg, ${cert.color}40, ${cert.color}20)` }}
+                        >
+                          <BadgeCheck className="h-16 w-16" style={{ color: cert.color }} />
+                        </div>
+                      )}
+
+                      {/* Certificate Info */}
+                      <div className="p-5">
+                        <h4 className="font-bold text-white">{cert.title}</h4>
+                        <p className="mt-1 text-sm text-white/60">{cert.issuer}</p>
+                        <p className="mt-2 text-xs font-semibold" style={{ color: cert.color }}>{cert.year}</p>
+                      </div>
+                    </SFCard>
                   </motion.div>
-                );
-              })}
-            </div>
-            </div>
-          </div>
-        </section>
-
-      {/* CONTACT SECTION */}
-      <section id="contact" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 1000px' }}>
-        <div className="mx-auto max-w-4xl px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            {/* Characters */}
-            <div className="mb-8 flex items-center justify-center gap-4">
-              <AstroCharacter className="h-20 w-20" />
-              <SalesforceCloudLogo size="md" />
-              <CodeyCharacter className="h-20 w-20" />
-            </div>
-
-            <span
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur-sm"
-            >
-              <Heart className="h-4 w-4" style={{ color: SF.red }} />
-              Let's Build Together
-            </span>
-
-            <h2 className="mt-6 text-4xl font-bold md:text-5xl">
-              Ready to Start My
-              <span className="block" style={{ color: SF.blue }}> Salesforce Journey</span>
-            </h2>
-
-            <p className="mx-auto mt-6 max-w-xl text-lg text-white/60">
-              I'm actively looking for opportunities where I can contribute, learn, and grow as a Salesforce developer. Let's connect!
-            </p>
-
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <a
-                  href={`mailto:${DATA.email}`}
-                className="inline-flex items-center gap-2 rounded-xl px-8 py-4 text-lg font-semibold text-white transition hover:scale-105"
-                style={{ background: SF.blue, boxShadow: `0 8px 30px ${SF.blue}40` }}
-                >
-                <Mail className="h-5 w-5" />
-                Send Me an Email
-                </a>
-                <a
-                  href={DATA.resumeUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
-                >
-                <MessageSquare className="h-5 w-5" />
-                Ask For Resume
-                </a>
+                ))}
               </div>
+            </div>
+          </section>
 
-            <div className="mt-12 flex items-center justify-center gap-6">
-              {[
-                { icon: Mail, href: `mailto:${DATA.email}`, key: "mail", label: "Email" },
-                { icon: Linkedin, href: DATA.linkedin, key: "linkedin", label: "LinkedIn" },
-                { icon: Cloud, href: DATA.trailhead, key: "trailhead", label: "Trailhead", color: SF.blue },
-                { icon: Github, href: DATA.github, key: "github", label: "GitHub" },
-              ].map(({ icon: Icon, href, key, label, color }) => (
-                <a
-                  key={key}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex flex-col items-center gap-2"
-                  title={label}
-                >
-                  <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-white/60 transition group-hover:bg-white/10 group-hover:text-white">
-                    <Icon className="h-6 w-6" style={color ? { color } : undefined} />
+          {/* JOURNEY SECTION */}
+          <section id="journey" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 2500px' }}>
+            <div className="mx-auto max-w-6xl px-4">
+              <SectionHeader
+                kicker="My Journey"
+                title="The Trail So Far"
+                subtitle="Every Trailblazer has a story. Here's mine."
+                icon={TrendingUp}
+              />
+
+              <div className="relative">
+                {/* Timeline line */}
+                <div className="absolute left-8 top-0 hidden h-full w-0.5 bg-gradient-to-b from-transparent via-white/20 to-transparent md:left-1/2 md:block" />
+
+                <div className="space-y-12">
+                  {DATA.timeline.map((item, i) => {
+                    const Icon = ICONS[item.icon] || Sparkles;
+                    const isLeft = i % 2 === 0;
+
+                    return (
+                      <motion.div
+                        key={item.year}
+                        initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.2 }}
+                        className={cx(
+                          "relative flex flex-col gap-4 md:flex-row md:items-center",
+                          isLeft ? "" : "md:flex-row-reverse"
+                        )}
+                      >
+                        {/* Year badge - desktop */}
+                        <div className={cx("hidden w-1/2 md:flex", isLeft ? "justify-end pr-8" : "justify-start pl-8")}>
+                          <span
+                            className="rounded-full px-4 py-2 text-sm font-bold text-white"
+                            style={{ background: SF.blue }}
+                          >
+                            {item.year}
+                          </span>
+                        </div>
+
+                        {/* Center dot */}
+                        <div
+                          className="absolute left-8 hidden h-4 w-4 -translate-x-1/2 rounded-full border-4 md:left-1/2 md:block"
+                          style={{ borderColor: SF.blue, background: SF.navy }}
+                        />
+
+                        {/* Content */}
+                        <div className="w-full md:w-1/2">
+                          <SFCard className="p-6" glow glowColor={SF.blue}>
+                            {/* Year badge - mobile */}
+                            <span
+                              className="mb-3 inline-block rounded-full px-3 py-1 text-xs font-bold text-white md:hidden"
+                              style={{ background: SF.blue }}
+                            >
+                              {item.year}
+                            </span>
+
+                            <div className="flex items-start gap-4">
+                              <div
+                                className="grid h-12 w-12 shrink-0 place-items-center rounded-xl"
+                                style={{ background: `${SF.blue}20` }}
+                              >
+                                <Icon className="h-5 w-5" style={{ color: SF.blue }} />
+                              </div>
+                              <div>
+                                <h4 className="text-lg font-bold text-white">{item.title}</h4>
+                                <p className="mt-1 text-sm font-medium" style={{ color: SF.blue }}>{item.subtitle}</p>
+                                <p className="mt-2 text-sm text-white/60">{item.details}</p>
+                              </div>
+                            </div>
+                          </SFCard>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
-                  <span className="text-xs text-white/40 group-hover:text-white/60">{label}</span>
-                </a>
-              ))}
-            </div>
-          </motion.div>
-          </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-8">
-        <div className="mx-auto max-w-6xl px-4">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <div className="flex items-center gap-3">
-              <SalesforceCloudLogo size="sm" animate={false} />
-              <span className="font-semibold text-white/80">{DATA.name}</span>
               </div>
-            <p className="text-sm text-white/40">
-              Built with Love • by Seif Mohsen ❤️
-            </p>
+            </div>
+          </section>
+
+          {/* CONTACT SECTION */}
+          <section id="contact" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 1000px' }}>
+            <div className="mx-auto max-w-4xl px-4 text-center">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                {/* Characters */}
+                <div className="mb-8 flex items-center justify-center gap-4">
+                  <AstroCharacter className="h-20 w-20" />
+                  <SalesforceCloudLogo size="md" />
+                  <CodeyCharacter className="h-20 w-20" />
+                </div>
+
+                <span
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur-sm"
+                >
+                  <Heart className="h-4 w-4" style={{ color: SF.red }} />
+                  Let's Build Together
+                </span>
+
+                <h2 className="mt-6 text-4xl font-bold md:text-5xl">
+                  Ready to Start My
+                  <span className="block" style={{ color: SF.blue }}> Salesforce Journey</span>
+                </h2>
+
+                <p className="mx-auto mt-6 max-w-xl text-lg text-white/60">
+                  I'm actively looking for opportunities where I can contribute, learn, and grow as a Salesforce developer. Let's connect!
+                </p>
+
+                <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+                  <a
+                    href={`mailto:${DATA.email}`}
+                    className="inline-flex items-center gap-2 rounded-xl px-8 py-4 text-lg font-semibold text-white transition hover:scale-105"
+                    style={{ background: SF.blue, boxShadow: `0 8px 30px ${SF.blue}40` }}
+                  >
+                    <Mail className="h-5 w-5" />
+                    Send Me an Email
+                  </a>
+                  <a
+                    href={DATA.resumeUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+                  >
+                    <MessageSquare className="h-5 w-5" />
+                    Ask For Resume
+                  </a>
+                </div>
+
+                <div className="mt-12 flex items-center justify-center gap-6">
+                  {[
+                    { icon: Mail, href: `mailto:${DATA.email}`, key: "mail", label: "Email" },
+                    { icon: Linkedin, href: DATA.linkedin, key: "linkedin", label: "LinkedIn" },
+                    { icon: Cloud, href: DATA.trailhead, key: "trailhead", label: "Trailhead", color: SF.blue },
+                    { icon: Github, href: DATA.github, key: "github", label: "GitHub" },
+                  ].map(({ icon: Icon, href, key, label, color }) => (
+                    <a
+                      key={key}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group flex flex-col items-center gap-2"
+                      title={label}
+                    >
+                      <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-white/60 transition group-hover:bg-white/10 group-hover:text-white">
+                        <Icon className="h-6 w-6" style={color ? { color } : undefined} />
+                      </div>
+                      <span className="text-xs text-white/40 group-hover:text-white/60">{label}</span>
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer className="border-t border-white/10 py-8">
+            <div className="mx-auto max-w-6xl px-4">
+              <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+                <div className="flex items-center gap-3">
+                  <SalesforceCloudLogo size="sm" animate={false} />
+                  <span className="font-semibold text-white/80">{DATA.name}</span>
+                </div>
+                <p className="text-sm text-white/40">
+                  Built with Love • by Seif Mohsen ❤️
+                </p>
               </div>
             </div>
           </footer>
-      </main>
+        </main>
 
-      <ProjectDrawer project={drawer} onClose={handleCloseDrawer} />
+        <ProjectDrawer project={drawer} onClose={handleCloseDrawer} />
 
-      {/* Certificate Image Lightbox */}
-      <AnimatePresence>
-        {certImageLightbox && (
-          <ImageLightbox
-            images={[certImageLightbox.src]}
-            currentIndex={0}
-            onClose={handleCloseLightbox}
-          />
-        )}
-      </AnimatePresence>
+        {/* Certificate Image Lightbox */}
+        <AnimatePresence>
+          {certImageLightbox && (
+            <ImageLightbox
+              images={[certImageLightbox.src]}
+              currentIndex={0}
+              onClose={handleCloseLightbox}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </LazyMotion>
   );
