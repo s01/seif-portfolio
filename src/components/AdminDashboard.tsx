@@ -421,9 +421,9 @@ function ImageUploader({
       return;
     }
 
-    // Validate file size (max 2MB for localStorage)
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Image must be less than 2MB");
+    // Validate file size (max 10MB for storage)
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Image must be less than 10MB. For very large images, consider using an image hosting service and pasting the URL instead.");
       return;
     }
 
@@ -500,7 +500,7 @@ function ImageUploader({
           ) : (
             <>
               <Upload className="h-4 w-4" />
-              Upload Image (max 2MB)
+              Upload Image (max 10MB)
             </>
           )}
         </button>
@@ -523,6 +523,11 @@ function ImageUploader({
             <ImageIcon className="h-4 w-4" />
           </button>
         </div>
+        
+        {/* Helpful tip */}
+        <p className="mt-2 text-xs text-yellow-400/70">
+          💡 Tip: For large images or diagrams, use Imgur, ImgBB, or GitHub to host your image and paste the URL above. This prevents storage limit issues.
+        </p>
       </div>
     </div>
   );
@@ -551,8 +556,8 @@ function MultiImageUploader({
       return;
     }
 
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Image must be less than 2MB");
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Image must be less than 10MB. For very large images, consider using an image hosting service and pasting the URL instead.");
       return;
     }
 
@@ -672,7 +677,7 @@ function MultiImageUploader({
           ) : (
             <>
               <Upload className="h-4 w-4" />
-              Add Image (max 2MB each)
+              Add Image (max 10MB each)
             </>
           )}
         </button>
@@ -696,11 +701,16 @@ function MultiImageUploader({
         </div>
       </div>
       
-      {images.length > 0 && (
-        <p className="mt-2 text-xs text-white/40">
-          First image is used as the card thumbnail. Hover to reorder or remove.
+      <div className="mt-2 space-y-1">
+        {images.length > 0 && (
+          <p className="text-xs text-white/40">
+            First image is used as the card thumbnail. Hover to reorder or remove.
+          </p>
+        )}
+        <p className="text-xs text-yellow-400/70">
+          💡 Tip: For large images, use Imgur/ImgBB/GitHub URLs instead of uploading to avoid storage limits.
         </p>
-      )}
+      </div>
     </div>
   );
 }
@@ -1367,16 +1377,39 @@ export default function AdminDashboard() {
   };
 
   const handleSave = async () => {
+    // Check data size before saving (Firestore has 1MB limit)
+    const dataSize = new Blob([JSON.stringify(data)]).size;
+    const maxSize = 1048576; // 1MB in bytes
+    
+    if (dataSize > maxSize) {
+      const sizeMB = (dataSize / 1024 / 1024).toFixed(2);
+      setSaveMessage(`⚠️ Data too large (${sizeMB}MB). Maximum is 1MB. Please use image URLs instead of uploading large images.`);
+      setTimeout(() => setSaveMessage(""), 8000);
+      return;
+    }
+    
+    if (dataSize > maxSize * 0.8) {
+      const sizeMB = (dataSize / 1024 / 1024).toFixed(2);
+      if (!confirm(`Warning: Your data is ${sizeMB}MB (80% of 1MB limit). Large base64 images may cause issues. Consider using image URLs instead. Continue saving?`)) {
+        return;
+      }
+    }
+    
     setIsSaving(true);
     try {
       await savePortfolioDataAsync(data);
       setHasChanges(false);
-      setSaveMessage("Changes saved to cloud!");
+      setSaveMessage("✅ Changes saved to cloud!");
       setTimeout(() => setSaveMessage(""), 3000);
     } catch (err) {
       console.error("Failed to save:", err);
-      setSaveMessage("Failed to save. Please try again.");
-      setTimeout(() => setSaveMessage(""), 3000);
+      const errorMsg = err instanceof Error ? err.message : "Unknown error";
+      if (errorMsg.includes("exceeds the maximum allowed size")) {
+        setSaveMessage("❌ Data too large for Firestore (1MB limit). Use image URLs instead of uploading large files.");
+      } else {
+        setSaveMessage("❌ Failed to save. Please try again.");
+      }
+      setTimeout(() => setSaveMessage(""), 8000);
     } finally {
       setIsSaving(false);
     }
