@@ -703,11 +703,13 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
             className="flex items-center gap-3"
           >
             <img
-              src="/SeifMohsenLogo.png"
+              src="/SeifMohsenLogo-optimized.png"
               alt="Logo"
               className="h-10 w-10 rounded-full object-cover"
               width="40"
               height="40"
+              fetchPriority="high"
+              decoding="async"
             />
             <span className="hidden text-sm font-semibold text-white sm:block">Seif Mohsen</span>
           </button>
@@ -1533,12 +1535,12 @@ export default function Portfolio() {
     return (
       <div className="min-h-screen overflow-x-hidden font-sans text-white">
         <SalesforceBackground reduced={reduced} />
-        <div className="flex min-h-screen items-center justify-center">
+        <div className="flex min-h-screen items-center justify-center px-4">
           <div className="text-center">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="mx-auto mb-6"
+              className="mx-auto mb-6 flex items-center justify-center"
             >
               <Cloud className="h-16 w-16" style={{ color: SF.blue }} />
             </motion.div>
