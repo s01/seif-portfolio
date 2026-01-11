@@ -932,6 +932,8 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
 function ProjectDrawer({ project, onClose }: { project: Project | null; onClose: () => void }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showFullImage, setShowFullImage] = useState(false);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
 
   // Reset image index when project changes
   React.useEffect(() => {
@@ -942,14 +944,42 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
   const hasImages = images.length > 0;
   const hasMultipleImages = images.length > 1;
 
-  const nextImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const nextImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
-  const prevImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const prevImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  // Handle touch events for mobile swiping
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && hasMultipleImages) {
+      nextImage();
+    }
+    if (isRightSwipe && hasMultipleImages) {
+      prevImage();
+    }
+
+    // Reset
+    setTouchStart(0);
+    setTouchEnd(0);
   };
 
   return (
@@ -986,6 +1016,9 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                 <div 
                   className="relative h-64 w-full shrink-0 cursor-pointer overflow-hidden group"
                   onClick={() => setShowFullImage(true)}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
                 >
                   <AnimatePresence mode="wait">
                     <motion.img
@@ -1001,18 +1034,18 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                   </AnimatePresence>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#032d60] via-transparent to-black/20" />
                   
-                  {/* Navigation arrows for multiple images */}
+                  {/* Navigation arrows for multiple images - always visible on mobile */}
                   {hasMultipleImages && (
                     <>
                       <button
                         onClick={prevImage}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white opacity-0 transition-opacity hover:bg-black/70 group-hover:opacity-100"
+                        className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100"
                       >
                         <ChevronLeft className="h-5 w-5" />
                       </button>
                       <button
                         onClick={nextImage}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white opacity-0 transition-opacity hover:bg-black/70 group-hover:opacity-100"
+                        className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100"
                       >
                         <ChevronRight className="h-5 w-5" />
                       </button>
@@ -1055,24 +1088,26 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                 </div>
               )}
 
-              <div className="flex items-start justify-between border-b border-white/10 p-6">
-                <div>
-                  <span
-                    className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
-                    style={{ background: `${project.colors.accent}30`, color: project.colors.accent }}
-                  >
-                    {(() => {
-                      const ProjectIcon = PROJECT_ICONS[project.icon || "Workflow"] || Workflow;
-                      return <ProjectIcon className="h-3.5 w-3.5" />;
-                    })()}
-                    {project.category}
-                  </span>
-                  <h3 className="mt-3 text-2xl font-bold text-white">{project.title}</h3>
-                  <p className="mt-2 text-sm text-white/60">{project.impact}</p>
-                </div>
+              {/* Fixed header with title only */}
+              <div className="shrink-0 border-b border-white/10 p-6">
+                <span
+                  className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
+                  style={{ background: `${project.colors.accent}30`, color: project.colors.accent }}
+                >
+                  {(() => {
+                    const ProjectIcon = PROJECT_ICONS[project.icon || "Workflow"] || Workflow;
+                    return <ProjectIcon className="h-3.5 w-3.5" />;
+                  })()}
+                  {project.category}
+                </span>
+                <h3 className="mt-3 text-2xl font-bold text-white">{project.title}</h3>
               </div>
 
+              {/* Scrollable content area */}
               <div className="flex-1 overflow-auto p-6">
+                {/* Impact statement - now scrollable */}
+                <p className="mb-4 text-sm font-medium leading-relaxed text-white/80 italic">{project.impact}</p>
+                
                 <p className="text-sm leading-relaxed text-white/70">{project.description}</p>
 
                 <div className="mt-6">
@@ -1143,6 +1178,23 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
 
 // Project card - Memoized to prevent unnecessary re-renders
 const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project; onOpen: (project: Project) => void; index: number }) {
+  const [cardImageIndex, setCardImageIndex] = useState(0);
+  const hasMultipleImages = p.images && p.images.length > 1;
+  
+  const nextCardImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (p.images && p.images.length > 0) {
+      setCardImageIndex((prev) => (prev + 1) % p.images!.length);
+    }
+  };
+
+  const prevCardImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (p.images && p.images.length > 0) {
+      setCardImageIndex((prev) => (prev - 1 + p.images!.length) % p.images!.length);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -1166,20 +1218,61 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
           style={{ background: p.colors.glow }}
         />
 
-        {/* Project Image - shows first image from array */}
+        {/* Project Image - carousel with arrows */}
         {p.images && p.images.length > 0 && (
           <div className="relative h-40 w-full overflow-hidden">
-            <img
-              src={p.images[0]}
-              alt={p.title}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={cardImageIndex}
+                src={p.images[cardImageIndex]}
+                alt={`${p.title} - Image ${cardImageIndex + 1}`}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              />
+            </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+            
+            {/* Image navigation arrows - visible on hover */}
+            {hasMultipleImages && (
+              <>
+                <button
+                  onClick={prevCardImage}
+                  className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-1.5 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100 pointer-events-auto"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={nextCardImage}
+                  className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-1.5 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100 pointer-events-auto"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+                
+                {/* Image counter and dots */}
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1">
+                  {p.images.map((_, i) => (
+                    <div
+                      key={i}
+                      className={cx(
+                        "h-1.5 w-1.5 rounded-full transition-all",
+                        i === cardImageIndex ? "bg-white w-3" : "bg-white/40"
+                      )}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+            
             {/* Image count badge */}
-            {p.images.length > 1 && (
-              <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-xs text-white backdrop-blur-sm">
+            {hasMultipleImages && (
+              <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-xs text-white backdrop-blur-sm pointer-events-none">
                 <ImageIcon className="h-3 w-3" />
-                {p.images.length}
+                {cardImageIndex + 1}/{p.images.length}
               </div>
             )}
           </div>
