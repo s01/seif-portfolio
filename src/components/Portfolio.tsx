@@ -55,6 +55,11 @@ import {
   Image as ImageIcon,
   ChevronLeft,
   ChevronRight,
+  ArrowUp,
+  Moon,
+  Sun,
+  Clock,
+  PartyPopper,
 } from "lucide-react";
 import { getPortfolioData, getPortfolioDataAsync, type PortfolioData, type Project } from "../data/portfolioData";
 
@@ -773,6 +778,9 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
               </motion.div>
             </button>
 
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {/* Hire Me button */}
             <a
               href={`mailto:${email}`}
@@ -895,6 +903,306 @@ function useActiveSection(sectionIds: string[]) {
   }, [sectionKey, sectionIds]);
 
   return active;
+}
+
+// Back to Top Button
+function BackToTopButton() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const toggleVisibility = () => {
+      setIsVisible(window.pageYOffset > 500);
+    };
+
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0 }}
+          onClick={scrollToTop}
+          className="btn-interactive z-50 rounded-full p-4 text-white shadow-lg"
+          style={{
+            position: 'fixed',
+            background: SF.blue,
+            bottom: '2rem',
+            right: '2rem',
+          }}
+          aria-label="Back to top"
+        >
+          <ArrowUp className="h-6 w-6" />
+        </motion.button>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// Dark/Light Mode Toggle
+function ThemeToggle() {
+  const [isDark, setIsDark] = useState(true);
+
+  const toggleTheme = () => {
+    setIsDark(!isDark);
+    document.documentElement.classList.toggle("light-mode");
+  };
+
+  return (
+    <motion.button
+      onClick={toggleTheme}
+      className="btn-interactive rounded-full border border-white/20 bg-white/10 p-2 backdrop-blur-sm"
+      whileTap={{ scale: 0.9 }}
+      aria-label="Toggle theme"
+    >
+      <AnimatePresence mode="wait">
+        {isDark ? (
+          <motion.div
+            key="sun"
+            initial={{ rotate: -90, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            exit={{ rotate: 90, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Sun className="h-5 w-5 text-yellow-300" />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="moon"
+            initial={{ rotate: 90, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            exit={{ rotate: -90, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Moon className="h-5 w-5 text-blue-300" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.button>
+  );
+}
+
+// Animated Counter
+function AnimatedCounter({ end, duration = 2 }: { end: number; duration?: number }) {
+  const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  useEffect(() => {
+    if (hasAnimated) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setHasAnimated(true);
+          const increment = end / (duration * 60);
+          let current = 0;
+
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= end) {
+              setCount(end);
+              clearInterval(timer);
+            } else {
+              setCount(Math.floor(current));
+            }
+          }, 1000 / 60);
+
+          return () => clearInterval(timer);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    const element = document.getElementById("animated-counter");
+    if (element) observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [end, duration, hasAnimated]);
+
+  return <span id="animated-counter">{count}</span>;
+}
+
+// Loading Skeleton
+function LoadingSkeleton() {
+  return (
+    <div className="min-h-screen overflow-x-hidden font-sans text-white">
+      <SalesforceBackground reduced={false} />
+      <div className="mx-auto max-w-6xl px-4 py-24">
+        {/* Navbar skeleton */}
+        <div className="mb-16 h-16 w-full animate-pulse rounded-2xl bg-white/10" />
+
+        {/* Hero skeleton */}
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div className="space-y-4">
+            <div className="h-8 w-48 animate-pulse rounded-full bg-white/10" />
+            <div className="h-16 w-full animate-pulse rounded-lg bg-white/10" />
+            <div className="h-12 w-3/4 animate-pulse rounded-lg bg-white/10" />
+            <div className="h-24 w-full animate-pulse rounded-lg bg-white/10" />
+          </div>
+          <div className="h-96 w-full animate-pulse rounded-3xl bg-white/10" />
+        </div>
+
+        {/* Stats skeleton */}
+        <div className="mt-16 grid grid-cols-2 gap-4 md:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-24 animate-pulse rounded-xl bg-white/10" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Keyboard Shortcuts Handler
+function useKeyboardShortcuts(drawer: Project | null, setDrawer: (p: Project | null) => void) {
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // ESC to close drawer
+      if (e.key === "Escape" && drawer) {
+        setDrawer(null);
+      }
+
+      // Ctrl/Cmd + K to focus search
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[placeholder*="Search"]') as HTMLInputElement;
+        searchInput?.focus();
+      }
+
+      // ? or / to show keyboard shortcuts
+      if ((e.key === "?" || (e.key === "/" && e.shiftKey)) && !drawer) {
+        e.preventDefault();
+        const helpMessage = `⌨️ Keyboard Shortcuts:
+
+ESC - Close drawer
+Ctrl/Cmd + K - Focus search  
+Ctrl + ↑ - Back to top
+? or / - Show this help
+
+🎮 Easter Egg: Try the Konami Code!
+↑ ↑ ↓ ↓ ← → ← → B A`;
+
+        alert(helpMessage);
+      }
+
+      // Arrow up to scroll to top
+      if (e.key === "ArrowUp" && e.ctrlKey) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [drawer, setDrawer]);
+}
+
+// Easter Egg - Konami Code
+function useKonamiCode(onSuccess: () => void) {
+  useEffect(() => {
+    const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+    let konamiIndex = 0;
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === konamiCode[konamiIndex]) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+          onSuccess();
+          konamiIndex = 0;
+        }
+      } else {
+        konamiIndex = 0;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [onSuccess]);
+}
+
+// Easter Egg Animation
+function EasterEggAnimation({ onClose }: { onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0, rotate: -180 }}
+        animate={{ scale: 1, rotate: 0 }}
+        exit={{ scale: 0, rotate: 180 }}
+        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        className="text-center"
+      >
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 10, -10, 0],
+          }}
+          transition={{
+            duration: 0.5,
+            repeat: Infinity,
+            repeatDelay: 1,
+          }}
+        >
+          <PartyPopper className="mx-auto h-32 w-32 text-yellow-400" />
+        </motion.div>
+        <motion.h2
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mt-8 text-4xl font-bold text-white"
+        >
+          🎉 You found the Easter Egg! 🎉
+        </motion.h2>
+        <motion.p
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-4 text-xl text-white/80"
+        >
+          Konami Code Master! 🎮
+        </motion.p>
+        <motion.p
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.7 }}
+          className="mt-2 text-sm text-white/60"
+        >
+          Click anywhere to close
+        </motion.p>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// Last Updated Timestamp
+function LastUpdated() {
+  const lastUpdate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return (
+    <div className="flex items-center gap-2 text-xs text-white/40">
+      <Clock className="h-3 w-3" />
+      <span>Last updated: {lastUpdate}</span>
+    </div>
+  );
 }
 
 // Project drawer
@@ -1483,6 +1791,7 @@ export default function Portfolio() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [certImageLightbox, setCertImageLightbox] = useState<{ src: string; alt: string } | null>(null);
+  const [showEasterEgg, setShowEasterEgg] = useState(false);
 
   // Defer animations until after first paint to reduce render delay
   const [animationsEnabled, setAnimationsEnabled] = useState(false);
@@ -1495,6 +1804,14 @@ export default function Portfolio() {
       }, 0);
     });
   }, []);
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts(drawer, setDrawer);
+
+  // Easter egg - Konami Code
+  useKonamiCode(() => {
+    setShowEasterEgg(true);
+  });
 
   const categories = useMemo(() => {
     const c = new Set(["All"]);
@@ -1530,31 +1847,9 @@ export default function Portfolio() {
     setCertImageLightbox(null);
   }, []);
 
-  // Show loading screen while data is being fetched
+  // Show loading skeleton while data is being fetched
   if (isDataLoading) {
-    return (
-      <div className="min-h-screen overflow-x-hidden font-sans text-white">
-        <SalesforceBackground reduced={reduced} />
-        <div className="flex min-h-screen items-center justify-center px-4">
-          <div className="text-center">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="mx-auto mb-6 flex items-center justify-center"
-            >
-              <Cloud className="h-16 w-16" style={{ color: SF.blue }} />
-            </motion.div>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-lg font-semibold text-white/80"
-            >
-              Loading portfolio...
-            </motion.p>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
 
   return (
@@ -2168,6 +2463,7 @@ export default function Portfolio() {
                 <p className="text-sm text-white/40">
                   Built with Love • by Seif Mohsen ❤️
                 </p>
+                <LastUpdated />
               </div>
             </div>
           </footer>
@@ -2183,6 +2479,16 @@ export default function Portfolio() {
               currentIndex={0}
               onClose={handleCloseLightbox}
             />
+          )}
+        </AnimatePresence>
+
+        {/* Back to Top Button */}
+        <BackToTopButton />
+
+        {/* Easter Egg Animation */}
+        <AnimatePresence>
+          {showEasterEgg && (
+            <EasterEggAnimation onClose={() => setShowEasterEgg(false)} />
           )}
         </AnimatePresence>
       </div>
