@@ -896,8 +896,64 @@ function useActiveSection(sectionIds: string[]) {
 }
 
 // Project drawer
-// Full screen image lightbox
-function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
+// Full screen image lightbox with navigation
+function ImageLightbox({ 
+  images, 
+  currentIndex, 
+  onClose, 
+  onNext, 
+  onPrev 
+}: { 
+  images: string[]; 
+  currentIndex: number; 
+  onClose: () => void;
+  onNext?: () => void;
+  onPrev?: () => void;
+}) {
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  
+  const hasMultiple = images.length > 1;
+  const src = images[currentIndex];
+  const alt = `Image ${currentIndex + 1} of ${images.length}`;
+
+  // Handle touch events for mobile swiping
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && hasMultiple && onNext) {
+      onNext();
+    }
+    if (isRightSwipe && hasMultiple && onPrev) {
+      onPrev();
+    }
+
+    setTouchStart(0);
+    setTouchEnd(0);
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onNext?.();
+  };
+
+  const handlePrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onPrev?.();
+  };
+
   return (
     <motion.div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4"
@@ -905,25 +961,60 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
-      <motion.img
-        src={src}
-        alt={alt}
-        className="max-h-[90vh] max-w-[90vw] rounded-xl object-contain shadow-2xl"
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        onClick={(e) => e.stopPropagation()}
-      />
+      <AnimatePresence mode="wait">
+        <motion.img
+          key={currentIndex}
+          src={src}
+          alt={alt}
+          className="max-h-[90vh] max-w-[90vw] rounded-xl object-contain shadow-2xl"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={(e) => e.stopPropagation()}
+        />
+      </AnimatePresence>
+      
+      {/* Navigation arrows */}
+      {hasMultiple && (
+        <>
+          <button
+            onClick={handlePrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-white/10 p-3 text-white backdrop-blur-sm transition hover:bg-white/20 md:left-8"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-white/10 p-3 text-white backdrop-blur-sm transition hover:bg-white/20 md:right-8"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+        </>
+      )}
+
+      {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute right-6 top-6 rounded-full border border-white/20 bg-white/10 p-3 text-white backdrop-blur-sm transition hover:bg-white/20"
+        className="absolute right-4 top-4 rounded-full border border-white/20 bg-white/10 p-3 text-white backdrop-blur-sm transition hover:bg-white/20 md:right-6 md:top-6"
       >
         <X className="h-6 w-6" />
       </button>
-      <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm text-white/60">
-        Click anywhere to close
+      
+      {/* Image counter */}
+      {hasMultiple && (
+        <div className="absolute left-1/2 top-6 -translate-x-1/2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-white backdrop-blur-sm">
+          {currentIndex + 1} / {images.length}
+        </div>
+      )}
+      
+      {/* Instructions */}
+      <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-sm text-white/60">
+        {hasMultiple ? "Use arrows or swipe to navigate • " : ""}Click anywhere to close
       </p>
     </motion.div>
   );
@@ -1164,9 +1255,11 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
           <AnimatePresence>
             {showFullImage && hasImages && (
               <ImageLightbox
-                src={images[currentImageIndex]}
-                alt={`${project.title} - Image ${currentImageIndex + 1}`}
+                images={images}
+                currentIndex={currentImageIndex}
                 onClose={() => setShowFullImage(false)}
+                onNext={() => setCurrentImageIndex((prev) => (prev + 1) % images.length)}
+                onPrev={() => setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)}
               />
             )}
           </AnimatePresence>
@@ -2055,8 +2148,8 @@ export default function Portfolio() {
       <AnimatePresence>
         {certImageLightbox && (
           <ImageLightbox
-            src={certImageLightbox.src}
-            alt={certImageLightbox.alt}
+            images={[certImageLightbox.src]}
+            currentIndex={0}
             onClose={handleCloseLightbox}
           />
         )}
