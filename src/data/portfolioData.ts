@@ -332,21 +332,75 @@ const DEFAULT_DATA: PortfolioData = {
 
 const FIRESTORE_DOC = "portfolio";
 const FIRESTORE_COLLECTION = "settings";
+const PROJECTS_COLLECTION = "projects";
+const CERTIFICATIONS_DOC = "certifications";
+const SKILLS_DOC = "skills";
+const TIMELINE_DOC = "timeline";
 
-// Get data from Firestore (async)
+// Get data from Firestore (async) - now split across multiple documents
 export async function getPortfolioDataAsync(): Promise<PortfolioData> {
   try {
     // Lazy-load Firebase and Firestore
     const firebaseDb = await initFirebase();
     if (!firebaseDb) return DEFAULT_DATA;
     
-    const { doc, getDoc } = await import("firebase/firestore");
-    const docRef = doc(firebaseDb, FIRESTORE_COLLECTION, FIRESTORE_DOC);
-    const docSnap = await getDoc(docRef);
+    const { doc, getDoc, collection, getDocs } = await import("firebase/firestore");
     
-    if (docSnap.exists()) {
-      return { ...DEFAULT_DATA, ...docSnap.data() } as PortfolioData;
+    // Load main portfolio data
+    const mainRef = doc(firebaseDb, FIRESTORE_COLLECTION, FIRESTORE_DOC);
+    const mainSnap = await getDoc(mainRef);
+    
+    let portfolioData: PortfolioData = { ...DEFAULT_DATA };
+    
+    if (mainSnap.exists()) {
+      portfolioData = { ...portfolioData, ...mainSnap.data() } as PortfolioData;
     }
+    
+    // Load projects from separate collection
+    try {
+      const projectsCol = collection(firebaseDb, PROJECTS_COLLECTION);
+      const projectsSnap = await getDocs(projectsCol);
+      if (!projectsSnap.empty) {
+        portfolioData.projects = projectsSnap.docs.map(doc => doc.data() as Project);
+      }
+    } catch (e) {
+      console.log("Projects not found, using defaults");
+    }
+    
+    // Load certifications
+    try {
+      const certsRef = doc(firebaseDb, FIRESTORE_COLLECTION, CERTIFICATIONS_DOC);
+      const certsSnap = await getDoc(certsRef);
+      if (certsSnap.exists()) {
+        portfolioData.certifications = certsSnap.data().items as Certification[];
+      }
+    } catch (e) {
+      console.log("Certifications not found, using defaults");
+    }
+    
+    // Load skills
+    try {
+      const skillsRef = doc(firebaseDb, FIRESTORE_COLLECTION, SKILLS_DOC);
+      const skillsSnap = await getDoc(skillsRef);
+      if (skillsSnap.exists()) {
+        portfolioData.skillGroups = skillsSnap.data().items as SkillGroup[];
+      }
+    } catch (e) {
+      console.log("Skills not found, using defaults");
+    }
+    
+    // Load timeline
+    try {
+      const timelineRef = doc(firebaseDb, FIRESTORE_COLLECTION, TIMELINE_DOC);
+      const timelineSnap = await getDoc(timelineRef);
+      if (timelineSnap.exists()) {
+        portfolioData.timeline = timelineSnap.data().items as TimelineItem[];
+      }
+    } catch (e) {
+      console.log("Timeline not found, using defaults");
+    }
+    
+    return portfolioData;
   } catch {
     // Silently fail for network errors - static data works fine
     // No need to spam console with Firebase connection errors
@@ -359,15 +413,46 @@ export function getPortfolioData(): PortfolioData {
   return DEFAULT_DATA;
 }
 
-// Save data to Firestore (async)
+// Save data to Firestore (async) - now split across multiple documents to bypass 1MB limit
 export async function savePortfolioDataAsync(data: PortfolioData): Promise<void> {
   try {
     const firebaseDb = await initFirebase();
     if (!firebaseDb) throw new Error("Firebase not initialized");
     
-    const { doc, setDoc } = await import("firebase/firestore");
-    const docRef = doc(firebaseDb, FIRESTORE_COLLECTION, FIRESTORE_DOC);
-    await setDoc(docRef, data);
+    const { doc, setDoc, collection, writeBatch } = await import("firebase/firestore");
+    
+    // Extract large arrays from main data
+    const { projects, certifications, skillGroups, timeline, ...mainData } = data;
+    
+    // Save main portfolio data (without large arrays)
+    const mainRef = doc(firebaseDb, FIRESTORE_COLLECTION, FIRESTORE_DOC);
+    await setDoc(mainRef, mainData);
+    
+    // Use batch writes for better performance
+    const batch = writeBatch(firebaseDb);
+    
+    // Save each project as a separate document
+    projects.forEach((project) => {
+      const projectRef = doc(firebaseDb, PROJECTS_COLLECTION, project.id);
+      batch.set(projectRef, project);
+    });
+    
+    // Save certifications in one document
+    const certsRef = doc(firebaseDb, FIRESTORE_COLLECTION, CERTIFICATIONS_DOC);
+    batch.set(certsRef, { items: certifications });
+    
+    // Save skills in one document
+    const skillsRef = doc(firebaseDb, FIRESTORE_COLLECTION, SKILLS_DOC);
+    batch.set(skillsRef, { items: skillGroups });
+    
+    // Save timeline in one document
+    const timelineRef = doc(firebaseDb, FIRESTORE_COLLECTION, TIMELINE_DOC);
+    batch.set(timelineRef, { items: timeline });
+    
+    // Commit all writes
+    await batch.commit();
+    
+    console.log("✅ Portfolio data saved successfully across multiple documents");
   } catch (e) {
     console.error("Error saving portfolio data to Firestore:", e);
     throw e;

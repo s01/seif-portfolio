@@ -1377,20 +1377,13 @@ export default function AdminDashboard() {
   };
 
   const handleSave = async () => {
-    // Check data size before saving (Firestore has 1MB limit)
+    // Calculate total data size for info purposes
     const dataSize = new Blob([JSON.stringify(data)]).size;
-    const maxSize = 1048576; // 1MB in bytes
+    const sizeMB = (dataSize / 1024 / 1024).toFixed(2);
     
-    if (dataSize > maxSize) {
-      const sizeMB = (dataSize / 1024 / 1024).toFixed(2);
-      setSaveMessage(`⚠️ Data too large (${sizeMB}MB). Maximum is 1MB. Please use image URLs instead of uploading large images.`);
-      setTimeout(() => setSaveMessage(""), 8000);
-      return;
-    }
-    
-    if (dataSize > maxSize * 0.8) {
-      const sizeMB = (dataSize / 1024 / 1024).toFixed(2);
-      if (!confirm(`Warning: Your data is ${sizeMB}MB (80% of 1MB limit). Large base64 images may cause issues. Consider using image URLs instead. Continue saving?`)) {
+    // Warn if data is very large (over 5MB total)
+    if (dataSize > 5 * 1024 * 1024) {
+      if (!confirm(`Your portfolio data is ${sizeMB}MB. While there's no hard limit with our split storage, very large images may slow down loading. Consider using image URLs for better performance. Continue saving?`)) {
         return;
       }
     }
@@ -1399,16 +1392,12 @@ export default function AdminDashboard() {
     try {
       await savePortfolioDataAsync(data);
       setHasChanges(false);
-      setSaveMessage("✅ Changes saved to cloud!");
-      setTimeout(() => setSaveMessage(""), 3000);
+      setSaveMessage(`✅ Changes saved to cloud! (${sizeMB}MB across multiple documents)`);
+      setTimeout(() => setSaveMessage(""), 4000);
     } catch (err) {
       console.error("Failed to save:", err);
       const errorMsg = err instanceof Error ? err.message : "Unknown error";
-      if (errorMsg.includes("exceeds the maximum allowed size")) {
-        setSaveMessage("❌ Data too large for Firestore (1MB limit). Use image URLs instead of uploading large files.");
-      } else {
-        setSaveMessage("❌ Failed to save. Please try again.");
-      }
+      setSaveMessage(`❌ Failed to save: ${errorMsg}`);
       setTimeout(() => setSaveMessage(""), 8000);
     } finally {
       setIsSaving(false);
