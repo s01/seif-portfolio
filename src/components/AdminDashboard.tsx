@@ -59,6 +59,8 @@ import {
   Wrench,
   Puzzle,
   Key,
+  FileDown,
+  FileUp,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -1555,6 +1557,63 @@ export default function AdminDashboard() {
     });
   };
 
+  // Export data as JSON
+  const handleExport = () => {
+    try {
+      const dataStr = JSON.stringify(data, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `portfolio-backup-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      setSaveMessage("✅ Data exported successfully!");
+      setTimeout(() => setSaveMessage(""), 3000);
+    } catch (err) {
+      console.error("Export error:", err);
+      setSaveMessage("❌ Failed to export data");
+      setTimeout(() => setSaveMessage(""), 3000);
+    }
+  };
+
+  // Import data from JSON file
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const importedData = JSON.parse(event.target?.result as string) as PortfolioData;
+        
+        // Validate the imported data has required fields
+        if (!importedData.name || !importedData.email || !importedData.projects) {
+          throw new Error("Invalid portfolio data format");
+        }
+        
+        // Confirm before importing
+        if (confirm("This will replace all current data with the imported data. Continue?")) {
+          setData(importedData);
+          setHasChanges(true);
+          setSaveMessage("✅ Data imported! Click Save to apply changes.");
+          setTimeout(() => setSaveMessage(""), 5000);
+        }
+      } catch (err) {
+        console.error("Import error:", err);
+        setSaveMessage("❌ Failed to import data. Invalid file format.");
+        setTimeout(() => setSaveMessage(""), 5000);
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset input so same file can be selected again
+    e.target.value = '';
+  };
+
   if (!isLoggedIn) {
     return <LoginScreen onLogin={handleLogin} />;
   }
@@ -2023,6 +2082,7 @@ export default function AdminDashboard() {
         {/* Settings */}
         <Section title="Settings" icon={Settings}>
           <div className="space-y-4">
+            {/* Change Password */}
             <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-4">
               <div className="flex items-center gap-3">
                 <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#00a1e0]/20">
@@ -2040,6 +2100,49 @@ export default function AdminDashboard() {
                 <Key className="h-4 w-4" />
                 Change Password
               </button>
+            </div>
+
+            {/* Export Data */}
+            <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-4">
+              <div className="flex items-center gap-3">
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-green-500/20">
+                  <FileDown className="h-5 w-5 text-green-400" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-white">Export Data</h4>
+                  <p className="text-sm text-white/50">Download your portfolio data as JSON backup</p>
+                </div>
+              </div>
+              <button
+                onClick={handleExport}
+                className="flex items-center gap-2 rounded-lg bg-green-500/20 px-4 py-2 text-sm font-medium text-green-400 hover:bg-green-500/30"
+              >
+                <FileDown className="h-4 w-4" />
+                Export
+              </button>
+            </div>
+
+            {/* Import Data */}
+            <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-4">
+              <div className="flex items-center gap-3">
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-purple-500/20">
+                  <FileUp className="h-5 w-5 text-purple-400" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-white">Import Data</h4>
+                  <p className="text-sm text-white/50">Restore portfolio data from a backup file</p>
+                </div>
+              </div>
+              <label className="flex cursor-pointer items-center gap-2 rounded-lg bg-purple-500/20 px-4 py-2 text-sm font-medium text-purple-400 hover:bg-purple-500/30">
+                <FileUp className="h-4 w-4" />
+                Import
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleImport}
+                  className="hidden"
+                />
+              </label>
             </div>
           </div>
         </Section>
