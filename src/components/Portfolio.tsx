@@ -2072,8 +2072,8 @@ export default function Portfolio() {
             </span>
 
             <h2 className="mt-6 text-4xl font-bold md:text-5xl">
-              Ready to Start Your
-              <span className="block" style={{ color: SF.blue }}> Salesforce Journey?</span>
+              Ready to Start My
+              <span className="block" style={{ color: SF.blue }}> Salesforce Journey</span>
             </h2>
 
             <p className="mx-auto mt-6 max-w-xl text-lg text-white/60">
