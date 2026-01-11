@@ -15,6 +15,8 @@ export default defineConfig({
           'framer-motion': ['framer-motion'],
           // Icons in separate chunk (they're large!)
           'icons': ['lucide-react'],
+          // Firebase in separate chunk (loads async)
+          'firebase': ['firebase/app', 'firebase/firestore/lite'],
         },
       },
     },
@@ -26,11 +28,13 @@ export default defineConfig({
     cssCodeSplit: true,
     // Smaller chunk size for faster loading
     chunkSizeWarningLimit: 1000,
+    // Enable source maps for debugging (only in dev)
+    sourcemap: false,
   },
   // Optimize dependencies
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'],
-    // Don't pre-bundle these (load on demand)
-    exclude: ['firebase'],
+    include: ['react', 'react-dom', 'react-router-dom', 'framer-motion'],
+    // Don't pre-bundle these (load on demand for smaller initial bundle)
+    exclude: ['firebase/app', 'firebase/firestore/lite'],
   },
 })

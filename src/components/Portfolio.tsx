@@ -1117,6 +1117,8 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
                       src={images[currentImageIndex]}
                       alt={`${project.title} - Image ${currentImageIndex + 1}`}
                       className="h-full w-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
@@ -1320,6 +1322,8 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
                 src={p.images[cardImageIndex]}
                 alt={`${p.title} - Image ${cardImageIndex + 1}`}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}

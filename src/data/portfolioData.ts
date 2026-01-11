@@ -133,7 +133,7 @@ export interface PortfolioData {
   trailhead: string;
   resumeUrl: string;
   trailblazerRank: string;
-  
+
   // Arrays
   stats: Stat[];
   principles: string[];
@@ -340,22 +340,22 @@ const TIMELINE_DOC = "timeline";
 // Get data from Firestore (async) - now split across multiple documents
 export async function getPortfolioDataAsync(): Promise<PortfolioData> {
   try {
-    // Lazy-load Firebase and Firestore
+    // Lazy-load Firebase and Firestore Lite (90% smaller)
     const firebaseDb = await initFirebase();
     if (!firebaseDb) return DEFAULT_DATA;
-    
-    const { doc, getDoc, collection, getDocs } = await import("firebase/firestore");
-    
+
+    const { doc, getDoc, collection, getDocs } = await import("firebase/firestore/lite");
+
     // Load main portfolio data
     const mainRef = doc(firebaseDb, FIRESTORE_COLLECTION, FIRESTORE_DOC);
     const mainSnap = await getDoc(mainRef);
-    
+
     let portfolioData: PortfolioData = { ...DEFAULT_DATA };
-    
+
     if (mainSnap.exists()) {
       portfolioData = { ...portfolioData, ...mainSnap.data() } as PortfolioData;
     }
-    
+
     // Load projects from separate collection
     try {
       const projectsCol = collection(firebaseDb, PROJECTS_COLLECTION);
@@ -366,7 +366,7 @@ export async function getPortfolioDataAsync(): Promise<PortfolioData> {
     } catch (e) {
       console.log("Projects not found, using defaults");
     }
-    
+
     // Load certifications
     try {
       const certsRef = doc(firebaseDb, FIRESTORE_COLLECTION, CERTIFICATIONS_DOC);
@@ -377,7 +377,7 @@ export async function getPortfolioDataAsync(): Promise<PortfolioData> {
     } catch (e) {
       console.log("Certifications not found, using defaults");
     }
-    
+
     // Load skills
     try {
       const skillsRef = doc(firebaseDb, FIRESTORE_COLLECTION, SKILLS_DOC);
@@ -388,7 +388,7 @@ export async function getPortfolioDataAsync(): Promise<PortfolioData> {
     } catch (e) {
       console.log("Skills not found, using defaults");
     }
-    
+
     // Load timeline
     try {
       const timelineRef = doc(firebaseDb, FIRESTORE_COLLECTION, TIMELINE_DOC);
@@ -399,7 +399,7 @@ export async function getPortfolioDataAsync(): Promise<PortfolioData> {
     } catch (e) {
       console.log("Timeline not found, using defaults");
     }
-    
+
     return portfolioData;
   } catch {
     // Silently fail for network errors - static data works fine
@@ -418,40 +418,40 @@ export async function savePortfolioDataAsync(data: PortfolioData): Promise<void>
   try {
     const firebaseDb = await initFirebase();
     if (!firebaseDb) throw new Error("Firebase not initialized");
-    
-    const { doc, setDoc, writeBatch } = await import("firebase/firestore");
-    
+
+    const { doc, setDoc, writeBatch } = await import("firebase/firestore/lite");
+
     // Extract large arrays from main data
     const { projects, certifications, skillGroups, timeline, ...mainData } = data;
-    
+
     // Save main portfolio data (without large arrays)
     const mainRef = doc(firebaseDb, FIRESTORE_COLLECTION, FIRESTORE_DOC);
     await setDoc(mainRef, mainData);
-    
+
     // Use batch writes for better performance
     const batch = writeBatch(firebaseDb);
-    
+
     // Save each project as a separate document
     projects.forEach((project) => {
       const projectRef = doc(firebaseDb, PROJECTS_COLLECTION, project.id);
       batch.set(projectRef, project);
     });
-    
+
     // Save certifications in one document
     const certsRef = doc(firebaseDb, FIRESTORE_COLLECTION, CERTIFICATIONS_DOC);
     batch.set(certsRef, { items: certifications });
-    
+
     // Save skills in one document
     const skillsRef = doc(firebaseDb, FIRESTORE_COLLECTION, SKILLS_DOC);
     batch.set(skillsRef, { items: skillGroups });
-    
+
     // Save timeline in one document
     const timelineRef = doc(firebaseDb, FIRESTORE_COLLECTION, TIMELINE_DOC);
     batch.set(timelineRef, { items: timeline });
-    
+
     // Commit all writes
     await batch.commit();
-    
+
     console.log("✅ Portfolio data saved successfully across multiple documents");
   } catch (e) {
     console.error("Error saving portfolio data to Firestore:", e);
@@ -497,8 +497,8 @@ export async function setAdminPasswordAsync(password: string): Promise<void> {
   try {
     const firebaseDb = await initFirebase();
     if (!firebaseDb) throw new Error("Firebase not initialized");
-    
-    const { doc, setDoc } = await import("firebase/firestore");
+
+    const { doc, setDoc } = await import("firebase/firestore/lite");
     const docRef = doc(firebaseDb, FIRESTORE_COLLECTION, ADMIN_DOC);
     await setDoc(docRef, { passwordHash: hashPassword(password), createdAt: new Date().toISOString() });
   } catch (e) {
@@ -511,17 +511,17 @@ export async function checkAdminPasswordAsync(password: string): Promise<boolean
   try {
     const firebaseDb = await initFirebase();
     if (!firebaseDb) return false;
-    
-    const { doc, getDoc } = await import("firebase/firestore");
+
+    const { doc, getDoc } = await import("firebase/firestore/lite");
     const docRef = doc(firebaseDb, FIRESTORE_COLLECTION, ADMIN_DOC);
     const docSnap = await getDoc(docRef);
-    
+
     if (!docSnap.exists()) {
       // First time - set the password
       await setAdminPasswordAsync(password);
       return true;
     }
-    
+
     const stored = docSnap.data()?.passwordHash;
     return hashPassword(password) === stored;
   } catch (e) {
@@ -534,8 +534,8 @@ export async function isPasswordSetAsync(): Promise<boolean> {
   try {
     const firebaseDb = await initFirebase();
     if (!firebaseDb) return false;
-    
-    const { doc, getDoc } = await import("firebase/firestore");
+
+    const { doc, getDoc } = await import("firebase/firestore/lite");
     const docRef = doc(firebaseDb, FIRESTORE_COLLECTION, ADMIN_DOC);
     const docSnap = await getDoc(docRef);
     return docSnap.exists() && !!docSnap.data()?.passwordHash;
@@ -591,7 +591,7 @@ export const COLOR_PRESETS = [
 
 // Icon options
 export const ICON_OPTIONS = [
-  "Award", "Target", "Zap", "Shield", "Layers", "Workflow", 
+  "Award", "Target", "Zap", "Shield", "Layers", "Workflow",
   "Code2", "Wrench", "GraduationCap", "Briefcase", "Rocket",
   "BookOpen", "Database", "Settings", "Star", "Heart"
 ];
