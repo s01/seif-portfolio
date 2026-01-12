@@ -752,21 +752,21 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
                     closed: { rotate: 0, y: 0 },
                     open: { rotate: 45, y: 6 },
                   }}
-                  className="block h-0.5 w-5 bg-white"
+                  className="block h-0.5 w-5 bg-current"
                 />
                 <motion.span
                   variants={{
                     closed: { opacity: 1 },
                     open: { opacity: 0 },
                   }}
-                  className="block h-0.5 w-5 bg-white"
+                  className="block h-0.5 w-5 bg-current"
                 />
                 <motion.span
                   variants={{
                     closed: { rotate: 0, y: 0 },
                     open: { rotate: -45, y: -6 },
                   }}
-                  className="block h-0.5 w-5 bg-white"
+                  className="block h-0.5 w-5 bg-current"
                 />
               </motion.div>
             </button>
@@ -1083,7 +1083,7 @@ function EasterEggAnimation({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm force-white-text"
       onClick={onClose}
     >
       <motion.div
@@ -1220,7 +1220,7 @@ function ImageLightbox({
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 force-white-text"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -1341,7 +1341,7 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
     <AnimatePresence>
       {project && (
         <motion.div
-          className="fixed inset-0 z-[60]"
+          className="fixed inset-0 z-[60] force-white-text"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

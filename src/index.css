@@ -154,3 +154,59 @@ body {
 .morning .border-white\/20 {
   border-color: var(--border-color) !important;
 }
+
+/* Force white text and dark backgrounds in modals/drawers */
+.force-white-text .text-white {
+  color: white !important;
+}
+
+.force-white-text .text-white\/90 {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.force-white-text .text-white\/80 {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.force-white-text .text-white\/70 {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.force-white-text .text-white\/60 {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.force-white-text .text-white\/40 {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Revert backgrounds in forced dark mode containers to keep glass effect on dark */
+.force-white-text .bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: white !important;
+}
+
+.force-white-text .bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.force-white-text .bg-white\/15 {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+}
+
+.force-white-text .bg-white\/20 {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.force-white-text .bg-black\/30 {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  color: white !important;
+}
+
+.force-white-text .border-white\/10,
+.force-white-text .border-white\/20 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
