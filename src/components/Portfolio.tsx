@@ -2433,7 +2433,7 @@ export default function Portfolio() {
           </section>
 
           {/* Footer */}
-          <footer className="border-t border-white/10 py-8">
+          <footer className="relative z-10 border-t border-white/10 py-8">
             <div className="mx-auto max-w-6xl px-4">
               <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
                 <div className="flex items-center gap-3">
