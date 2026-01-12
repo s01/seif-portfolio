@@ -1179,26 +1179,30 @@ function ImageLightbox({
   onNext?: () => void;
   onPrev?: () => void;
 }) {
-  const [touchStart, setTouchStart] = useState(0);
-  const [touchEnd, setTouchEnd] = useState(0);
+  const touchStart = React.useRef(0);
+  const touchEnd = React.useRef(0);
 
   const hasMultiple = images.length > 1;
   const src = images[currentIndex];
   const alt = `Image ${currentIndex + 1} of ${images.length}`;
 
   // Handle touch events for mobile swiping
+  // Using useRef to avoid re-renders on every scroll pixel (prevents crashes)
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX);
+    if (e.touches.length > 1) return; // Ignore pinch zoom
+    touchEnd.current = 0;
+    touchStart.current = e.targetTouches[0].clientX;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+    if (e.touches.length > 1) return; // Ignore pinch zoom
+    touchEnd.current = e.targetTouches[0].clientX;
   };
 
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
+    if (!touchStart.current || !touchEnd.current) return;
 
-    const distance = touchStart - touchEnd;
+    const distance = touchStart.current - touchEnd.current;
     const isLeftSwipe = distance > 50;
     const isRightSwipe = distance < -50;
 
@@ -1209,8 +1213,8 @@ function ImageLightbox({
       onPrev();
     }
 
-    setTouchStart(0);
-    setTouchEnd(0);
+    touchStart.current = 0;
+    touchEnd.current = 0;
   };
 
   const handleNext = (e: React.MouseEvent) => {
@@ -1292,8 +1296,8 @@ function ImageLightbox({
 function ProjectDrawer({ project, onClose, theme }: { project: Project | null; onClose: () => void; theme: 'night' | 'morning' }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showFullImage, setShowFullImage] = useState(false);
-  const [touchStart, setTouchStart] = useState(0);
-  const [touchEnd, setTouchEnd] = useState(0);
+  const touchStart = React.useRef(0);
+  const touchEnd = React.useRef(0);
 
   // Reset image index when project changes
   React.useEffect(() => {
@@ -1315,18 +1319,22 @@ function ProjectDrawer({ project, onClose, theme }: { project: Project | null; o
   };
 
   // Handle touch events for mobile swiping
+  // Using useRef to prevent crashes during gestures
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX);
+    if (e.touches.length > 1) return;
+    touchEnd.current = 0;
+    touchStart.current = e.targetTouches[0].clientX;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+    if (e.touches.length > 1) return;
+    touchEnd.current = e.targetTouches[0].clientX;
   };
 
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
+    if (!touchStart.current || !touchEnd.current) return;
 
-    const distance = touchStart - touchEnd;
+    const distance = touchStart.current - touchEnd.current;
     const isLeftSwipe = distance > 50;
     const isRightSwipe = distance < -50;
 
@@ -1338,8 +1346,8 @@ function ProjectDrawer({ project, onClose, theme }: { project: Project | null; o
     }
 
     // Reset
-    setTouchStart(0);
-    setTouchEnd(0);
+    touchStart.current = 0;
+    touchEnd.current = 0;
   };
 
   return (
