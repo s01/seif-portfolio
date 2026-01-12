@@ -445,7 +445,7 @@ function SalesforceBackground({ reduced, theme = 'night' }: { reduced: boolean; 
   const isNight = theme === 'night';
 
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden transition-colors duration-1000">
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden transition-colors duration-1000">
       {/* Sky gradient */}
       <div
         className="absolute inset-0 transition-colors duration-1000"
@@ -1725,8 +1725,6 @@ export default function Portfolio() {
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
-    // Sync body background to prevent "blue bar" overscroll issues
-    document.body.style.backgroundColor = theme === 'night' ? '#0d2035' : '#f0f9ff';
   }, [theme]);
 
   const reduced = usePrefersReducedMotion();
