@@ -483,29 +483,41 @@ const SalesforceBackground = memo(function SalesforceBackground({ theme = 'night
 
       {/* Static Salesforce Clouds - No animation */}
       <div className="absolute inset-0 bg-static-container">
-        {clouds.map((cloud, i) => (
-          <div
-            key={i}
-            className="absolute"
-            style={{
-              left: `${cloud.left}%`,
-              top: `${cloud.top}%`,
-            }}
-          >
-            {/* Official Salesforce Cloud Shape */}
-            <svg
-              width={cloud.size}
-              height={cloud.size * 0.7}
-              viewBox="0 0 460 320"
-              style={{ opacity: cloud.opacity, transition: 'opacity 1s' }}
+        {clouds.map((cloud, i) => {
+          // On mobile (index 0-4): show only first 5 clouds with reduced size
+          // On desktop (index 0-7): show all 8 clouds at full size
+          const isMobileCloud = i < 5;
+
+          return (
+            <div
+              key={i}
+              className={cx(
+                "absolute",
+                // Hide clouds 5-7 on mobile screens
+                i >= 5 && "hidden md:block"
+              )}
+              style={{
+                left: `${cloud.left}%`,
+                top: `${cloud.top}%`,
+              }}
             >
-              <path
-                d="M191.2 64.5c15.1-15.7 36.2-25.5 59.6-25.5 32.4 0 60.5 18.8 73.9 46.1 10.4-4.5 21.8-7 33.9-7 47.1 0 85.3 38.2 85.3 85.3s-38.2 85.3-85.3 85.3c-6.3 0-12.4-0.7-18.3-2-12.8 21.2-36.1 35.4-62.8 35.4-17.3 0-33.2-6-45.8-16-14.3 19.5-37.3 32.2-63.3 32.2-33.5 0-62-21.2-72.9-50.9-4.7 0.8-9.5 1.2-14.4 1.2-47.1 0-85.3-38.2-85.3-85.3 0-40.1 27.7-73.8 65-83 5.6-38.4 38.6-67.9 78.5-67.9 24.4 0 46.3 11 60.9 28.3z"
-                fill={isNight ? "#00A1E0" : "#ffffff"}
-              />
-            </svg>
-          </div>
-        ))}
+              {/* Official Salesforce Cloud Shape */}
+              <svg
+                // Smaller clouds on mobile (70% size), full size on desktop
+                width={isMobileCloud ? cloud.size * 0.7 : cloud.size}
+                height={isMobileCloud ? cloud.size * 0.7 * 0.7 : cloud.size * 0.7}
+                viewBox="0 0 460 320"
+                style={{ opacity: cloud.opacity, transition: 'opacity 1s' }}
+                className="md:w-full md:h-auto"
+              >
+                <path
+                  d="M191.2 64.5c15.1-15.7 36.2-25.5 59.6-25.5 32.4 0 60.5 18.8 73.9 46.1 10.4-4.5 21.8-7 33.9-7 47.1 0 85.3 38.2 85.3 85.3s-38.2 85.3-85.3 85.3c-6.3 0-12.4-0.7-18.3-2-12.8 21.2-36.1 35.4-62.8 35.4-17.3 0-33.2-6-45.8-16-14.3 19.5-37.3 32.2-63.3 32.2-33.5 0-62-21.2-72.9-50.9-4.7 0.8-9.5 1.2-14.4 1.2-47.1 0-85.3-38.2-85.3-85.3 0-40.1 27.7-73.8 65-83 5.6-38.4 38.6-67.9 78.5-67.9 24.4 0 46.3 11 60.9 28.3z"
+                  fill={isNight ? "#00A1E0" : "#ffffff"}
+                />
+              </svg>
+            </div>
+          );
+        })}
       </div>
 
       {/* Glowing orbs - Static decorative gradients */}
