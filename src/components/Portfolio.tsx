@@ -441,8 +441,8 @@ function EinsteinCharacter({ className = "" }: { className?: string }) {
 }
 
 
-// Animated Salesforce Background
-function SalesforceBackground({ reduced, theme = 'night' }: { reduced: boolean; theme?: 'night' | 'morning' }) {
+// Animated Salesforce Background - Memoized to prevent re-renders on scroll
+const SalesforceBackground = memo(function SalesforceBackground({ reduced, theme = 'night' }: { reduced: boolean; theme?: 'night' | 'morning' }) {
   const isNight = theme === 'night';
 
   return (
@@ -471,6 +471,7 @@ function SalesforceBackground({ reduced, theme = 'night' }: { reduced: boolean; 
           style={{
             left: `${cloud.left}%`,
             top: `${cloud.top}%`,
+            willChange: 'transform',
           }}
           animate={reduced ? undefined : {
             x: ["0%", "120%"],
@@ -498,32 +499,24 @@ function SalesforceBackground({ reduced, theme = 'night' }: { reduced: boolean; 
       ))}
 
       {/* Glowing orbs - Warm sun in morning mode */}
-      <motion.div
-        className="absolute -left-32 top-1/4 h-[500px] w-[500px] rounded-full opacity-20 blur-3xl"
+      <div
+        className="absolute -left-32 top-1/4 h-[500px] w-[500px] rounded-full opacity-20"
         style={{
           background: isNight
             ? `radial-gradient(circle, ${SF.blue} 0%, transparent 70%)`
             : `radial-gradient(circle, #fcd34d 0%, transparent 70%)`, // Yellow/Sun
+          willChange: 'transform',
         }}
-        animate={reduced ? undefined : {
-          scale: [1, 1.2, 1],
-          opacity: [0.15, 0.25, 0.15],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      <motion.div
-        className="absolute -right-32 top-1/2 h-[400px] w-[400px] rounded-full opacity-15 blur-3xl"
+      <div
+        className="absolute -right-32 top-1/2 h-[400px] w-[400px] rounded-full opacity-15"
         style={{
           background: isNight
             ? `radial-gradient(circle, ${SF.purple} 0%, transparent 70%)`
             : `radial-gradient(circle, #fb7185 0%, transparent 70%)`, // Pink/Warm
+          willChange: 'transform',
         }}
-        animate={reduced ? undefined : {
-          scale: [1, 1.3, 1],
-          opacity: [0.1, 0.2, 0.1],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
       />
 
       {/* Grid pattern */}
@@ -558,6 +551,7 @@ function SalesforceBackground({ reduced, theme = 'night' }: { reduced: boolean; 
             left: `${particle.left}%`,
             top: `${particle.top}%`,
             opacity: particle.opacity,
+            willChange: 'transform',
           }}
           animate={reduced ? undefined : {
             y: [0, -30, 0],
@@ -572,7 +566,7 @@ function SalesforceBackground({ reduced, theme = 'night' }: { reduced: boolean; 
       ))}
     </div>
   );
-}
+});
 
 // Salesforce-style card
 function SFCard({
@@ -589,7 +583,7 @@ function SFCard({
   return (
     <motion.div
       className={cx(
-        "relative overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl",
+        "relative overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-md",
         "transition-all duration-300 hover:border-white/20 hover:bg-white/10",
         className
       )}
@@ -695,7 +689,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
     >
       <div className="mx-auto max-w-6xl">
         {/* Main navbar bar */}
-        <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/30 px-4 py-3 backdrop-blur-xl md:px-6">
+        <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/30 px-4 py-3 backdrop-blur-md md:px-6">
           {/* Logo */}
           <button
             onClick={() => handleNavClick("top")}
