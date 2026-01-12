@@ -1,5 +1,7 @@
-import React, { useEffect, useMemo, useState, memo, useCallback } from "react";
+import React, { useEffect, useMemo, useState, memo, useCallback, useRef } from "react";
 import { LazyMotion, domAnimation, m as motion, AnimatePresence } from "framer-motion";
+import { logEvent } from "../analytics";
+import { AdminStatsModal } from "./AdminStatsModal";
 import {
   BadgeCheck,
   BarChart,
@@ -779,8 +781,10 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
             {/* Hire Me button */}
             <a
               href={`mailto:${email}`}
-              className="rounded-xl px-4 py-2.5 text-sm font-semibold transition hover:scale-105 md:px-5"
-              style={{ background: SF.blueAccessible, color: 'white' }}
+              className={cx("ml-4 hidden rounded-full px-5 py-2 text-sm font-semibold transition-all hover:scale-105 active:scale-95 md:block",
+                theme === 'morning' ? 'bg-[#00a1e0] text-white shadow-lg shadow-blue-500/30' : 'bg-white text-[#032d60] hover:bg-blue-50'
+              )}
+              onClick={() => logEvent('click_hire_me')}
             >
               Hire Me
             </a>
@@ -1040,7 +1044,7 @@ Ctrl/Cmd + K - Focus search
 Ctrl + ↑ - Back to top
 ? or / - Show this help
 
-🎮 Easter Egg: Try the Konami Code!
+🎮 Easter Egg: Try to find me!😇
 ↑ ↑ ↓ ↓ ← → ← → S F`;
 
         alert(helpMessage);
@@ -1148,18 +1152,31 @@ function EasterEggAnimation({ onClose }: { onClose: () => void }) {
   );
 }
 
-// Last Updated Timestamp
-function LastUpdated() {
-  const lastUpdate = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+// Last Updated Timestamp with Admin Trigger
+function LastUpdated({ onAdminTrigger }: { onAdminTrigger?: () => void }) {
+  const [clicks, setClicks] = useState(0);
+
+  const handleClick = () => {
+    setClicks(prev => {
+      const newCount = prev + 1;
+      if (newCount === 5) {
+        onAdminTrigger?.();
+        return 0;
+      }
+      return newCount;
+    });
+    // Reset if no click within 2 seconds
+    setTimeout(() => setClicks(0), 2000);
+  };
 
   return (
-    <div className="flex items-center gap-2 text-xs text-white/40">
+    <div
+      onClick={handleClick}
+      className="flex items-center gap-2 text-xs text-white/40 transition hover:text-white/60 cursor-pointer select-none"
+      title="Last deployed version"
+    >
       <Clock className="h-3 w-3" />
-      <span>Last updated: {lastUpdate}</span>
+      <span>Last updated: January 12, 2026</span>
     </div>
   );
 }
@@ -1629,27 +1646,14 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
                   <ChevronRight className="h-4 w-4" />
                 </button>
 
-                {/* Image counter and dots */}
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1">
-                  {p.images.map((_, i) => (
-                    <div
-                      key={i}
-                      className={cx(
-                        "h-1.5 w-1.5 rounded-full transition-all",
-                        i === cardImageIndex ? "bg-white w-3" : "bg-white/40"
-                      )}
-                    />
-                  ))}
-                </div>
+                {/* Image count badge */}
+                {hasMultipleImages && (
+                  <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-xs text-white backdrop-blur-sm pointer-events-none">
+                    <ImageIcon className="h-3 w-3" />
+                    {cardImageIndex + 1}/{p.images.length}
+                  </div>
+                )}
               </>
-            )}
-
-            {/* Image count badge */}
-            {hasMultipleImages && (
-              <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-xs text-white backdrop-blur-sm pointer-events-none">
-                <ImageIcon className="h-3 w-3" />
-                {cardImageIndex + 1}/{p.images.length}
-              </div>
             )}
           </div>
         )}
@@ -1752,6 +1756,9 @@ export default function Portfolio() {
         setDATA(getPortfolioData());
         setIsDataLoading(false);
       });
+
+    // Track Page View
+    logEvent('page_view');
   }, []);
 
   // Refresh data when window regains focus (in case admin made changes)
@@ -1772,6 +1779,7 @@ export default function Portfolio() {
   const [category, setCategory] = useState("All");
   const [certImageLightbox, setCertImageLightbox] = useState<{ src: string; alt: string } | null>(null);
   const [showEasterEgg, setShowEasterEgg] = useState(false);
+  const [showAdminStats, setShowAdminStats] = useState(false);
 
   // Defer animations until after first paint to reduce render delay
   const [animationsEnabled, setAnimationsEnabled] = useState(false);
@@ -1816,6 +1824,7 @@ export default function Portfolio() {
   }, []);
 
   const handleOpenProject = useCallback((project: Project) => {
+    logEvent('view_project', { project: project.title });
     setDrawer(project);
   }, []);
 
@@ -1921,6 +1930,7 @@ export default function Portfolio() {
                       href={`mailto:${DATA.email}`}
                       className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition hover:scale-105 hover:shadow-lg"
                       style={{ background: SF.blueAccessible, boxShadow: `0 8px 30px ${SF.blueAccessible}40`, color: 'white' }}
+                      onClick={() => logEvent('click_hero_email')}
                     >
                       <Mail className="h-4 w-4" />
                       Let's Connect
@@ -2389,8 +2399,8 @@ export default function Portfolio() {
                 <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
                   <a
                     href={`mailto:${DATA.email}`}
-                    className="inline-flex items-center gap-2 rounded-xl px-8 py-4 text-lg font-semibold text-white transition hover:scale-105"
-                    style={{ background: SF.blue, boxShadow: `0 8px 30px ${SF.blue}40` }}
+                    className="btn-interactive group relative inline-flex items-center gap-2 rounded-xl bg-[#00a1e0] px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/30 transition hover:bg-[#007fb0]"
+                    onClick={() => logEvent('click_hero_email')}
                   >
                     <Mail className="h-5 w-5" />
                     Send Me an Email
@@ -2400,6 +2410,7 @@ export default function Portfolio() {
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+                    onClick={() => logEvent('click_hero_resume')}
                   >
                     <MessageSquare className="h-5 w-5" />
                     Ask For Resume
@@ -2443,7 +2454,7 @@ export default function Portfolio() {
                 <p className="text-sm text-white/40">
                   Built with Love • by Seif Mohsen ❤️
                 </p>
-                <LastUpdated />
+                <LastUpdated onAdminTrigger={() => setShowAdminStats(true)} />
               </div>
             </div>
           </footer>
@@ -2469,6 +2480,13 @@ export default function Portfolio() {
         <AnimatePresence>
           {showEasterEgg && (
             <EasterEggAnimation onClose={() => setShowEasterEgg(false)} />
+          )}
+        </AnimatePresence>
+
+        {/* Admin Stats Dashboard */}
+        <AnimatePresence>
+          {showAdminStats && (
+            <AdminStatsModal onClose={() => setShowAdminStats(false)} />
           )}
         </AnimatePresence>
       </div>
