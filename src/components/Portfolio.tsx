@@ -1253,13 +1253,13 @@ function ImageLightbox({
         <>
           <button
             onClick={handlePrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-white/10 p-3 text-white backdrop-blur-sm transition hover:bg-white/20 md:left-8"
+            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-white/10 p-3 text-white backdrop-blur-sm transition hover:bg-white/20 hidden md:block md:left-8"
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
           <button
             onClick={handleNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-white/10 p-3 text-white backdrop-blur-sm transition hover:bg-white/20 md:right-8"
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-white/10 p-3 text-white backdrop-blur-sm transition hover:bg-white/20 hidden md:block md:right-8"
           >
             <ChevronRight className="h-6 w-6" />
           </button>
