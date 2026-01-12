@@ -214,3 +214,29 @@ body {
 .force-white-text .border-white\/20 {
   border-color: rgba(255, 255, 255, 0.1) !important;
 }
+
+/* Static Background Elements - All animations removed */
+/* 
+ * Background elements (clouds, stars) are now completely static
+ * - No animations, no transforms, no will-change
+ * - Ultra-low CPU/GPU usage
+ * - Purely decorative, positioned for visual appeal
+ */
+
+/* Static background container - no animation, just containment for performance */
+.bg-static-container {
+  contain: layout style paint;
+  /* No will-change needed - elements are static */
+  pointer-events: none;
+}
+
+/* Disable all background animations globally */
+.bg-animation-container,
+.animate-cloud,
+.animate-star,
+.animate-orbit,
+.star-twinkle {
+  animation: none !important;
+  transition: none !important;
+  will-change: auto !important;
+}

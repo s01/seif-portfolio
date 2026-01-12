@@ -163,17 +163,7 @@ const ICONS: Record<string, typeof Sparkles> = {
   Settings,
 };
 
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const onChange = () => setReduced(!!mq.matches);
-    onChange();
-    mq.addEventListener?.("change", onChange);
-    return () => mq.removeEventListener?.("change", onChange);
-  }, []);
-  return reduced;
-}
+
 
 // Official Salesforce Logo - Exact replica
 function SalesforceCloudLogo({ className = "", animate = true, size = "md" }: { className?: string; animate?: boolean; size?: "sm" | "md" | "lg" }) {
@@ -441,9 +431,43 @@ function EinsteinCharacter({ className = "" }: { className?: string }) {
 }
 
 
-// Animated Salesforce Background - Memoized to prevent re-renders on scroll
-const SalesforceBackground = memo(function SalesforceBackground({ reduced, theme = 'night' }: { reduced: boolean; theme?: 'night' | 'morning' }) {
+// Static Salesforce Background - No animations, purely decorative
+const SalesforceBackground = memo(function SalesforceBackground({ theme = 'night' }: { theme?: 'night' | 'morning' }) {
   const isNight = theme === 'night';
+
+  // Static cloud positions - distributed across viewport for visual balance
+  // Positioned to look good on all screen sizes without causing overflow
+  const clouds = [
+    { left: 5, top: 8, size: 180, opacity: isNight ? 0.08 : 0.4 },
+    { left: 25, top: 18, size: 120, opacity: isNight ? 0.06 : 0.3 },
+    { left: 50, top: 12, size: 150, opacity: isNight ? 0.07 : 0.35 },
+    { left: 70, top: 22, size: 100, opacity: isNight ? 0.05 : 0.25 },
+    { left: 88, top: 15, size: 140, opacity: isNight ? 0.06 : 0.3 },
+    // Additional clouds for better coverage
+    { left: 15, top: 35, size: 110, opacity: isNight ? 0.05 : 0.28 },
+    { left: 60, top: 40, size: 130, opacity: isNight ? 0.06 : 0.32 },
+    { left: 35, top: 28, size: 95, opacity: isNight ? 0.04 : 0.25 },
+  ];
+
+  // Static star positions - scattered across night sky
+  // Only visible in night mode, positioned for natural star field appearance
+  const stars = [
+    { left: 12, top: 18, size: 1, opacity: 0.3 },
+    { left: 28, top: 48, size: 1, opacity: 0.4 },
+    { left: 42, top: 25, size: 1, opacity: 0.25 },
+    { left: 58, top: 72, size: 1, opacity: 0.35 },
+    { left: 72, top: 38, size: 1, opacity: 0.3 },
+    { left: 85, top: 62, size: 1, opacity: 0.4 },
+    { left: 18, top: 82, size: 1, opacity: 0.25 },
+    { left: 48, top: 58, size: 1, opacity: 0.35 },
+    { left: 78, top: 28, size: 1, opacity: 0.3 },
+    { left: 92, top: 88, size: 1, opacity: 0.4 },
+    { left: 8, top: 45, size: 1, opacity: 0.28 },
+    { left: 65, top: 15, size: 1, opacity: 0.32 },
+    { left: 38, top: 68, size: 1, opacity: 0.27 },
+    { left: 82, top: 52, size: 1, opacity: 0.38 },
+    { left: 22, top: 92, size: 1, opacity: 0.3 },
+  ];
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden transition-colors duration-1000">
@@ -453,59 +477,44 @@ const SalesforceBackground = memo(function SalesforceBackground({ reduced, theme
         style={{
           background: isNight
             ? `linear-gradient(180deg, ${SF.darkBlue} 0%, ${SF.navy} 30%, #0a1628 60%, #050d18 100%)`
-            : `linear-gradient(180deg, #0ea5e9 0%, #38bdf8 30%, #a5f3fc 70%, #f0f9ff 100%)`, // Bright morning sky
+            : `linear-gradient(180deg, #0ea5e9 0%, #38bdf8 30%, #a5f3fc 70%, #f0f9ff 100%)`,
         }}
       />
 
-      {/* Animated Salesforce clouds */}
-      {[
-        { left: -10, top: 5, size: 180, duration: 80, delay: 0, opacity: isNight ? 0.08 : 0.4 },
-        { left: 15, top: 15, size: 120, duration: 70, delay: 10, opacity: isNight ? 0.06 : 0.3 },
-        { left: 40, top: 8, size: 150, duration: 90, delay: 5, opacity: isNight ? 0.07 : 0.35 },
-        { left: 65, top: 18, size: 100, duration: 75, delay: 15, opacity: isNight ? 0.05 : 0.25 },
-        { left: 85, top: 10, size: 140, duration: 85, delay: 8, opacity: isNight ? 0.06 : 0.3 },
-      ].map((cloud, i) => (
-        <motion.div
-          key={i}
-          className="absolute"
-          style={{
-            left: `${cloud.left}%`,
-            top: `${cloud.top}%`,
-            willChange: 'transform',
-          }}
-          animate={reduced ? undefined : {
-            x: ["0%", "120%"],
-          }}
-          transition={{
-            duration: cloud.duration,
-            repeat: Infinity,
-            ease: "linear",
-            delay: cloud.delay,
-          }}
-        >
-          {/* Official Salesforce Cloud Shape */}
-          <svg
-            width={cloud.size}
-            height={cloud.size * 0.7}
-            viewBox="0 0 460 320"
-            style={{ opacity: cloud.opacity, transition: 'opacity 1s' }}
+      {/* Static Salesforce Clouds - No animation */}
+      <div className="absolute inset-0 bg-static-container">
+        {clouds.map((cloud, i) => (
+          <div
+            key={i}
+            className="absolute"
+            style={{
+              left: `${cloud.left}%`,
+              top: `${cloud.top}%`,
+            }}
           >
-            <path
-              d="M191.2 64.5c15.1-15.7 36.2-25.5 59.6-25.5 32.4 0 60.5 18.8 73.9 46.1 10.4-4.5 21.8-7 33.9-7 47.1 0 85.3 38.2 85.3 85.3s-38.2 85.3-85.3 85.3c-6.3 0-12.4-0.7-18.3-2-12.8 21.2-36.1 35.4-62.8 35.4-17.3 0-33.2-6-45.8-16-14.3 19.5-37.3 32.2-63.3 32.2-33.5 0-62-21.2-72.9-50.9-4.7 0.8-9.5 1.2-14.4 1.2-47.1 0-85.3-38.2-85.3-85.3 0-40.1 27.7-73.8 65-83 5.6-38.4 38.6-67.9 78.5-67.9 24.4 0 46.3 11 60.9 28.3z"
-              fill={isNight ? "#00A1E0" : "#ffffff"}
-            />
-          </svg>
-        </motion.div>
-      ))}
+            {/* Official Salesforce Cloud Shape */}
+            <svg
+              width={cloud.size}
+              height={cloud.size * 0.7}
+              viewBox="0 0 460 320"
+              style={{ opacity: cloud.opacity, transition: 'opacity 1s' }}
+            >
+              <path
+                d="M191.2 64.5c15.1-15.7 36.2-25.5 59.6-25.5 32.4 0 60.5 18.8 73.9 46.1 10.4-4.5 21.8-7 33.9-7 47.1 0 85.3 38.2 85.3 85.3s-38.2 85.3-85.3 85.3c-6.3 0-12.4-0.7-18.3-2-12.8 21.2-36.1 35.4-62.8 35.4-17.3 0-33.2-6-45.8-16-14.3 19.5-37.3 32.2-63.3 32.2-33.5 0-62-21.2-72.9-50.9-4.7 0.8-9.5 1.2-14.4 1.2-47.1 0-85.3-38.2-85.3-85.3 0-40.1 27.7-73.8 65-83 5.6-38.4 38.6-67.9 78.5-67.9 24.4 0 46.3 11 60.9 28.3z"
+                fill={isNight ? "#00A1E0" : "#ffffff"}
+              />
+            </svg>
+          </div>
+        ))}
+      </div>
 
-      {/* Glowing orbs - Warm sun in morning mode */}
+      {/* Glowing orbs - Static decorative gradients */}
       <div
         className="absolute -left-32 top-1/4 h-[500px] w-[500px] rounded-full opacity-20"
         style={{
           background: isNight
             ? `radial-gradient(circle, ${SF.blue} 0%, transparent 70%)`
-            : `radial-gradient(circle, #fcd34d 0%, transparent 70%)`, // Yellow/Sun
-          willChange: 'transform',
+            : `radial-gradient(circle, #fcd34d 0%, transparent 70%)`,
         }}
       />
 
@@ -514,8 +523,7 @@ const SalesforceBackground = memo(function SalesforceBackground({ reduced, theme
         style={{
           background: isNight
             ? `radial-gradient(circle, ${SF.purple} 0%, transparent 70%)`
-            : `radial-gradient(circle, #fb7185 0%, transparent 70%)`, // Pink/Warm
-          willChange: 'transform',
+            : `radial-gradient(circle, #fb7185 0%, transparent 70%)`,
         }}
       />
 
@@ -531,39 +539,24 @@ const SalesforceBackground = memo(function SalesforceBackground({ reduced, theme
         }}
       />
 
-      {/* Stars - Only in night mode */}
-      {isNight && [
-        { left: 10, top: 15, opacity: 0.3, duration: 4, delay: 0 },
-        { left: 25, top: 45, opacity: 0.4, duration: 5, delay: 1 },
-        { left: 40, top: 20, opacity: 0.25, duration: 6, delay: 0.5 },
-        { left: 55, top: 70, opacity: 0.35, duration: 4.5, delay: 2 },
-        { left: 70, top: 35, opacity: 0.3, duration: 5.5, delay: 1.5 },
-        { left: 85, top: 60, opacity: 0.4, duration: 4, delay: 0.8 },
-        { left: 15, top: 80, opacity: 0.25, duration: 6, delay: 2.5 },
-        { left: 45, top: 55, opacity: 0.35, duration: 5, delay: 1.2 },
-        { left: 75, top: 25, opacity: 0.3, duration: 4.5, delay: 0.3 },
-        { left: 90, top: 85, opacity: 0.4, duration: 5.5, delay: 1.8 },
-      ].map((particle, i) => (
-        <motion.div
-          key={`particle-${i}`}
-          className="absolute h-1 w-1 rounded-full bg-white"
-          style={{
-            left: `${particle.left}%`,
-            top: `${particle.top}%`,
-            opacity: particle.opacity,
-            willChange: 'transform',
-          }}
-          animate={reduced ? undefined : {
-            y: [0, -30, 0],
-            opacity: [0.2, 0.5, 0.2],
-          }}
-          transition={{
-            duration: particle.duration,
-            repeat: Infinity,
-            delay: particle.delay,
-          }}
-        />
-      ))}
+      {/* Static Stars - No animation (Only in night mode) */}
+      {isNight && (
+        <div className="absolute inset-0 bg-static-container">
+          {stars.map((star, i) => (
+            <div
+              key={`star-${i}`}
+              className="absolute rounded-full bg-white"
+              style={{
+                left: `${star.left}%`,
+                top: `${star.top}%`,
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                opacity: star.opacity,
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 });
@@ -988,7 +981,7 @@ function ThemeToggle({ theme, toggleTheme }: { theme: 'night' | 'morning'; toggl
 function LoadingSkeleton({ theme }: { theme: 'night' | 'morning' }) {
   return (
     <div className={cx("min-h-screen overflow-x-hidden font-sans transition-colors duration-500", theme === 'morning' ? "text-slate-900" : "text-white")}>
-      <SalesforceBackground reduced={false} theme={theme} />
+      <SalesforceBackground theme={theme} />
       <div className="mx-auto max-w-6xl px-4 py-24">
         {/* Navbar skeleton */}
         <div className="mb-16 h-16 w-full animate-pulse rounded-2xl bg-white/10" />
@@ -1711,7 +1704,7 @@ export default function Portfolio() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const reduced = usePrefersReducedMotion();
+
   const sectionIds = ["work", "skills", "cred", "journey", "contact"];
   const active = useActiveSection(sectionIds);
 
@@ -1823,7 +1816,7 @@ export default function Portfolio() {
   return (
     <LazyMotion features={domAnimation} strict>
       <div id="top" className={cx("min-h-screen overflow-x-hidden font-sans text-white transition-colors duration-500", theme === 'morning' ? 'morning' : '')}>
-        <SalesforceBackground reduced={reduced} theme={theme} />
+        <SalesforceBackground theme={theme} />
         <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} theme={theme} toggleTheme={() => setTheme(t => t === 'night' ? 'morning' : 'night')} />
 
         <main>
@@ -1995,7 +1988,7 @@ export default function Portfolio() {
                     {/* Astro character - positioned inside on mobile, outside on desktop */}
                     <motion.div
                       className="absolute -top-6 left-0 md:-left-16 md:-top-8"
-                      animate={reduced || !animationsEnabled ? undefined : { y: [0, -10, 0] }}
+                      animate={!animationsEnabled ? undefined : { y: [0, -10, 0] }}
                       transition={animationsEnabled ? { duration: 3, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
                     >
                       <AstroCharacter className="h-24 w-24 md:h-32 md:w-32" waving />
@@ -2004,7 +1997,7 @@ export default function Portfolio() {
                     {/* Codey character - positioned inside on mobile, outside on desktop */}
                     <motion.div
                       className="absolute -bottom-3 right-0 md:-bottom-4 md:-right-12"
-                      animate={reduced || !animationsEnabled ? undefined : { y: [0, -8, 0] }}
+                      animate={!animationsEnabled ? undefined : { y: [0, -8, 0] }}
                       transition={animationsEnabled ? { duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 } : { duration: 0 }}
                     >
                       <CodeyCharacter className="h-20 w-20 md:h-28 md:w-28" />
@@ -2013,7 +2006,7 @@ export default function Portfolio() {
                     {/* Trailhead Ranger badge - positioned inside on mobile, outside on desktop */}
                     <motion.div
                       className="absolute right-0 top-2 md:-right-8 md:top-0"
-                      animate={reduced || !animationsEnabled ? undefined : { rotate: [0, 5, 0] }}
+                      animate={!animationsEnabled ? undefined : { rotate: [0, 5, 0] }}
                       transition={animationsEnabled ? { duration: 4, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
                     >
                       <img
