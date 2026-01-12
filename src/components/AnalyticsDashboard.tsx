@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAnalyticsStats, type AnalyticsEvent } from "../analytics";
 import { checkAdminPasswordAsync, setAdminPasswordAsync } from "../data/portfolioData";
-import { Activity, Users, MousePointer, ShieldCheck, Clock, Monitor, Key, LogOut, ArrowLeft, Eye, EyeOff, LayoutDashboard } from "lucide-react";
+import { Activity, Users, MousePointer, ShieldCheck, Clock, Monitor, Key, LogOut, ArrowLeft, Eye, EyeOff, LayoutDashboard, Smartphone, Briefcase, FileText, Mail, Linkedin, TrendingUp, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AnalyticsDashboard() {
@@ -120,6 +120,9 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
         uniqueVisitors: number;
         breakdown: Record<string, number>;
         recentEvents: AnalyticsEvent[];
+        topProjects: [string, number][];
+        deviceStats: { mobile: number; desktop: number };
+        conversions: { hire: number; resume: number; email: number; social: number; github: number; linkedin: number };
     } | null>(null);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
 
@@ -187,18 +190,87 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                         bg="bg-purple-500/10"
                     />
                     <StatCard
-                        icon={Monitor}
-                        label="Active Sessions"
-                        value={(stats.uniqueVisitors * 1 + (Math.random() > 0.5 ? 1 : 0)).toFixed(0)}
+                        icon={TrendingUp}
+                        label="Engagement Rate"
+                        value={`${stats.uniqueVisitors ? ((stats.totalEvents / stats.uniqueVisitors).toFixed(1)) : 0} avg`}
                         color="text-orange-400"
                         bg="bg-orange-500/10"
                     />
+                </div>
+
+                {/* Conversion Goals */}
+                <div className="mt-8">
+                    <h3 className="mb-4 text-sm font-medium text-white/50 uppercase tracking-wider">Conversion Goals</h3>
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                        <ConversionCard icon={Zap} label="Hired Clicks" value={stats.conversions.hire} color="text-yellow-400" />
+                        <ConversionCard icon={FileText} label="Resume Views" value={stats.conversions.resume} color="text-emerald-400" />
+                        <ConversionCard icon={Mail} label="Emails" value={stats.conversions.email} color="text-blue-400" />
+                        <ConversionCard icon={Linkedin} label="Social Clicks" value={stats.conversions.social + stats.conversions.linkedin + stats.conversions.github} color="text-pink-400" />
+                    </div>
+                </div>
+
+                {/* Detailed Breakdown Row */}
+                <div className="mt-8 grid gap-8 md:grid-cols-3">
+                    {/* Top Projects */}
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 md:col-span-2">
+                        <div className="mb-6 flex items-center justify-between">
+                            <h3 className="text-lg font-semibold flex items-center gap-2">
+                                <Briefcase className="h-5 w-5 text-emerald-400" />
+                                Top Projects
+                            </h3>
+                        </div>
+                        <div className="space-y-4">
+                            {stats.topProjects.length > 0 ? stats.topProjects.slice(0, 5).map(([name, count], i) => (
+                                <div key={name} className="relative">
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span className="font-medium text-white">{i + 1}. {name}</span>
+                                        <span className="text-white/60">{count} views</span>
+                                    </div>
+                                    <div className="h-2 w-full overflow-hidden rounded-full bg-white/5">
+                                        <div
+                                            className="h-full bg-emerald-500/50 rounded-full"
+                                            style={{ width: `${(count / stats.topProjects[0][1]) * 100}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            )) : (
+                                <p className="text-sm text-white/40 italic">No project views recorded yet.</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Device Breakdown */}
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                        <div className="mb-6 flex items-center justify-between">
+                            <h3 className="text-lg font-semibold flex items-center gap-2">
+                                <Monitor className="h-5 w-5 text-blue-400" />
+                                Devices
+                            </h3>
+                        </div>
+                        <div className="space-y-6">
+                            <DeviceBar
+                                icon={Smartphone}
+                                label="Mobile"
+                                value={stats.deviceStats.mobile}
+                                total={stats.totalEvents || 1}
+                                color="bg-purple-500"
+                            />
+                            <DeviceBar
+                                icon={Monitor}
+                                label="Desktop"
+                                value={stats.deviceStats.desktop}
+                                total={stats.totalEvents || 1}
+                                color="bg-blue-500"
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 <div className="mt-12 rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
                     <div className="border-b border-white/10 px-6 py-4">
                         <h2 className="text-lg font-semibold">Interaction Log</h2>
                     </div>
+                    ```
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
                             <thead className="bg-white/5 text-white/60">
@@ -206,6 +278,7 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                                     <th className="px-6 py-3 font-medium">When</th>
                                     <th className="px-6 py-3 font-medium">Event</th>
                                     <th className="px-6 py-3 font-medium">Who (Session)</th>
+                                    <th className="px-6 py-3 font-medium">Source</th>
                                     <th className="px-6 py-3 font-medium">Device</th>
                                 </tr>
                             </thead>
@@ -228,6 +301,9 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                                         </td>
                                         <td className="px-6 py-4 font-mono text-xs text-white/50">
                                             {event.sessionId?.slice(0, 8) || 'Unknown'}
+                                        </td>
+                                        <td className="px-6 py-4 text-xs text-white/60 max-w-[150px] truncate" title={event.referrer}>
+                                            {event.referrer ? new URL(event.referrer).hostname : 'Direct'}
                                         </td>
                                         <td className="max-w-xs truncate px-6 py-4 text-xs text-white/30" title={event.userAgent}>
                                             {getBrowserInfo(event.userAgent || '')}
@@ -283,6 +359,39 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
                         <button type="submit" className="px-4 py-2 bg-[#00a1e0] text-white rounded-lg">Update</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    )
+}
+
+
+function ConversionCard({ icon: Icon, label, value, color }: any) {
+    return (
+        <div className="rounded-xl border border-white/10 bg-white/5 p-4 flex items-center gap-3">
+            <div className={`p-2 rounded-lg bg-white/5 ${color}`}>
+                <Icon className="h-5 w-5" />
+            </div>
+            <div>
+                <p className="text-2xl font-bold text-white">{value}</p>
+                <p className="text-xs text-white/50">{label}</p>
+            </div>
+        </div>
+    )
+}
+
+function DeviceBar({ icon: Icon, label, value, total, color }: any) {
+    const percent = Math.round((value / total) * 100) || 0;
+    return (
+        <div>
+            <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2 text-sm text-white/80">
+                    <Icon className="h-4 w-4 text-white/40" />
+                    {label}
+                </div>
+                <span className="text-sm font-bold text-white">{percent}%</span>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-white/5">
+                <div className={`h-full ${color}`} style={{ width: `${percent}%` }} />
             </div>
         </div>
     )

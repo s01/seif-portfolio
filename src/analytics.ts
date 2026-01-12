@@ -30,6 +30,7 @@ export const logEvent = async (eventName: string, data: any = {}) => {
             sessionId,
             userAgent: navigator.userAgent,
             screenSize: `${window.innerWidth}x${window.innerHeight}`,
+            referrer: document.referrer || '',
             ...data
         });
         // Silent success
@@ -57,19 +58,47 @@ export const getAnalyticsStats = async () => {
             } as AnalyticsEvent;
         });
 
-        // Aggregate
+        // Aggregations
         const stats: Record<string, number> = {};
         const uniqueSessions = new Set<string>();
+        const topProjects: Record<string, number> = {};
+        const deviceStats = { mobile: 0, desktop: 0 };
+        const conversions = { hire: 0, resume: 0, email: 0, social: 0, github: 0, linkedin: 0 };
 
         events.forEach(e => {
+            // General Event Counts
             stats[e.eventName] = (stats[e.eventName] || 0) + 1;
-            if (e.sessionId) uniqueSessions.add(e.sessionId); // Fixed prop access
+
+            // Unique Visitors
+            if (e.sessionId) uniqueSessions.add(e.sessionId);
+
+            // Top Projects
+            if (e.eventName === 'view_project' && e['project']) {
+                const pName = e['project'];
+                topProjects[pName] = (topProjects[pName] || 0) + 1;
+            }
+
+            // Device Breakdown
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(e.userAgent || '');
+            if (isMobile) deviceStats.mobile++;
+            else deviceStats.desktop++;
+
+            // Conversions
+            if (e.eventName === 'click_hire_me') conversions.hire++;
+            if (e.eventName === 'click_hero_resume') conversions.resume++;
+            if (e.eventName.includes('email')) conversions.email++;
+            if (e.eventName.includes('social')) conversions.social++;
+            if (e.eventName.includes('github')) conversions.github++;
+            if (e.eventName.includes('linkedin')) conversions.linkedin++;
         });
 
         return {
             totalEvents: events.length,
             uniqueVisitors: uniqueSessions.size,
             breakdown: stats,
+            topProjects: Object.entries(topProjects).sort(([, a], [, b]) => b - a),
+            deviceStats,
+            conversions,
             // Sort recent events desc
             recentEvents: events.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
         };
