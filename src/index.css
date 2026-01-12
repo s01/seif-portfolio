@@ -68,7 +68,8 @@ body {
 
 .btn-interactive:hover {
   transform: translateY(-2px);
-  animation: glow-pulse 2s ease-in-out infinite;
+  animation: glow-pulse 2s ease-in-out 2;
+  /* Finite: 2 pulses on hover */
 }
 
 .btn-interactive:active {

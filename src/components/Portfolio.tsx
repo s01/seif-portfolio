@@ -256,13 +256,13 @@ function AstroCharacter({ className = "", waving = false }: { className?: string
         r="8"
         fill="#ff6b35"
         animate={{ scale: [1, 1.2, 1] }}
-        transition={{ duration: 1.5, repeat: Infinity }}
+        transition={{ duration: 1.5, repeat: 3 }} // Finite: 3 pulses then stop
       />
 
       {/* Arms */}
       <motion.g
         animate={waving ? { rotate: [0, -20, 0] } : undefined}
-        transition={{ duration: 0.8, repeat: Infinity }}
+        transition={{ duration: 0.8, repeat: 4 }} // Finite: 4 waves then stop
         style={{ transformOrigin: "45px 160px" }}
       >
         <ellipse cx="35" cy="170" rx="18" ry="25" fill="#00a1e0" />
@@ -418,7 +418,7 @@ function EinsteinCharacter({ className = "" }: { className?: string }) {
       {/* Lightbulb (idea!) */}
       <motion.g
         animate={{ opacity: [0.5, 1, 0.5], y: [0, -3, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
+        transition={{ duration: 2, repeat: 3 }} // Finite: 3 pulses then stop
       >
         <ellipse cx="155" cy="50" rx="12" ry="15" fill="#ffc107" />
         <rect x="150" y="62" width="10" height="8" fill="#666" rx="2" />
@@ -1099,7 +1099,7 @@ function EasterEggAnimation({ onClose }: { onClose: () => void }) {
           }}
           transition={{
             duration: 0.5,
-            repeat: Infinity,
+            repeat: 5, // Finite: 5 celebrations then stop
             repeatDelay: 1,
           }}
         >
@@ -1989,7 +1989,7 @@ export default function Portfolio() {
                     <motion.div
                       className="absolute -top-6 left-0 md:-left-16 md:-top-8"
                       animate={!animationsEnabled ? undefined : { y: [0, -10, 0] }}
-                      transition={animationsEnabled ? { duration: 3, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
+                      transition={animationsEnabled ? { duration: 3, repeat: 3, ease: "easeInOut" } : { duration: 0 }} // Finite: 3 floats then stop
                     >
                       <AstroCharacter className="h-24 w-24 md:h-32 md:w-32" waving />
                     </motion.div>
@@ -1998,7 +1998,7 @@ export default function Portfolio() {
                     <motion.div
                       className="absolute -bottom-3 right-0 md:-bottom-4 md:-right-12"
                       animate={!animationsEnabled ? undefined : { y: [0, -8, 0] }}
-                      transition={animationsEnabled ? { duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 } : { duration: 0 }}
+                      transition={animationsEnabled ? { duration: 2.5, repeat: 3, ease: "easeInOut", delay: 0.5 } : { duration: 0 }} // Finite: 3 floats then stop
                     >
                       <CodeyCharacter className="h-20 w-20 md:h-28 md:w-28" />
                     </motion.div>
@@ -2007,7 +2007,7 @@ export default function Portfolio() {
                     <motion.div
                       className="absolute right-0 top-2 md:-right-8 md:top-0"
                       animate={!animationsEnabled ? undefined : { rotate: [0, 5, 0] }}
-                      transition={animationsEnabled ? { duration: 4, repeat: Infinity, ease: "easeInOut" } : { duration: 0 }}
+                      transition={animationsEnabled ? { duration: 4, repeat: 3, ease: "easeInOut" } : { duration: 0 }} // Finite: 3 rotations then stop
                     >
                       <img
                         src="/ranger.png"
