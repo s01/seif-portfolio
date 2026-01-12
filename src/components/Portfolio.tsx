@@ -954,16 +954,6 @@ function ThemeToggle({ theme, toggleTheme }: { theme: 'night' | 'morning'; toggl
       <AnimatePresence mode="wait">
         {theme === 'morning' ? (
           <motion.div
-            key="sun"
-            initial={{ rotate: -90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            exit={{ rotate: 90, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Sun className="h-5 w-5 text-amber-400 fill-amber-400" />
-          </motion.div>
-        ) : (
-          <motion.div
             key="moon"
             initial={{ rotate: 90, opacity: 0 }}
             animate={{ rotate: 0, opacity: 1 }}
@@ -971,6 +961,16 @@ function ThemeToggle({ theme, toggleTheme }: { theme: 'night' | 'morning'; toggl
             transition={{ duration: 0.2 }}
           >
             <Moon className="h-5 w-5 text-blue-300" />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="sun"
+            initial={{ rotate: -90, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            exit={{ rotate: 90, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Sun className="h-5 w-5 text-amber-400 fill-amber-400" />
           </motion.div>
         )}
       </AnimatePresence>
