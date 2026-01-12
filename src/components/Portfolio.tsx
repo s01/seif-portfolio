@@ -709,7 +709,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
               fetchPriority="high"
               decoding="async"
             />
-            <span className="hidden text-sm font-semibold text-white sm:block">Seif Mohsen</span>
+            <span className={cx("hidden text-sm font-semibold sm:block", theme === 'morning' ? "text-slate-900" : "text-white")}>Seif Mohsen</span>
           </button>
 
           {/* Desktop nav items */}
@@ -720,7 +720,9 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
                 onClick={() => onJump(item.id)}
                 className={cx(
                   "relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors",
-                  active === item.id ? "text-white" : "text-white/75 hover:text-white"
+                  active === item.id
+                    ? (theme === 'morning' ? "text-slate-900" : "text-white")
+                    : (theme === 'morning' ? "text-slate-600 hover:text-slate-900" : "text-white/75 hover:text-white")
                 )}
               >
                 {item.label}
@@ -793,7 +795,10 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
               animate={{ opacity: 1, height: "auto", y: 0 }}
               exit={{ opacity: 0, height: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="mt-2 overflow-hidden rounded-2xl border border-white/10 bg-black/50 backdrop-blur-xl md:hidden"
+              className={cx(
+                "mt-2 overflow-hidden rounded-2xl border border-white/10 backdrop-blur-xl md:hidden",
+                theme === 'morning' ? "bg-white/95 shadow-xl" : "bg-black/50"
+              )}
             >
               <div className="p-4">
                 {/* Nav items */}
@@ -807,8 +812,8 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
                         className={cx(
                           "flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium transition-colors",
                           active === item.id
-                            ? "bg-white/10 text-white"
-                            : "text-white/60 hover:bg-white/5 hover:text-white"
+                            ? (theme === 'morning' ? "bg-blue-50 text-blue-900" : "bg-white/10 text-white")
+                            : (theme === 'morning' ? "text-slate-600 hover:bg-slate-50 hover:text-slate-900" : "text-white/60 hover:bg-white/5 hover:text-white")
                         )}
                       >
                         <Icon className="h-5 w-5" style={{ color: active === item.id ? SF.blue : undefined }} />
@@ -979,10 +984,10 @@ function ThemeToggle({ theme, toggleTheme }: { theme: 'night' | 'morning'; toggl
 }
 
 // Loading Skeleton
-function LoadingSkeleton() {
+function LoadingSkeleton({ theme }: { theme: 'night' | 'morning' }) {
   return (
-    <div className="min-h-screen overflow-x-hidden font-sans text-white">
-      <SalesforceBackground reduced={false} />
+    <div className={cx("min-h-screen overflow-x-hidden font-sans transition-colors duration-500", theme === 'morning' ? "text-slate-900" : "text-white")}>
+      <SalesforceBackground reduced={false} theme={theme} />
       <div className="mx-auto max-w-6xl px-4 py-24">
         {/* Navbar skeleton */}
         <div className="mb-16 h-16 w-full animate-pulse rounded-2xl bg-white/10" />
@@ -1814,7 +1819,7 @@ export default function Portfolio() {
 
   // Show loading skeleton while data is being fetched
   if (isDataLoading) {
-    return <LoadingSkeleton />;
+    return <LoadingSkeleton theme={theme} />;
   }
 
   return (
