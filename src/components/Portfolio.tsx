@@ -441,29 +441,28 @@ function EinsteinCharacter({ className = "" }: { className?: string }) {
 
 
 // Animated Salesforce Background
-function SalesforceBackground({ reduced }: { reduced: boolean }) {
+function SalesforceBackground({ reduced, theme = 'night' }: { reduced: boolean; theme?: 'night' | 'morning' }) {
+  const isNight = theme === 'night';
+
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      {/* Sky gradient - Salesforce blue theme */}
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden transition-colors duration-1000">
+      {/* Sky gradient */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 transition-colors duration-1000"
         style={{
-          background: `linear-gradient(180deg, 
-            ${SF.darkBlue} 0%, 
-            ${SF.navy} 30%,
-            #0a1628 60%,
-            #050d18 100%
-          )`,
+          background: isNight
+            ? `linear-gradient(180deg, ${SF.darkBlue} 0%, ${SF.navy} 30%, #0a1628 60%, #050d18 100%)`
+            : `linear-gradient(180deg, #0ea5e9 0%, #38bdf8 30%, #a5f3fc 70%, #f0f9ff 100%)`, // Bright morning sky
         }}
       />
 
-      {/* Animated Salesforce clouds - using official cloud shape */}
+      {/* Animated Salesforce clouds */}
       {[
-        { left: -10, top: 5, size: 180, duration: 80, delay: 0, opacity: 0.08 },
-        { left: 15, top: 15, size: 120, duration: 70, delay: 10, opacity: 0.06 },
-        { left: 40, top: 8, size: 150, duration: 90, delay: 5, opacity: 0.07 },
-        { left: 65, top: 18, size: 100, duration: 75, delay: 15, opacity: 0.05 },
-        { left: 85, top: 10, size: 140, duration: 85, delay: 8, opacity: 0.06 },
+        { left: -10, top: 5, size: 180, duration: 80, delay: 0, opacity: isNight ? 0.08 : 0.4 },
+        { left: 15, top: 15, size: 120, duration: 70, delay: 10, opacity: isNight ? 0.06 : 0.3 },
+        { left: 40, top: 8, size: 150, duration: 90, delay: 5, opacity: isNight ? 0.07 : 0.35 },
+        { left: 65, top: 18, size: 100, duration: 75, delay: 15, opacity: isNight ? 0.05 : 0.25 },
+        { left: 85, top: 10, size: 140, duration: 85, delay: 8, opacity: isNight ? 0.06 : 0.3 },
       ].map((cloud, i) => (
         <motion.div
           key={i}
@@ -487,21 +486,23 @@ function SalesforceBackground({ reduced }: { reduced: boolean }) {
             width={cloud.size}
             height={cloud.size * 0.7}
             viewBox="0 0 460 320"
-            style={{ opacity: cloud.opacity }}
+            style={{ opacity: cloud.opacity, transition: 'opacity 1s' }}
           >
             <path
               d="M191.2 64.5c15.1-15.7 36.2-25.5 59.6-25.5 32.4 0 60.5 18.8 73.9 46.1 10.4-4.5 21.8-7 33.9-7 47.1 0 85.3 38.2 85.3 85.3s-38.2 85.3-85.3 85.3c-6.3 0-12.4-0.7-18.3-2-12.8 21.2-36.1 35.4-62.8 35.4-17.3 0-33.2-6-45.8-16-14.3 19.5-37.3 32.2-63.3 32.2-33.5 0-62-21.2-72.9-50.9-4.7 0.8-9.5 1.2-14.4 1.2-47.1 0-85.3-38.2-85.3-85.3 0-40.1 27.7-73.8 65-83 5.6-38.4 38.6-67.9 78.5-67.9 24.4 0 46.3 11 60.9 28.3z"
-              fill="#00A1E0"
+              fill={isNight ? "#00A1E0" : "#ffffff"}
             />
           </svg>
         </motion.div>
       ))}
 
-      {/* Glowing orbs */}
+      {/* Glowing orbs - Warm sun in morning mode */}
       <motion.div
-        className="absolute -left-32 top-1/4 h-[500px] w-[500px] rounded-full opacity-20"
+        className="absolute -left-32 top-1/4 h-[500px] w-[500px] rounded-full opacity-20 blur-3xl"
         style={{
-          background: `radial-gradient(circle, ${SF.blue} 0%, transparent 70%)`,
+          background: isNight
+            ? `radial-gradient(circle, ${SF.blue} 0%, transparent 70%)`
+            : `radial-gradient(circle, #fcd34d 0%, transparent 70%)`, // Yellow/Sun
         }}
         animate={reduced ? undefined : {
           scale: [1, 1.2, 1],
@@ -511,9 +512,11 @@ function SalesforceBackground({ reduced }: { reduced: boolean }) {
       />
 
       <motion.div
-        className="absolute -right-32 top-1/2 h-[400px] w-[400px] rounded-full opacity-15"
+        className="absolute -right-32 top-1/2 h-[400px] w-[400px] rounded-full opacity-15 blur-3xl"
         style={{
-          background: `radial-gradient(circle, ${SF.purple} 0%, transparent 70%)`,
+          background: isNight
+            ? `radial-gradient(circle, ${SF.purple} 0%, transparent 70%)`
+            : `radial-gradient(circle, #fb7185 0%, transparent 70%)`, // Pink/Warm
         }}
         animate={reduced ? undefined : {
           scale: [1, 1.3, 1],
@@ -522,31 +525,20 @@ function SalesforceBackground({ reduced }: { reduced: boolean }) {
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
       />
 
-      <motion.div
-        className="absolute bottom-0 left-1/3 h-[300px] w-[300px] rounded-full opacity-10"
-        style={{
-          background: `radial-gradient(circle, ${SF.orange} 0%, transparent 70%)`,
-        }}
-        animate={reduced ? undefined : {
-          scale: [1, 1.15, 1],
-        }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-      />
-
       {/* Grid pattern */}
       <div
         className="absolute inset-0 opacity-[0.02]"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
+            linear-gradient(${isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'} 1px, transparent 1px),
+            linear-gradient(90deg, ${isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'} 1px, transparent 1px)
           `,
           backgroundSize: "50px 50px",
         }}
       />
 
-      {/* Floating particles - using fixed positions for purity */}
-      {[
+      {/* Stars - Only in night mode */}
+      {isNight && [
         { left: 10, top: 15, opacity: 0.3, duration: 4, delay: 0 },
         { left: 25, top: 45, opacity: 0.4, duration: 5, delay: 1 },
         { left: 40, top: 20, opacity: 0.25, duration: 6, delay: 0.5 },
@@ -673,7 +665,8 @@ function SectionHeader({
 }
 
 // Navbar
-function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active: string; onJump: (id: string) => void; email: string; github: string; linkedin: string; trailhead: string }) {
+function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, toggleTheme }: { active: string; onJump: (id: string) => void; email: string; github: string; linkedin: string; trailhead: string; theme: 'night' | 'morning'; toggleTheme: () => void }) {
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const items = [
@@ -779,7 +772,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead }: { active
             </button>
 
             {/* Theme Toggle */}
-            <ThemeToggle />
+            <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 
             {/* Hire Me button */}
             <a
@@ -950,14 +943,7 @@ function BackToTopButton() {
 }
 
 // Dark/Light Mode Toggle
-function ThemeToggle() {
-  const [isDark, setIsDark] = useState(true);
-
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle("light-mode");
-  };
-
+function ThemeToggle({ theme, toggleTheme }: { theme: 'night' | 'morning'; toggleTheme: () => void }) {
   return (
     <motion.button
       onClick={toggleTheme}
@@ -966,7 +952,7 @@ function ThemeToggle() {
       aria-label="Toggle theme"
     >
       <AnimatePresence mode="wait">
-        {isDark ? (
+        {theme === 'morning' ? (
           <motion.div
             key="sun"
             initial={{ rotate: -90, opacity: 0 }}
@@ -974,7 +960,7 @@ function ThemeToggle() {
             exit={{ rotate: 90, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <Sun className="h-5 w-5 text-yellow-300" />
+            <Sun className="h-5 w-5 text-amber-400 fill-amber-400" />
           </motion.div>
         ) : (
           <motion.div
@@ -1134,7 +1120,15 @@ function EasterEggAnimation({ onClose }: { onClose: () => void }) {
           transition={{ delay: 0.5 }}
           className="mt-4 text-xl text-white/80"
         >
-          Thank you r ! 🎮
+          Thank you for playing with me! 🎮
+        </motion.p>
+        <motion.p
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-4 text-xl text-white/80"
+        >
+          with all love , Seif ❤️
         </motion.p>
         <motion.p
           initial={{ y: 20, opacity: 0 }}
@@ -1707,6 +1701,7 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
 
 // Main component
 export default function Portfolio() {
+  const [theme, setTheme] = useState<'night' | 'morning'>('night');
   const reduced = usePrefersReducedMotion();
   const sectionIds = ["work", "skills", "cred", "journey", "contact"];
   const active = useActiveSection(sectionIds);
@@ -1814,9 +1809,9 @@ export default function Portfolio() {
 
   return (
     <LazyMotion features={domAnimation} strict>
-      <div id="top" className="min-h-screen overflow-x-hidden font-sans text-white">
-        <SalesforceBackground reduced={reduced} />
-        <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} />
+      <div id="top" className={cx("min-h-screen overflow-x-hidden font-sans text-white transition-colors duration-500", theme === 'morning' ? 'morning' : '')}>
+        <SalesforceBackground reduced={reduced} theme={theme} />
+        <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} theme={theme} toggleTheme={() => setTheme(t => t === 'night' ? 'morning' : 'night')} />
 
         <main>
           {/* HERO */}
@@ -1850,7 +1845,7 @@ export default function Portfolio() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={animationsEnabled ? { delay: 0.2 } : { duration: 0 }}
                     className="mt-3 text-2xl font-semibold md:text-3xl"
-                    style={{ color: SF.blue }}
+                    style={{ color: theme === 'night' ? SF.blue : SF.darkBlue }}
                   >
                     {DATA.headline}
                   </motion.p>

@@ -113,3 +113,44 @@ body {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* Morning Theme Overrides */
+.morning {
+  --bg-primary: #e0f2fe;
+  /* Light blue/morning sky */
+  --text-primary: #0f172a;
+  /* Slate 900 */
+  --text-secondary: #334155;
+  /* Slate 700 */
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Target both the root element (if it has .morning.text-white) and descendants */
+.morning.text-white,
+.morning .text-white {
+  color: var(--text-primary) !important;
+}
+
+.morning .text-white\/80,
+.morning .text-white\/70,
+.morning .text-white\/60,
+.morning .text-white\/40,
+.morning .text-white\/90 {
+  color: var(--text-secondary) !important;
+}
+
+.morning .bg-white\/5,
+.morning .bg-white\/10,
+.morning .bg-white\/15,
+.morning .bg-black\/30 {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  color: var(--text-primary);
+}
+
+.morning .border-white\/10,
+.morning .border-white\/20 {
+  border-color: var(--border-color) !important;
+}
