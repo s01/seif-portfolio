@@ -777,8 +777,8 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
             {/* Hire Me button */}
             <a
               href={`mailto:${email}`}
-              className="rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition hover:scale-105 md:px-5"
-              style={{ background: SF.blueAccessible }}
+              className="rounded-xl px-4 py-2.5 text-sm font-semibold transition hover:scale-105 md:px-5"
+              style={{ background: SF.blueAccessible, color: 'white' }}
             >
               Hire Me
             </a>
@@ -1894,8 +1894,8 @@ export default function Portfolio() {
                   >
                     <a
                       href={`mailto:${DATA.email}`}
-                      className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white transition hover:scale-105 hover:shadow-lg"
-                      style={{ background: SF.blueAccessible, boxShadow: `0 8px 30px ${SF.blueAccessible}40` }}
+                      className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition hover:scale-105 hover:shadow-lg"
+                      style={{ background: SF.blueAccessible, boxShadow: `0 8px 30px ${SF.blueAccessible}40`, color: 'white' }}
                     >
                       <Mail className="h-4 w-4" />
                       Let's Connect
@@ -1969,8 +1969,8 @@ export default function Portfolio() {
                       {/* Name badge on photo */}
                       <div className="absolute bottom-4 left-4 right-4">
                         <div className="rounded-xl border border-white/20 bg-black/80 px-4 py-2">
-                          <p className="text-sm font-semibold text-white">{DATA.name}</p>
-                          <p className="text-xs text-white/70">Salesforce Developer</p>
+                          <p className="text-sm font-semibold" style={{ color: 'white' }}>{DATA.name}</p>
+                          <p className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Salesforce Developer</p>
                         </div>
                       </div>
                     </div>
