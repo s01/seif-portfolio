@@ -992,46 +992,6 @@ function ThemeToggle() {
   );
 }
 
-// Animated Counter
-function AnimatedCounter({ end, duration = 2 }: { end: number; duration?: number }) {
-  const [count, setCount] = useState(0);
-  const [hasAnimated, setHasAnimated] = useState(false);
-
-  useEffect(() => {
-    if (hasAnimated) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setHasAnimated(true);
-          const increment = end / (duration * 60);
-          let current = 0;
-
-          const timer = setInterval(() => {
-            current += increment;
-            if (current >= end) {
-              setCount(end);
-              clearInterval(timer);
-            } else {
-              setCount(Math.floor(current));
-            }
-          }, 1000 / 60);
-
-          return () => clearInterval(timer);
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    const element = document.getElementById("animated-counter");
-    if (element) observer.observe(element);
-
-    return () => observer.disconnect();
-  }, [end, duration, hasAnimated]);
-
-  return <span id="animated-counter">{count}</span>;
-}
-
 // Loading Skeleton
 function LoadingSkeleton() {
   return (
@@ -1174,7 +1134,7 @@ function EasterEggAnimation({ onClose }: { onClose: () => void }) {
           transition={{ delay: 0.5 }}
           className="mt-4 text-xl text-white/80"
         >
-          Konami Code Master! 🎮
+          Thank you r ! 🎮
         </motion.p>
         <motion.p
           initial={{ y: 20, opacity: 0 }}
