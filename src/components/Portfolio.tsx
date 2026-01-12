@@ -840,6 +840,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
                     rel="noreferrer"
                     className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
                     title="GitHub"
+                    onClick={() => logEvent('click_social_github')}
                   >
                     <Github className="h-5 w-5" />
                   </a>
@@ -849,6 +850,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
                     rel="noreferrer"
                     className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
                     title="LinkedIn"
+                    onClick={() => logEvent('click_social_linkedin')}
                   >
                     <Linkedin className="h-5 w-5" />
                   </a>
@@ -856,6 +858,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
                     href={`mailto:${email}`}
                     className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
                     title="Email"
+                    onClick={() => logEvent('click_social_email')}
                   >
                     <Mail className="h-5 w-5" />
                   </a>
@@ -867,6 +870,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
                   target="_blank"
                   rel="noreferrer"
                   className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-gradient-to-r from-[#00a1e0]/20 to-[#1b96ff]/20 px-4 py-2.5 text-sm font-medium text-white transition hover:from-[#00a1e0]/30 hover:to-[#1b96ff]/30"
+                  onClick={() => logEvent('click_social_trailhead')}
                 >
                   <Cloud className="h-4 w-4" style={{ color: SF.blue }} />
                   <span>View Trailhead Profile</span>
@@ -1921,6 +1925,7 @@ export default function Portfolio() {
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                      onClick={() => logEvent('click_social_linkedin')}
                     >
                       <Linkedin className="h-4 w-4" />
                       LinkedIn
@@ -1930,6 +1935,7 @@ export default function Portfolio() {
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                      onClick={() => logEvent('click_social_trailhead')}
                     >
                       <Cloud className="h-4 w-4" style={{ color: SF.blue }} />
                       Trailhead
@@ -1939,6 +1945,7 @@ export default function Portfolio() {
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                      onClick={() => logEvent('click_social_github')}
                     >
                       <Github className="h-4 w-4" />
                       GitHub
@@ -2400,7 +2407,7 @@ export default function Portfolio() {
 
                 <div className="mt-12 flex items-center justify-center gap-6">
                   {[
-                    { icon: Mail, href: `mailto:${DATA.email}`, key: "mail", label: "Email" },
+                    { icon: Mail, href: `mailto:${DATA.email}`, key: "email", label: "Email" },
                     { icon: Linkedin, href: DATA.linkedin, key: "linkedin", label: "LinkedIn" },
                     { icon: Cloud, href: DATA.trailhead, key: "trailhead", label: "Trailhead", color: SF.blue },
                     { icon: Github, href: DATA.github, key: "github", label: "GitHub" },
@@ -2412,6 +2419,7 @@ export default function Portfolio() {
                       rel="noreferrer"
                       className="group flex flex-col items-center gap-2"
                       title={label}
+                      onClick={() => logEvent(`click_social_${key}`)}
                     >
                       <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-white/60 transition group-hover:bg-white/10 group-hover:text-white">
                         <Icon className="h-6 w-6" style={color ? { color } : undefined} />

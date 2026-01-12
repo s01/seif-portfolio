@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { getAnalyticsStats, type AnalyticsEvent } from "../analytics";
+import { getAnalyticsStats, clearAnalytics, type AnalyticsEvent } from "../analytics";
 import { checkAdminPasswordAsync, setAdminPasswordAsync } from "../data/portfolioData";
-import { Activity, Users, MousePointer, ShieldCheck, Clock, Monitor, Key, LogOut, ArrowLeft, Eye, EyeOff, LayoutDashboard, Smartphone, Briefcase, FileText, Mail, Linkedin, TrendingUp, Zap } from "lucide-react";
+import { Activity, Users, MousePointer, ShieldCheck, Clock, Monitor, Key, LogOut, ArrowLeft, Eye, EyeOff, LayoutDashboard, Smartphone, Briefcase, FileText, Mail, Linkedin, Github, TrendingUp, Zap, Cloud, Trash2, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AnalyticsDashboard() {
@@ -122,13 +122,18 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
         recentEvents: AnalyticsEvent[];
         topProjects: [string, number][];
         deviceStats: { mobile: number; desktop: number };
-        conversions: { hire: number; resume: number; email: number; social: number; github: number; linkedin: number };
+        conversions: { hire: number; resume: number; email: number; linkedin: number; github: number; trailhead: number; other: number };
     } | null>(null);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [showClearConfirm, setShowClearConfirm] = useState(false);
 
     useEffect(() => {
-        getAnalyticsStats().then(setStats);
+        loadStats();
     }, []);
+
+    const loadStats = () => {
+        getAnalyticsStats().then(setStats);
+    };
 
     if (!stats) {
         return (
@@ -163,6 +168,13 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                         >
                             <Key className="h-4 w-4" />
                             Change Password
+                        </button>
+                        <button
+                            onClick={() => setShowClearConfirm(true)}
+                            className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-400 hover:bg-red-500/20"
+                        >
+                            <Trash2 className="h-4 w-4" />
+                            Reset Data
                         </button>
                         <button
                             onClick={onLogout}
@@ -201,11 +213,13 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                 {/* Conversion Goals */}
                 <div className="mt-8">
                     <h3 className="mb-4 text-sm font-medium text-white/50 uppercase tracking-wider">Conversion Goals</h3>
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                        <ConversionCard icon={Zap} label="Hired Clicks" value={stats.conversions.hire} color="text-yellow-400" />
-                        <ConversionCard icon={FileText} label="Resume Views" value={stats.conversions.resume} color="text-emerald-400" />
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+                        <ConversionCard icon={Zap} label="Hired" value={stats.conversions.hire} color="text-yellow-400" />
+                        <ConversionCard icon={FileText} label="Resumes" value={stats.conversions.resume} color="text-emerald-400" />
                         <ConversionCard icon={Mail} label="Emails" value={stats.conversions.email} color="text-blue-400" />
-                        <ConversionCard icon={Linkedin} label="Social Clicks" value={stats.conversions.social + stats.conversions.linkedin + stats.conversions.github} color="text-pink-400" />
+                        <ConversionCard icon={Linkedin} label="LinkedIn" value={stats.conversions.linkedin} color="text-[#0077b5]" />
+                        <ConversionCard icon={Github} label="GitHub" value={stats.conversions.github} color="text-white" />
+                        <ConversionCard icon={Cloud} label="Trailhead" value={stats.conversions.trailhead} color="text-[#00a1e0]" />
                     </div>
                 </div>
 
@@ -270,7 +284,6 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                     <div className="border-b border-white/10 px-6 py-4">
                         <h2 className="text-lg font-semibold">Interaction Log</h2>
                     </div>
-                    ```
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
                             <thead className="bg-white/5 text-white/60">
@@ -316,9 +329,89 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                 </div>
             </div>
 
+
             {showPasswordModal && <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />}
+
+            {showClearConfirm && (
+                <ClearAnalyticsModal
+                    onClose={() => setShowClearConfirm(false)}
+                    onConfirm={() => {
+                        loadStats();
+                        setShowClearConfirm(false);
+                    }}
+                />
+            )}
         </div>
     );
+}
+
+function ClearAnalyticsModal({ onClose, onConfirm }: { onClose: () => void, onConfirm: () => void }) {
+    const [loading, setLoading] = useState(false);
+    const [err, setErr] = useState("");
+
+    // Import dynamically to avoid circular dependency issues if any, but regular import is fine here.
+    // We need clearAnalytics from ../analytics
+    // Note: We need to import it at top of file, assuming it's exported.
+
+    const handleClear = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setErr("");
+
+        // Simple safety check - no password needed since they are already logged in as admin
+        // But maybe a "type DELETE" confirmation?
+        // Let's just ask "Are you sure?"
+
+        setLoading(true);
+        // We need to import clearAnalytics.
+        // I will assume it's imported at the top. I need to add it to imports in the first chunk if strict.
+        // Actually I forgot to add it to imports in Chunk 1. I'll use require or assumes I'll fix imports.
+        // I'll fix imports in a separate tool call if this fails, or use window/dynamic... no.
+        // I'll add logic to chunk 1.
+
+        // Wait, I can't restart chunk 1.
+        // I'll assume 'clearAnalytics' is available? use replacement to add it.
+        const success = await clearAnalytics();
+
+        if (success) {
+            onConfirm();
+        } else {
+            setErr("Failed to clear data. Try again.");
+        }
+        setLoading(false);
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+            <div className="w-full max-w-sm rounded-2xl border border-red-500/30 bg-[#0d2035] p-6 shadow-2xl">
+                <div className="mb-4 flex items-center gap-3 text-red-400">
+                    <AlertTriangle className="h-6 w-6" />
+                    <h3 className="text-xl font-bold">Clear All Data?</h3>
+                </div>
+                <p className="text-white/60 mb-6">
+                    This action cannot be undone. All analytics events and statistics will be permanently deleted.
+                </p>
+
+                {err && <p className="mb-4 text-sm text-red-400">{err}</p>}
+
+                <div className="flex gap-3 justify-end">
+                    <button
+                        onClick={onClose}
+                        className="rounded-lg px-4 py-2 text-white/60 hover:bg-white/5 hover:text-white"
+                        disabled={loading}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleClear}
+                        disabled={loading}
+                        className="rounded-lg bg-red-500 px-4 py-2 font-medium text-white hover:bg-red-600 disabled:opacity-50"
+                    >
+                        {loading ? "Deleting..." : "Confirm Delete"}
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 function ChangePasswordModal({ onClose }: { onClose: () => void }) {

@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { collection, addDoc, getDocs, query } from "firebase/firestore/lite";
+import { collection, addDoc, getDocs, query, writeBatch, doc } from "firebase/firestore/lite";
 
 const EVENTS_COLLECTION = "analytics_events";
 
@@ -39,6 +39,24 @@ export const logEvent = async (eventName: string, data: any = {}) => {
     }
 };
 
+export const clearAnalytics = async () => {
+    try {
+        const q = query(collection(db, EVENTS_COLLECTION));
+        const snapshot = await getDocs(q);
+        const batch = writeBatch(db);
+
+        snapshot.docs.forEach((docSnap) => {
+            batch.delete(doc(db, EVENTS_COLLECTION, docSnap.id));
+        });
+
+        await batch.commit();
+        return true;
+    } catch (e) {
+        console.error("[Analytics] Error clearing analytics:", e);
+        return false;
+    }
+};
+
 export const getAnalyticsStats = async () => {
     try {
         const q = query(collection(db, EVENTS_COLLECTION));
@@ -63,7 +81,15 @@ export const getAnalyticsStats = async () => {
         const uniqueSessions = new Set<string>();
         const topProjects: Record<string, number> = {};
         const deviceStats = { mobile: 0, desktop: 0 };
-        const conversions = { hire: 0, resume: 0, email: 0, social: 0, github: 0, linkedin: 0 };
+        const conversions = {
+            hire: 0,
+            resume: 0,
+            email: 0,
+            linkedin: 0,
+            github: 0,
+            trailhead: 0,
+            other: 0
+        };
 
         events.forEach(e => {
             // General Event Counts
@@ -83,13 +109,16 @@ export const getAnalyticsStats = async () => {
             if (isMobile) deviceStats.mobile++;
             else deviceStats.desktop++;
 
-            // Conversions
-            if (e.eventName === 'click_hire_me') conversions.hire++;
-            if (e.eventName === 'click_hero_resume') conversions.resume++;
-            if (e.eventName.includes('email')) conversions.email++;
-            if (e.eventName.includes('social')) conversions.social++;
-            if (e.eventName.includes('github')) conversions.github++;
-            if (e.eventName.includes('linkedin')) conversions.linkedin++;
+            // Conversions & Socials
+            const name = e.eventName.toLowerCase();
+            if (name === 'click_hire_me') conversions.hire++;
+            else if (name.includes('resume')) conversions.resume++;
+            else if (name.includes('email')) conversions.email++;
+            else if (name.includes('linkedin')) conversions.linkedin++;
+            else if (name.includes('github')) conversions.github++;
+            else if (name.includes('trailhead')) conversions.trailhead++;
+            // Capture other 'social' clicks that aren't the specific ones above
+            else if (name.includes('social')) conversions.other++;
         });
 
         return {
