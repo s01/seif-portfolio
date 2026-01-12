@@ -1230,6 +1230,7 @@ function ImageLightbox({
   return (
     <motion.div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 force-white-text"
+      style={{ touchAction: 'pan-x' }} // optimization: allows x-swipe but prevents browser zoom/scroll interference
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -1355,6 +1356,7 @@ function ProjectDrawer({ project, onClose, theme }: { project: Project | null; o
       {project && (
         <motion.div
           className="fixed inset-0 z-[60]"
+          style={{ touchAction: 'pan-y' }} // optimization: allows scrolling but prevents pinch-zoom crashes
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -1723,6 +1725,8 @@ export default function Portfolio() {
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
+    // Sync body background to prevent "blue bar" overscroll issues
+    document.body.style.backgroundColor = theme === 'night' ? '#0d2035' : '#f0f9ff';
   }, [theme]);
 
   const reduced = usePrefersReducedMotion();
