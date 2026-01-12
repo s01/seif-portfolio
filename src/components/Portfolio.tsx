@@ -719,8 +719,8 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
                 key={item.id}
                 onClick={() => onJump(item.id)}
                 className={cx(
-                  "relative rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-                  active === item.id ? "text-white" : "text-white/60 hover:text-white"
+                  "relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors",
+                  active === item.id ? "text-white" : "text-white/75 hover:text-white"
                 )}
               >
                 {item.label}
@@ -1036,7 +1036,7 @@ Ctrl + ↑ - Back to top
 ? or / - Show this help
 
 🎮 Easter Egg: Try the Konami Code!
-↑ ↑ ↓ ↓ ← → ← → B A`;
+↑ ↑ ↓ ↓ ← → ← → S F`;
 
         alert(helpMessage);
       }
@@ -1056,7 +1056,7 @@ Ctrl + ↑ - Back to top
 // Easter Egg - Konami Code
 function useKonamiCode(onSuccess: () => void) {
   useEffect(() => {
-    const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+    const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "s", "f"];
     let konamiIndex = 0;
 
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -1284,7 +1284,7 @@ function ImageLightbox({
   );
 }
 
-function ProjectDrawer({ project, onClose }: { project: Project | null; onClose: () => void }) {
+function ProjectDrawer({ project, onClose, theme }: { project: Project | null; onClose: () => void; theme: 'night' | 'morning' }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showFullImage, setShowFullImage] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
@@ -1341,7 +1341,7 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
     <AnimatePresence>
       {project && (
         <motion.div
-          className="fixed inset-0 z-[60] force-white-text"
+          className="fixed inset-0 z-[60]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -1349,7 +1349,7 @@ function ProjectDrawer({ project, onClose }: { project: Project | null; onClose:
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
           <motion.div
             className="absolute right-0 top-0 h-full w-full max-w-xl border-l border-white/10"
-            style={{ background: `linear-gradient(180deg, ${SF.darkBlue}, ${SF.navy})` }}
+            style={{ background: theme === 'night' ? `linear-gradient(180deg, ${SF.darkBlue}, ${SF.navy})` : 'linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%)' }}
             initial={{ x: 420 }}
             animate={{ x: 0 }}
             exit={{ x: 520 }}
@@ -1701,7 +1701,17 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
 
 // Main component
 export default function Portfolio() {
-  const [theme, setTheme] = useState<'night' | 'morning'>('night');
+  const [theme, setTheme] = useState<'night' | 'morning'>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('theme') as 'night' | 'morning') || 'night';
+    }
+    return 'night';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
   const reduced = usePrefersReducedMotion();
   const sectionIds = ["work", "skills", "cred", "journey", "contact"];
   const active = useActiveSection(sectionIds);
@@ -2424,7 +2434,7 @@ export default function Portfolio() {
           </footer>
         </main>
 
-        <ProjectDrawer project={drawer} onClose={handleCloseDrawer} />
+        <ProjectDrawer project={drawer} onClose={handleCloseDrawer} theme={theme} />
 
         {/* Certificate Image Lightbox */}
         <AnimatePresence>
