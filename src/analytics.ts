@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { collection, addDoc, getDocs, query, orderBy, limit } from "firebase/firestore/lite";
+import { collection, addDoc, getDocs, query } from "firebase/firestore/lite";
 
 const EVENTS_COLLECTION = "analytics_events";
 
@@ -7,13 +7,16 @@ export interface AnalyticsEvent {
     eventName: string;
     category?: string;
     label?: string;
-    timestamp: any;
-    dateStr: string;
+    timestamp: Date;
+    dateStr?: string;
+    sessionId?: string;
+    userAgent?: string;
+    screenSize?: string;
+    [key: string]: any;
 }
 
 export const logEvent = async (eventName: string, data: any = {}) => {
     try {
-        // Basic session handling
         let sessionId = sessionStorage.getItem("analytics_session_id");
         if (!sessionId) {
             sessionId = Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -22,14 +25,14 @@ export const logEvent = async (eventName: string, data: any = {}) => {
 
         await addDoc(collection(db, EVENTS_COLLECTION), {
             eventName,
-            timestamp: new Date(),
+            timestamp: new Date(), // Stored as Timestamp in Firestore
             dateStr: new Date().toISOString(),
             sessionId,
             userAgent: navigator.userAgent,
             screenSize: `${window.innerWidth}x${window.innerHeight}`,
             ...data
         });
-        console.log(`[Analytics] Logged: ${eventName}`);
+        // Silent success
     } catch (e) {
         console.warn("[Analytics] Failed to log event:", e);
     }
@@ -37,16 +40,21 @@ export const logEvent = async (eventName: string, data: any = {}) => {
 
 export const getAnalyticsStats = async () => {
     try {
-        // In production, you'd want aggregation queries or server-side functions.
-        // For a portfolio with moderate traffic, fetching client-side is acceptable.
         const q = query(collection(db, EVENTS_COLLECTION));
         const snapshot = await getDocs(q);
 
-        const events = snapshot.docs.map(doc => {
+        const events: AnalyticsEvent[] = snapshot.docs.map(doc => {
             const d = doc.data();
-            // Handle Firestore Timestamp or Date
-            const date = d.timestamp?.toDate ? d.timestamp.toDate() : new Date(d.dateStr || Date.now());
-            return { ...d, timestamp: date } as AnalyticsEvent;
+            // Handle Firestore Timestamp conversion if needed
+            const date = d.timestamp && typeof d.timestamp.toDate === 'function'
+                ? d.timestamp.toDate()
+                : new Date(d.dateStr || Date.now());
+
+            return {
+                ...d,
+                eventName: d.eventName || 'unknown',
+                timestamp: date
+            } as AnalyticsEvent;
         });
 
         // Aggregate
@@ -55,14 +63,15 @@ export const getAnalyticsStats = async () => {
 
         events.forEach(e => {
             stats[e.eventName] = (stats[e.eventName] || 0) + 1;
-            if (e['sessionId']) uniqueSessions.add(e['sessionId']);
+            if (e.sessionId) uniqueSessions.add(e.sessionId); // Fixed prop access
         });
 
         return {
             totalEvents: events.length,
             uniqueVisitors: uniqueSessions.size,
             breakdown: stats,
-            recentEvents: events.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, 50)
+            // Sort recent events desc
+            recentEvents: events.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
         };
     } catch (e) {
         console.error("[Analytics] Error fetching stats:", e);

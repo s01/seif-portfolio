@@ -4,6 +4,7 @@ import Portfolio from "./components/Portfolio";
 
 // Lazy-load admin dashboard (only loads when user visits /admin)
 const AdminDashboard = lazy(() => import("./components/AdminDashboard"));
+const AnalyticsDashboard = lazy(() => import("./components/AnalyticsDashboard"));
 
 // Loading fallback
 function LoadingScreen() {
@@ -22,13 +23,21 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Portfolio />} />
-        <Route 
-          path="/admin" 
+        <Route
+          path="/admin"
           element={
             <Suspense fallback={<LoadingScreen />}>
               <AdminDashboard />
             </Suspense>
-          } 
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <AnalyticsDashboard />
+            </Suspense>
+          }
         />
       </Routes>
     </BrowserRouter>

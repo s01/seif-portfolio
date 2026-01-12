@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Save,
   RotateCcw,
+  Activity,
   Plus,
   Trash2,
   Edit2,
@@ -350,9 +351,8 @@ function ColorPicker({
           <button
             key={color.value}
             onClick={() => onChange(color.value)}
-            className={`h-8 w-8 rounded-lg border-2 transition ${
-              value === color.value ? "border-white scale-110" : "border-transparent"
-            }`}
+            className={`h-8 w-8 rounded-lg border-2 transition ${value === color.value ? "border-white scale-110" : "border-transparent"
+              }`}
             style={{ background: color.value }}
             title={color.name}
           />
@@ -458,7 +458,7 @@ function ImageUploader({
   return (
     <div>
       <label className="mb-2 block text-sm font-medium text-white/70">{label}</label>
-      
+
       {/* Preview */}
       {value && (
         <div className="mb-3 relative inline-block">
@@ -525,7 +525,7 @@ function ImageUploader({
             <ImageIcon className="h-4 w-4" />
           </button>
         </div>
-        
+
         {/* Helpful tip */}
         <p className="mt-2 text-xs text-yellow-400/70">
           💡 Tip: For large images or diagrams, use Imgur, ImgBB, or GitHub to host your image and paste the URL above. This prevents storage limit issues.
@@ -606,7 +606,7 @@ function MultiImageUploader({
   return (
     <div>
       <label className="mb-2 block text-sm font-medium text-white/70">{label}</label>
-      
+
       {/* Image Previews */}
       {images.length > 0 && (
         <div className="mb-3 flex flex-wrap gap-3">
@@ -702,7 +702,7 @@ function MultiImageUploader({
           </button>
         </div>
       </div>
-      
+
       <div className="mt-2 space-y-1">
         {images.length > 0 && (
           <p className="text-xs text-white/40">
@@ -907,11 +907,10 @@ function LinksEditor({
                   <button
                     key={iconName}
                     onClick={() => updateLink(i, "icon", iconName)}
-                    className={`rounded-lg p-2 transition ${
-                      isSelected
-                        ? "bg-[#00a1e0] text-white"
-                        : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70"
-                    }`}
+                    className={`rounded-lg p-2 transition ${isSelected
+                      ? "bg-[#00a1e0] text-white"
+                      : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70"
+                      }`}
                     title={iconName}
                   >
                     {renderIcon(iconName)}
@@ -954,11 +953,10 @@ function LinksEditor({
                 <button
                   key={iconName}
                   onClick={() => setNewIcon(iconName)}
-                  className={`rounded-lg p-2 transition ${
-                    isSelected
-                      ? "bg-[#00a1e0] text-white"
-                      : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70"
-                  }`}
+                  className={`rounded-lg p-2 transition ${isSelected
+                    ? "bg-[#00a1e0] text-white"
+                    : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70"
+                    }`}
                   title={iconName}
                 >
                   {renderIcon(iconName)}
@@ -1238,11 +1236,10 @@ function ProjectEditor({
                     key={iconName}
                     type="button"
                     onClick={() => updateField("icon", iconName)}
-                    className={`flex flex-col items-center gap-1 rounded-lg p-2 transition ${
-                      isSelected
-                        ? "bg-[#00a1e0] text-white"
-                        : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70"
-                    }`}
+                    className={`flex flex-col items-center gap-1 rounded-lg p-2 transition ${isSelected
+                      ? "bg-[#00a1e0] text-white"
+                      : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70"
+                      }`}
                     title={iconName}
                   >
                     <IconComponent className="h-5 w-5" />
@@ -1293,7 +1290,7 @@ function ProjectEditor({
             onChange={(v) =>
               updateField("colors", {
                 accent: v,
-                glow: v.replace(")", ", 0.4)").replace("rgb", "rgba").replace("#", "rgba(") + 
+                glow: v.replace(")", ", 0.4)").replace("rgb", "rgba").replace("#", "rgba(") +
                   (v.startsWith("#") ? `, ${parseInt(v.slice(1, 3), 16)}, ${parseInt(v.slice(3, 5), 16)}, ${parseInt(v.slice(5, 7), 16)}, 0.4)`.replace("rgba(", "") : ""),
               })
             }
@@ -1352,7 +1349,7 @@ export default function AdminDashboard() {
     if (session === "active") {
       setIsLoggedIn(true);
     }
-    
+
     // Load data from Firestore
     getPortfolioDataAsync().then((firestoreData) => {
       setData(firestoreData);
@@ -1382,14 +1379,14 @@ export default function AdminDashboard() {
     // Calculate total data size for info purposes
     const dataSize = new Blob([JSON.stringify(data)]).size;
     const sizeMB = (dataSize / 1024 / 1024).toFixed(2);
-    
+
     // Warn if data is very large (over 5MB total)
     if (dataSize > 5 * 1024 * 1024) {
       if (!confirm(`Your portfolio data is ${sizeMB}MB. While there's no hard limit with our split storage, very large images may slow down loading. Consider using image URLs for better performance. Continue saving?`)) {
         return;
       }
     }
-    
+
     setIsSaving(true);
     try {
       await savePortfolioDataAsync(data);
@@ -1570,7 +1567,7 @@ export default function AdminDashboard() {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-      
+
       setSaveMessage("✅ Data exported successfully!");
       setTimeout(() => setSaveMessage(""), 3000);
     } catch (err) {
@@ -1589,12 +1586,12 @@ export default function AdminDashboard() {
     reader.onload = (event) => {
       try {
         const importedData = JSON.parse(event.target?.result as string) as PortfolioData;
-        
+
         // Validate the imported data has required fields
         if (!importedData.name || !importedData.email || !importedData.projects) {
           throw new Error("Invalid portfolio data format");
         }
-        
+
         // Confirm before importing
         if (confirm("This will replace all current data with the imported data. Continue?")) {
           setData(importedData);
@@ -1609,7 +1606,7 @@ export default function AdminDashboard() {
       }
     };
     reader.readAsText(file);
-    
+
     // Reset input so same file can be selected again
     e.target.value = '';
   };
@@ -1656,7 +1653,16 @@ export default function AdminDashboard() {
                 {saveMessage}
               </motion.span>
             )}
-            
+
+            <Link
+              to="/analytics"
+              className="flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-white/60 hover:bg-white/5"
+              title="View Analytics"
+            >
+              <Activity className="h-4 w-4" />
+              <span className="hidden sm:inline">Analytics</span>
+            </Link>
+
             <Link
               to="/"
               target="_blank"
@@ -1677,11 +1683,10 @@ export default function AdminDashboard() {
             <button
               onClick={handleSave}
               disabled={!hasChanges || isSaving}
-              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition ${
-                hasChanges && !isSaving
-                  ? "bg-[#00a1e0] text-white hover:bg-[#00a1e0]/90"
-                  : "bg-white/10 text-white/40"
-              }`}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition ${hasChanges && !isSaving
+                ? "bg-[#00a1e0] text-white hover:bg-[#00a1e0]/90"
+                : "bg-white/10 text-white/40"
+                }`}
             >
               <Save className={`h-4 w-4 ${isSaving ? "animate-spin" : ""}`} />
               {isSaving ? "Saving..." : "Save"}

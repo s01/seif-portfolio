@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState, memo, useCallback, useRef } from "react";
+import React, { useEffect, useMemo, useState, memo, useCallback } from "react";
 import { LazyMotion, domAnimation, m as motion, AnimatePresence } from "framer-motion";
 import { logEvent } from "../analytics";
-import { AdminStatsModal } from "./AdminStatsModal";
 import {
   BadgeCheck,
   BarChart,
@@ -1152,31 +1151,14 @@ function EasterEggAnimation({ onClose }: { onClose: () => void }) {
   );
 }
 
-// Last Updated Timestamp with Admin Trigger
-function LastUpdated({ onAdminTrigger }: { onAdminTrigger?: () => void }) {
-  const [clicks, setClicks] = useState(0);
-
-  const handleClick = () => {
-    setClicks(prev => {
-      const newCount = prev + 1;
-      if (newCount === 5) {
-        onAdminTrigger?.();
-        return 0;
-      }
-      return newCount;
-    });
-    // Reset if no click within 2 seconds
-    setTimeout(() => setClicks(0), 2000);
-  };
+// Last Updated Timestamp
+function LastUpdated() {
+  const lastUpdate = "January 12, 2026";
 
   return (
-    <div
-      onClick={handleClick}
-      className="flex items-center gap-2 text-xs text-white/40 transition hover:text-white/60 cursor-pointer select-none"
-      title="Last deployed version"
-    >
+    <div className="flex items-center gap-2 text-xs text-white/40 transition hover:text-white/60 cursor-default" title="Last deployed version">
       <Clock className="h-3 w-3" />
-      <span>Last updated: January 12, 2026</span>
+      <span>Last updated: {lastUpdate}</span>
     </div>
   );
 }
@@ -1779,7 +1761,6 @@ export default function Portfolio() {
   const [category, setCategory] = useState("All");
   const [certImageLightbox, setCertImageLightbox] = useState<{ src: string; alt: string } | null>(null);
   const [showEasterEgg, setShowEasterEgg] = useState(false);
-  const [showAdminStats, setShowAdminStats] = useState(false);
 
   // Defer animations until after first paint to reduce render delay
   const [animationsEnabled, setAnimationsEnabled] = useState(false);
@@ -2454,7 +2435,7 @@ export default function Portfolio() {
                 <p className="text-sm text-white/40">
                   Built with Love • by Seif Mohsen ❤️
                 </p>
-                <LastUpdated onAdminTrigger={() => setShowAdminStats(true)} />
+                <LastUpdated />
               </div>
             </div>
           </footer>
@@ -2480,13 +2461,6 @@ export default function Portfolio() {
         <AnimatePresence>
           {showEasterEgg && (
             <EasterEggAnimation onClose={() => setShowEasterEgg(false)} />
-          )}
-        </AnimatePresence>
-
-        {/* Admin Stats Dashboard */}
-        <AnimatePresence>
-          {showAdminStats && (
-            <AdminStatsModal onClose={() => setShowAdminStats(false)} />
           )}
         </AnimatePresence>
       </div>
