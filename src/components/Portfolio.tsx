@@ -701,7 +701,7 @@ function Navbar({ active, onJump, email, github, linkedin, trailhead, theme, tog
             className="flex items-center gap-3"
           >
             <img
-              src="/SeifMohsenLogo-optimized.png"
+              src="/SeifMohsenLogo.png"
               alt="Logo"
               className="h-10 w-10 rounded-full object-cover"
               width="40"
