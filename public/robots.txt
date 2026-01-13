@@ -4,6 +4,7 @@ Allow: /
 
 # Disallow admin pages from being indexed
 Disallow: /admin
+Disallow: /analytics
 
 # Sitemap location
 Sitemap: https://seif-portfolio-liart.vercel.app/sitemap.xml
