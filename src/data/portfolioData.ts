@@ -146,196 +146,428 @@ export interface PortfolioData {
 
 // Default data - used as fallback if Firestore is empty
 const DEFAULT_DATA: PortfolioData = {
-  name: "Seif Mohsen",
-  headline: "Salesforce Developer",
-  tagline: "Admin • Apex • LWC",
-  subheadline:
-    "I’m a Junior Salesforce Developer who focuses on building maintainable solutions through clean trigger architecture, bulk-safe Apex, and thoughtful automation with Flow and LWC.",
-  location: "6th of October City, Giza, Egypt",
-  email: "saifmohsen65@gmail.com",
-  linkedin: "https://www.linkedin.com/in/saif-mohsen",
-  github: "https://github.com/s01",
-  trailhead: "https://www.salesforce.com/trailblazer/saifmohsen",
-  resumeUrl: "https://drive.google.com/drive/folders/1CmJo2pFLvsyfimgO2912EwyBO63WlGIn",
-  trailblazerRank: "Ranger",
-
-  stats: [
-    { id: "1", label: "Certifications", value: "2", icon: "Award" },
-    { id: "2", label: "Trailhead Badges", value: "120+", icon: "Target" },
-    { id: "3", label: "Focus Area", value: "Apex + Flow", icon: "Zap" },
-    { id: "4", label: "Code Style", value: "Bulk-safe", icon: "Shield" },
+  "name": "Seif Mohsen",
+  "headline": "Salesforce Developer",
+  "tagline": "Admin • Apex • LWC",
+  "subheadline": "I’m a Junior Salesforce Developer who focuses on building maintainable solutions through clean trigger architecture, bulk-safe Apex, and thoughtful automation with Flow and LWC.",
+  "location": "6th of October City, Giza, Egypt",
+  "email": "saifmohsen65@gmail.com",
+  "linkedin": "https://www.linkedin.com/in/saif-mohsen",
+  "github": "https://github.com/s01",
+  "trailhead": "https://www.salesforce.com/trailblazer/saifmohsen",
+  "resumeUrl": "https://drive.google.com/drive/folders/1CmJo2pFLvsyfimgO2912EwyBO63WlGIn",
+  "trailblazerRank": "Ranger",
+  "stats": [
+    {
+      "label": "Certifications",
+      "value": "2",
+      "id": "1",
+      "icon": "Award"
+    },
+    {
+      "id": "2",
+      "icon": "Target",
+      "label": "Trailhead Badges",
+      "value": "120+"
+    },
+    {
+      "id": "3",
+      "icon": "Zap",
+      "value": "Apex + Flow",
+      "label": "Focus Area"
+    },
+    {
+      "value": "Bulk-safe",
+      "label": "Code Style",
+      "icon": "Shield",
+      "id": "4"
+    }
   ],
-
-  principles: [
+  "principles": [
     "One Trigger per Object",
     "Flow-first (when it fits)",
     "Bulkified by Design",
     "Governor Limits Aware",
     "Meaningful Unit Tests",
     "Fail Fast with addError()",
-    "Readable > Clever Code",
+    "Readable > Clever Code"
   ],
-
-  certifications: [
+  "certifications": [
     {
-      id: "3",
-      title: "ITI — Salesforce Track Graduate",
-      issuer: "Information Technology Institute",
-      year: "January 2026",
-      color: "#10b981",
-      image: "/iti-certification.png",
+      "color": "#10b981",
+      "title": "ITI — Salesforce Track Graduate",
+      "year": "January 2026",
+      "issuer": "Information Technology Institute",
+      "id": "3",
+      "image": "/cert-iti---salesforce-track-graduate-3.png"
     },
+    {
+      "color": "#00a1e0",
+      "image": "/cert-salesforce-certified-administrator-1.png",
+      "id": "1",
+      "issuer": "Salesforce",
+      "year": "December 2025",
+      "title": "Salesforce Certified Administrator"
+    },
+    {
+      "issuer": "Salesforce",
+      "color": "#8b5cf6",
+      "title": "Salesforce Certified Agentforce Specialist",
+      "year": "December 2025",
+      "image": "/cert-salesforce-certified-agentforce-specialist-2.png",
+      "id": "2"
+    }
   ],
-
-  skillGroups: [
+  "skillGroups": [
     {
-      id: "1",
-      group: "Platform",
-      icon: "Layers",
-      color: "#00a1e0",
-      items: ["Data Model", "Security (RLS/Perm Sets)", "Reports/Dashboards", "App Builder"],
-    },
-    {
-      id: "2",
-      group: "Automation",
-      icon: "Workflow",
-      color: "#ff6b35",
-      items: ["Flow (Screen/Record-Triggered)", "Validation Rules", "Approvals", "Assignment Rules"],
-    },
-    {
-      id: "3",
-      group: "Development",
-      icon: "Code2",
-      color: "#8b5cf6",
-      items: ["Apex", "Triggers", "Async Apex", "SOQL", "Unit Tests"],
-    },
-    {
-      id: "4",
-      group: "UI",
-      icon: "Wrench",
-      color: "#10b981",
-      items: ["LWC", "Lightning Pages", "UX for Admins", "SLDS mindset"],
-    },
-  ],
-
-  projects: [
-    {
-      id: "1",
-      title: "Opportunity Stage Manager",
-      category: "Flow + UX",
-      impact: "Reduced stage-update mistakes and guided reps with step-by-step UI.",
-      description:
-        "A screen-flow experience that turns messy sales process rules into a simple guided path. Includes conditional screens, validations, and clean updates.",
-      bullets: [
-        "Mobile-first Flow screens with smart branching",
-        "Validations + user-friendly error messaging",
-        "Audit-friendly data updates",
+      "items": [
+        "Data Modeling (Custom & Standard Objects)",
+        "Relationships (Lookup / Master-Detail)",
+        "Schema Builder",
+        "Page Layouts & Record Types",
+        "User Management"
       ],
-      stack: ["Flow", "Validation Rules", "Reports"],
-      links: [
-        { label: "Demo", href: "#" },
-        { label: "Case Study", href: "#" },
+      "icon": "Layers",
+      "group": "Salesforce Core Platform",
+      "color": "#00a1e0",
+      "id": "1"
+    },
+    {
+      "icon": "Shield",
+      "id": "2",
+      "items": [
+        "Profiles & Permission Sets",
+        "Role Hierarchy & RLS",
+        "Sharing Rules",
+        "Field-Level Security",
+        "Secure Org Configuration"
       ],
-      featured: true,
-      colors: {
-        glow: "rgba(0, 161, 224, 0.4)",
-        accent: "#00a1e0",
+      "color": "#ff6b35",
+      "group": "Security & Access Control"
+    },
+    {
+      "id": "3",
+      "icon": "Workflow",
+      "group": "Business Automation",
+      "color": "#8b5cf6",
+      "items": [
+        "Flow Builder",
+        "Validation Rules",
+        "Approval Processes",
+        "Assignment Rules",
+        "Declarative vs Programmatic Automation"
+      ]
+    },
+    {
+      "color": "#10b981",
+      "id": "4",
+      "icon": "Code2",
+      "group": "Apex & Backend Development",
+      "items": [
+        "Apex Classes & Triggers",
+        "Trigger Context & Best Practices",
+        "Async Apex (Future, Queueable, Batch)",
+        "SOQL & SOSL",
+        "Testing & Governor Limits"
+      ]
+    },
+    {
+      "id": "mk93jdsc4rgcmai4mcb",
+      "group": "UI & Frontend",
+      "icon": "Wrench",
+      "color": "#ea4359",
+      "items": [
+        "Lightning Web Components (LWC)",
+        "Lightning App Builder",
+        "Lightning Pages",
+        "SLDS Mindset",
+        "UX for Admins & End Users"
+      ]
+    },
+    {
+      "id": "mk93k5vsgzv5rjjdn9h",
+      "group": "Integration & Data",
+      "icon": "Zap",
+      "color": "#ffc107",
+      "items": [
+        "REST APIs (Basics)",
+        "Data Loader & Import Wizard",
+        "Postman (API Testing)",
+        "Data Management & Migration"
+      ]
+    },
+    {
+      "id": "mk93l3dkbdguje7e8cv",
+      "group": "Data & Analytics",
+      "icon": "Database",
+      "color": "#14b8a6",
+      "items": [
+        "Reports & Dashboards",
+        "Excel",
+        "Data Cleaning & Validation",
+        "Power BI (Foundational)"
+      ]
+    },
+    {
+      "id": "mk93lpblms9fiamos4a",
+      "group": "Dev & Collaboration Tools",
+      "icon": "Settings",
+      "color": "#ec4899",
+      "items": [
+        "Git & GitHub",
+        "Salesforce CLI (SFDX)",
+        "VS Code",
+        "Jira"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "links": [
+        {
+          "href": "https://www.linkedin.com/posts/saif-mohsen_salesforce-salesforceflow-automation-activity-7383036480799105024-GAfB",
+          "icon": "Linkedin",
+          "label": "Video Demo"
+        },
+        {
+          "href": "https://drive.google.com/file/d/1cEaqj0x2cZk5h2aLwCYFGJsGDspaWzd_/view?usp=sharing",
+          "icon": "FileText",
+          "label": "Documentation"
+        },
+        {
+          "href": "mailto:saifmohsen65@gmail.com",
+          "icon": "ExternalLink",
+          "label": "Want More Info"
+        }
+      ],
+      "featured": true,
+      "impact": "Reduced stage-update mistakes and guided reps with step-by-step UI.",
+      "title": "Opportunity Stage Manager",
+      "colors": {
+        "glow": "rgba(0, 161, 224, 0.4)",
+        "accent": "#00a1e0"
       },
+      "stack": [
+        "Screen Flows",
+        "Validation Rules",
+        "Custom Fields",
+        "Quick Actions",
+        "Lightning Tabs & Page Configuration",
+        "Profiles & Permission Sets"
+      ],
+      "id": "1",
+      "icon": "Workflow",
+      "bullets": [
+        "Guided Screen Flow to control Opportunity stage progression",
+        "Strict stage governance using validation rules to prevent manual UI changes",
+        "Dynamic stage-specific screens with required fields per stage",
+        "Clear, user-friendly error handling (same-stage checks & validation messaging)",
+        "Audit-friendly updates with all changes routed through a single controlled flow",
+        "Admin-safe override mechanism for automation and system processes"
+      ],
+      "description": "A screen-flow experience that turns messy sales process rules into a simple guided path. Includes conditional screens, validations, and clean updates.",
+      "images": [
+        "/project-opportunity-stage-manager-1-0.png"
+      ],
+      "category": "Flow + Admin"
     },
     {
-      id: "2",
-      title: "Product Stock Protection",
-      category: "Apex Trigger",
-      impact: "Blocked out-of-stock Opportunities with bulk-safe validation.",
-      description:
-        "A service-driven Apex validation that queries Product2 stock and blocks Opportunity saves using addError—no SOQL/DML in loops.",
-      bullets: [
-        "Before-insert validation with addError",
-        "Single SOQL query + map-based lookup",
-        "Test coverage with realistic data factory",
-      ],
-      stack: ["Apex", "SOQL", "Triggers", "Tests"],
-      links: [{ label: "GitHub", href: "#" }],
-      featured: false,
-      colors: {
-        glow: "rgba(139, 92, 246, 0.4)",
-        accent: "#8b5cf6",
+      "colors": {
+        "glow": "rgba(139, 92, 246, 0.4)",
+        "accent": "#8b5cf6"
       },
+      "category": "Development + Admin",
+      "links": [
+        {
+          "icon": "BookOpen",
+          "href": "https://drive.google.com/file/d/1OMLz1VDSOiyfRue3DF2xVK3HBBigHEHF/view?usp=sharing",
+          "label": "Documentation"
+        },
+        {
+          "label": "Want More Info",
+          "href": "mailto:saifmohsen65@gmail.com",
+          "icon": "ExternalLink"
+        }
+      ],
+      "title": "Gaming Tournament Project ",
+      "bullets": [
+        "Before-save record-triggered Flow to enforce tournament capacity and prevent race conditions",
+        "Bulkified trigger handler following one-trigger-per-object best practice",
+        "Invocable Apex method for complex team roster validation (3–5 players)",
+        "Map-based processing & SOQL for-loops for governor-safe bulk operations",
+        "98% test coverage using realistic bulk data scenarios"
+      ],
+      "stack": [
+        "Flows",
+        "Apex Triggers",
+        "Invocable Apex Methods",
+        "SOQL",
+        "Validation Rules",
+        "Roll-Up Summary Fields",
+        "Apex Test Classes"
+      ],
+      "id": "2",
+      "description": "A hybrid declarative + Apex-driven Salesforce solution for managing esports tournaments.\nThe system enforces registration rules, tournament capacity, team roster limits, and prize distribution using before-save Flows for transactional safety and Apex service classes for complex, bulk-heavy logic, all built with scalability and testability in mind.",
+      "featured": true,
+      "icon": "Code2",
+      "impact": "*Prevented tournament overbooking with transaction-safe capacity enforcement   *Ensured fair competition through controlled registrations, roster validation, and automated prize distribution    --- *Maintained data integrity at scale under bulk operations (200+ records)",
+      "images": [
+        "/project-gaming-tournament-project--2-0.png",
+        "/project-gaming-tournament-project--2-1.png"
+      ]
     },
     {
-      id: "3",
-      title: "Case Escalation + Async Follow-Up",
-      category: "Flow + Async",
-      impact: "Escalated urgent cases and created follow-up tasks asynchronously.",
-      description:
-        "Queue-based routing, escalation automation, and async task creation to keep support tight and predictable under load.",
-      bullets: [
-        "Queue-based routing + escalation rules",
-        "Async Apex for heavy work",
-        "Defensive idempotency to avoid duplicates",
+      "links": [
+        {
+          "href": "mailto:saifmohsen65@gmail.com",
+          "icon": "ExternalLink",
+          "label": "Want More Info"
+        }
       ],
-      stack: ["Flow", "Async Apex", "Queues"],
-      links: [{ label: "Design Notes", href: "#" }],
-      featured: false,
-      colors: {
-        glow: "rgba(16, 185, 129, 0.4)",
-        accent: "#10b981",
+      "id": "3",
+      "colors": {
+        "glow": "rgba(16, 185, 129, 0.4)",
+        "accent": "#10b981"
       },
+      "bullets": [
+        "Opportunity inventory protection using Apex validation with addError()",
+        "Case priority assignment driven by keyword analysis (Broken / Missing)",
+        "Async follow-up task creation using Queueable Apex",
+        "Flow-based escalation for high-priority cases (no Apex in Flow)",
+        "Order lifecycle inventory management (update / delete / undelete)",
+        "Task-based audit logging for all order actions",
+        "Visualforce management console unifying Products, Orders, and Cases",
+        "Bulk-safe design across all triggers (no SOQL/DML in loops)"
+      ],
+      "featured": false,
+      "images": [
+        "/project-retail-automation-suite---inventory--orders---case-management-3-0.png",
+        "/project-retail-automation-suite---inventory--orders---case-management-3-1.png",
+        "/project-retail-automation-suite---inventory--orders---case-management-3-2.png"
+      ],
+      "impact": "Prevented invalid sales, automated case escalation and follow-ups, and maintained accurate product inventory across the full retail order lifecycle - all at scale and under bulk load.",
+      "stack": [
+        "Apex Triggers",
+        "Async Apex",
+        "Record-Triggered Flows",
+        "Visualforce Pages",
+        "SOQL",
+        "Apex Test Classes"
+      ],
+      "description": "An end-to-end Salesforce retail automation suite that enforces product availability at opportunity creation, prioritizes and escalates customer support cases, and keeps inventory accurate as orders are updated, deleted, or restored.\nThe system combines bulk-safe Apex, Queueable async processing, record-triggered Flows, and a Visualforce management console to deliver a controlled, auditable, and scalable retail workflow.",
+      "icon": "Layers",
+      "title": "Retail Automation Suite – Inventory, Orders & Case Management",
+      "category": "Apex + Flow + Async + Visualforce"
     },
     {
-      id: "4",
-      title: "Trigger Context Visual Guide",
-      category: "Content + Teaching",
-      impact: "Helped juniors stop confusing Trigger.new/old and map variants.",
-      description:
-        "A compact visual mental model: triggers route context; handlers own logic. Built for LinkedIn, mobile-first.",
-      bullets: [
-        "Clear context-variable routing",
-        "Beginner-friendly mental model",
-        "Clean architecture emphasis",
+      "description": "A multi-component Lightning Web Components project designed to showcase component lifecycle hooks, parent–child communication, and reactive state handling using Salesforce-recommended patterns.\n\nThe project includes a product catalog with searchable results, clickable product cards, a detailed view component, and a dedicated lifecycle timer to visualize component initialization and re-rendering behavior.",
+      "featured": false,
+      "stack": [
+        "LWC",
+        "JavaScript",
+        "@api Decorator",
+        "@track Decorator",
+        "Custom DOM Events",
+        "Conditional Rendering",
+        "Salesforce Lightning Design System (SLDS)"
       ],
-      stack: ["Apex", "Clean Code", "Bulkification"],
-      links: [{ label: "Post", href: "#" }],
-      featured: false,
-      colors: {
-        glow: "rgba(255, 107, 53, 0.4)",
-        accent: "#ff6b35",
+      "links": [
+        {
+          "href": "mailto:saifmohsen65@gmail.com",
+          "label": "Want More Info"
+        }
+      ],
+      "bullets": [
+        "Lifecycle visualization using a dedicated timer component to demonstrate LWC lifecycle hooks",
+        "Parent → child communication via @api public properties",
+        "Child → parent communication using custom events",
+        "Reactive state management using @track for UI-driven updates",
+        "Search-driven data flow from child input → parent state → child rendering",
+        "Composable component architecture with clear separation of concerns"
+      ],
+      "impact": "Demonstrated real-world Lightning Web Component communication patterns and lifecycle behavior through a modular product catalog system with parent–child coordination and reactive UI updates.",
+      "id": "4",
+      "category": "LWC",
+      "colors": {
+        "accent": "#ff6b35",
+        "glow": "rgba(255, 107, 53, 0.4)"
       },
+      "title": "LWC Component Communication & Lifecycle Playground",
+      "icon": "Puzzle",
+      "images": [
+        "/project-lwc-component-communication---lifecycle-playground-4-0.png",
+        "/project-lwc-component-communication---lifecycle-playground-4-1.png",
+        "/project-lwc-component-communication---lifecycle-playground-4-2.png"
+      ]
     },
+    {
+      "id": "mk92luc36uykhb7cdpl",
+      "title": "Student Grade Manager",
+      "category": "LWC",
+      "impact": "Delivered a dynamic, client-side grade management system that visualizes student performance, highlights top achievers, and provides instant class insights without server-side dependency.",
+      "description": "A Lightning Web Component built to manage and visualize student grades using reactive state management and computed properties.\nThe component allows users to add students with scores, automatically calculates grades and pass/fail status, and presents real-time class statistics using conditional rendering and template looping.\n\nDesigned to demonstrate core LWC fundamentals with clean, predictable UI behavior.",
+      "bullets": [
+        "Reactive state management using @track for student data",
+        "Computed getters for:  Average score - Pass / Fail status  - Letter grade calculation",
+        "Template looping (for:each) to render dynamic student lists",
+        "Conditional rendering for empty, filtered, and highlighted states",
+        "Client-side filtering (All / Passing / Failing)",
+        "Top performer highlighting based on highest score",
+        "Visual grade indicators for quick performance recognition"
+      ],
+      "stack": [
+        "LWC",
+        "JavaScript",
+        "CSS",
+        "@track Reactive Properties",
+        "Conditional Rendering",
+        "Salesforce Lightning Design System (SLDS)"
+      ],
+      "links": [
+        {
+          "label": "Want More Info",
+          "href": "mailto:saifmohsen65@gmail.com",
+          "icon": "ExternalLink"
+        }
+      ],
+      "featured": false,
+      "colors": {
+        "accent": "#ff6b35",
+        "glow": "rgba(ff6b35, 255, 107, 53, 0.4)"
+      },
+      "icon": "BarChart",
+      "images": [
+        "/project-student-grade-manager-mk92luc36uykhb7cdpl-0.png"
+      ]
+    }
   ],
-
-  timeline: [
+  "timeline": [
     {
-      id: "1",
-      year: "(July 2025 – Jan 2026)",
-      title: "Trainee — ITI Salesforce Track",
-      subtitle: "Admin → Apex → LWC → Intro Integrations",
-      details:
-        "Built projects with platform fundamentals, automation decisions, and clean trigger patterns.",
-      icon: "GraduationCap",
+      "id": "1",
+      "icon": "GraduationCap",
+      "details": "Built projects with platform fundamentals, automation decisions, and clean trigger patterns.",
+      "title": "Trainee — ITI Salesforce Track",
+      "year": "(July 2025 – Jan 2026)",
+      "subtitle": "Admin → Apex → LWC → Intro Integrations"
     },
     {
-      id: "2",
-      year: "(October 2023 – May 2025)",
-      title: "Operations Manager — October Pneumatic",
-      subtitle: "Sales, consulting, inventory, systems",
-      details:
-        "Managed customer inquiries and matched product specifications to client needs. - Maintained inventory records and processed invoices using Excel, improved order documentation efficiency.",
-      icon: "Briefcase",
+      "year": "(October 2023 – May 2025)",
+      "icon": "Briefcase",
+      "details": "Managed customer inquiries and matched product specifications to client needs. - Maintained inventory records and processed invoices using Excel, improved order documentation efficiency.",
+      "subtitle": "Sales, consulting, inventory, systems",
+      "id": "2",
+      "title": "Operations Manager — October Pneumatic"
     },
     {
-      id: "mk7wg96wikhl6db41y9",
-      year: "(September 2019 – July 2023)",
-      title: "Student — Business Information Systems",
-      subtitle: "Misr University For Science And Technology ",
-      details:
-        "GPA: 3.55 — Grade: Very Good with Honors",
-      icon: "GraduationCap",
-    },
+      "subtitle": "Misr University For Science And Technology ",
+      "id": "mk7wg96wikhl6db41y9",
+      "title": "Student — Business Information Systems",
+      "year": "(September 2019 – July 2023)",
+      "icon": "GraduationCap",
+      "details": "GPA: 3.55 — Grade: Very Good with Honors"
+    }
   ],
-
-  proTip:
-    "Triggers are routers. Context variables are payload. If your trigger contains logic, it's already getting hard to maintain.",
+  "proTip": "I design Salesforce so the next developer doesn’t hate me. 😅"
 };
 
 const FIRESTORE_DOC = "portfolio";
