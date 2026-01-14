@@ -8,9 +8,7 @@ import {
   Trash2,
   Edit2,
   X,
-  Lock,
   Eye,
-  EyeOff,
   ArrowLeft,
   User,
   Award,
@@ -63,15 +61,15 @@ import {
   FileDown,
   FileUp,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
+import { useAuth } from "../contexts/AuthContext";
 import {
-  getPortfolioData,
+
   getPortfolioDataAsync,
   savePortfolioDataAsync,
   resetPortfolioDataAsync,
-  checkAdminPasswordAsync,
-  isPasswordSetAsync,
-  setAdminPasswordAsync,
+
   generateId,
   COLOR_PRESETS,
   ICON_OPTIONS,
@@ -86,162 +84,7 @@ import {
 } from "../data/portfolioData";
 
 
-// Login Screen
-function LoginScreen({ onLogin }: { onLogin: () => void }) {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isFirstTime, setIsFirstTime] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isCheckingStatus, setIsCheckingStatus] = useState(true);
 
-  // Check if password is set on mount
-  useEffect(() => {
-    isPasswordSetAsync().then((isSet) => {
-      setIsFirstTime(!isSet);
-      setIsCheckingStatus(false);
-    });
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
-
-    try {
-      if (isFirstTime) {
-        if (password.length < 4) {
-          setError("Password must be at least 4 characters");
-          setIsLoading(false);
-          return;
-        }
-        if (password !== confirmPassword) {
-          setError("Passwords don't match");
-          setIsLoading(false);
-          return;
-        }
-        await setAdminPasswordAsync(password);
-        onLogin();
-      } else {
-        const isValid = await checkAdminPasswordAsync(password);
-        if (isValid) {
-          onLogin();
-        } else {
-          setError("You are not me , why are you trying to access my dashboard? 😁");
-        }
-      }
-    } catch (err) {
-      setError("An error occurred. Please try again.");
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Show loading while checking password status
-  if (isCheckingStatus) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0d2035] to-[#032d60]">
-        <div className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-[#00a1e0]"></div>
-          <p className="text-white/60">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0d2035] to-[#032d60] p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
-      >
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#00a1e0]/20">
-            <Lock className="h-8 w-8 text-[#00a1e0]" />
-          </div>
-          <h1 className="text-2xl font-bold text-white">
-            {isFirstTime ? "Set Up Admin Access" : "Admin Login"}
-          </h1>
-          <p className="mt-2 text-sm text-white/60">
-            {isFirstTime
-              ? "Create a password to protect your dashboard"
-              : "Enter your password to access the dashboard"}
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="mb-2 block text-sm font-medium text-white/80">
-              Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 pr-12 text-white placeholder-white/40 outline-none focus:border-[#00a1e0]/50"
-                placeholder="Enter password"
-                autoFocus
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60"
-              >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-              </button>
-            </div>
-          </div>
-
-          {isFirstTime && (
-            <div>
-              <label className="mb-2 block text-sm font-medium text-white/80">
-                Confirm Password
-              </label>
-              <input
-                type={showPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/40 outline-none focus:border-[#00a1e0]/50"
-                placeholder="Confirm password"
-              />
-            </div>
-          )}
-
-          {error && (
-            <p className="text-sm text-red-400">{error}</p>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-xl bg-[#00a1e0] py-3 font-semibold text-white transition hover:bg-[#00a1e0]/90 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white"></div>
-                {isFirstTime ? "Creating..." : "Logging in..."}
-              </span>
-            ) : (
-              isFirstTime ? "Create Password" : "Login"
-            )}
-          </button>
-        </form>
-
-        <Link
-          to="/"
-          className="mt-6 flex items-center justify-center gap-2 text-sm text-white/40 hover:text-white/60"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Portfolio
-        </Link>
-      </motion.div>
-    </div>
-  );
-}
 
 // Collapsible Section
 function Section({
@@ -973,193 +816,6 @@ function LinksEditor({
   );
 }
 
-// Change Password Modal
-function ChangePasswordModal({
-  onClose,
-  onSuccess,
-}: {
-  onClose: () => void;
-  onSuccess: () => void;
-}) {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    // Validate new password
-    if (newPassword.length < 4) {
-      setError("New password must be at least 4 characters");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      setError("New passwords don't match");
-      return;
-    }
-
-    if (currentPassword === newPassword) {
-      setError("New password must be different from current password");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // Verify current password
-      const isValid = await checkAdminPasswordAsync(currentPassword);
-      if (!isValid) {
-        setError("Current password is incorrect");
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Set new password
-      await setAdminPasswordAsync(newPassword);
-      onSuccess();
-    } catch (err) {
-      console.error("Password change error:", err);
-      setError("An error occurred. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0a1628] p-6 shadow-2xl">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#00a1e0]/20">
-              <Key className="h-5 w-5 text-[#00a1e0]" />
-            </div>
-            <h2 className="text-xl font-bold text-white">Change Password</h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="rounded-lg p-2 text-white/40 hover:bg-white/10 hover:text-white"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Current Password */}
-          <div>
-            <label className="mb-2 block text-sm font-medium text-white/70">
-              Current Password
-            </label>
-            <div className="relative">
-              <input
-                type={showCurrent ? "text" : "password"}
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 pr-12 text-white placeholder-white/30 outline-none focus:border-[#00a1e0]/50"
-                placeholder="Enter current password"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowCurrent(!showCurrent)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
-              >
-                {showCurrent ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-              </button>
-            </div>
-          </div>
-
-          {/* New Password */}
-          <div>
-            <label className="mb-2 block text-sm font-medium text-white/70">
-              New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showNew ? "text" : "password"}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 pr-12 text-white placeholder-white/30 outline-none focus:border-[#00a1e0]/50"
-                placeholder="Enter new password"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowNew(!showNew)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
-              >
-                {showNew ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Confirm New Password */}
-          <div>
-            <label className="mb-2 block text-sm font-medium text-white/70">
-              Confirm New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showConfirm ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 pr-12 text-white placeholder-white/30 outline-none focus:border-[#00a1e0]/50"
-                placeholder="Confirm new password"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
-              >
-                {showConfirm ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-              </button>
-            </div>
-          </div>
-
-          {error && (
-            <div className="rounded-lg bg-red-500/20 px-4 py-3 text-sm text-red-400">
-              {error}
-            </div>
-          )}
-
-          <div className="flex gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 rounded-lg border border-white/10 py-3 text-white/70 hover:bg-white/5"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting || !currentPassword || !newPassword || !confirmPassword}
-              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#00a1e0] py-3 font-semibold text-white hover:bg-[#00a1e0]/90 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Changing...
-                </>
-              ) : (
-                <>
-                  <Key className="h-4 w-4" />
-                  Change Password
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
 
 // Project Editor Modal
 function ProjectEditor({
@@ -1332,10 +988,124 @@ function ProjectEditor({
   );
 }
 
+// Change Password Modal
+function ChangePasswordModal({
+  onClose,
+  onSuccess,
+}: {
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    if (newPassword.length < 6) {
+      setError("New password must be at least 6 characters");
+      setIsLoading(false);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError("Passwords don't match");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!user || !user.email) {
+      setError("User not authenticated");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Re-authenticate using the Email/Password provider
+      const credential = EmailAuthProvider.credential(user.email, currentPassword);
+      await reauthenticateWithCredential(user, credential);
+
+      // Update password
+      await updatePassword(user, newPassword);
+
+      onSuccess();
+    } catch (err: any) {
+      console.error(err);
+      if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password") {
+        setError("Current password is incorrect");
+      } else {
+        setError("Failed to change password. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0d2035] p-6 shadow-2xl">
+        <h2 className="mb-4 text-xl font-bold text-white">Change Password</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-4">
+            <Field
+              label="Current Password"
+              type="password"
+              value={currentPassword}
+              onChange={setCurrentPassword}
+              placeholder="Enter current password"
+            />
+            <Field
+              label="New Password"
+              type="password"
+              value={newPassword}
+              onChange={setNewPassword}
+              placeholder="Enter new password (min 6 chars)"
+            />
+            <Field
+              label="Confirm New Password"
+              type="password"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              placeholder="Confirm new password"
+            />
+          </div>
+
+          {error && <p className="text-sm text-red-400">{error}</p>}
+
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 rounded-xl border border-white/10 py-3 font-semibold text-white transition hover:bg-white/5"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="flex-1 rounded-xl bg-[#00a1e0] py-3 font-semibold text-white transition hover:bg-[#00a1e0]/90 disabled:opacity-50"
+            >
+              {isLoading ? "Updating..." : "Update Password"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // Main Dashboard
 export default function AdminDashboard() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [data, setData] = useState<PortfolioData>(getPortfolioData());
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [data, setData] = useState<PortfolioData | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null | "new">(null);
   const [saveMessage, setSaveMessage] = useState("");
@@ -1343,39 +1113,36 @@ export default function AdminDashboard() {
   const [isSaving, setIsSaving] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
 
-  // Check if already logged in (session) and load data from Firestore
+  // Load data from Firestore
   useEffect(() => {
-    const session = sessionStorage.getItem("admin_session");
-    if (session === "active") {
-      setIsLoggedIn(true);
-    }
-
-    // Load data from Firestore
-    getPortfolioDataAsync().then((firestoreData) => {
-      setData(firestoreData);
-      setIsLoading(false);
-    }).catch((err) => {
-      console.error("Failed to load data:", err);
-      setIsLoading(false);
-    });
+    loadData();
   }, []);
 
-  const handleLogin = () => {
-    sessionStorage.setItem("admin_session", "active");
-    setIsLoggedIn(true);
+  const loadData = async () => {
+    setIsLoading(true);
+    try {
+      const firestoreData = await getPortfolioDataAsync();
+      setData(firestoreData);
+    } catch (err) {
+      console.error("Failed to load data:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("admin_session");
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
   };
 
   const updateData = (updates: Partial<PortfolioData>) => {
+    if (!data) return;
     setData({ ...data, ...updates });
     setHasChanges(true);
   };
 
   const handleSave = async () => {
+    if (!data) return;
     // Calculate total data size for info purposes
     const dataSize = new Blob([JSON.stringify(data)]).size;
     const sizeMB = (dataSize / 1024 / 1024).toFixed(2);
@@ -1424,6 +1191,7 @@ export default function AdminDashboard() {
 
   // Project CRUD
   const saveProject = (project: Project) => {
+    if (!data) return;
     const projects = [...data.projects];
     const index = projects.findIndex((p) => p.id === project.id);
     if (index >= 0) {
@@ -1436,6 +1204,7 @@ export default function AdminDashboard() {
   };
 
   const deleteProject = (id: string) => {
+    if (!data) return;
     if (confirm("Delete this project?")) {
       updateData({ projects: data.projects.filter((p) => p.id !== id) });
     }
@@ -1443,6 +1212,7 @@ export default function AdminDashboard() {
 
   // Certification CRUD
   const addCertification = () => {
+    if (!data) return;
     const newCert: Certification = {
       id: generateId(),
       title: "New Certification",
@@ -1454,6 +1224,7 @@ export default function AdminDashboard() {
   };
 
   const updateCertification = (id: string, updates: Partial<Certification>) => {
+    if (!data) return;
     updateData({
       certifications: data.certifications.map((c) =>
         c.id === id ? { ...c, ...updates } : c
@@ -1462,6 +1233,7 @@ export default function AdminDashboard() {
   };
 
   const deleteCertification = (id: string) => {
+    if (!data) return;
     if (confirm("Delete this certification?")) {
       updateData({ certifications: data.certifications.filter((c) => c.id !== id) });
     }
@@ -1469,6 +1241,7 @@ export default function AdminDashboard() {
 
   // Move certification up or down
   const moveCertification = (id: string, direction: "up" | "down") => {
+    if (!data) return;
     const certifications = [...data.certifications];
     const index = certifications.findIndex((c) => c.id === id);
     if (index === -1) return;
@@ -1482,6 +1255,7 @@ export default function AdminDashboard() {
 
   // Skill Group CRUD
   const addSkillGroup = () => {
+    if (!data) return;
     const newGroup: SkillGroup = {
       id: generateId(),
       group: "New Skill Group",
@@ -1493,6 +1267,7 @@ export default function AdminDashboard() {
   };
 
   const updateSkillGroup = (id: string, updates: Partial<SkillGroup>) => {
+    if (!data) return;
     updateData({
       skillGroups: data.skillGroups.map((g) =>
         g.id === id ? { ...g, ...updates } : g
@@ -1501,6 +1276,7 @@ export default function AdminDashboard() {
   };
 
   const deleteSkillGroup = (id: string) => {
+    if (!data) return;
     if (confirm("Delete this skill group?")) {
       updateData({ skillGroups: data.skillGroups.filter((g) => g.id !== id) });
     }
@@ -1508,6 +1284,7 @@ export default function AdminDashboard() {
 
   // Timeline CRUD
   const addTimelineItem = () => {
+    if (!data) return;
     const newItem: TimelineItem = {
       id: generateId(),
       year: new Date().getFullYear().toString(),
@@ -1520,6 +1297,7 @@ export default function AdminDashboard() {
   };
 
   const updateTimelineItem = (id: string, updates: Partial<TimelineItem>) => {
+    if (!data) return;
     updateData({
       timeline: data.timeline.map((t) =>
         t.id === id ? { ...t, ...updates } : t
@@ -1528,6 +1306,7 @@ export default function AdminDashboard() {
   };
 
   const deleteTimelineItem = (id: string) => {
+    if (!data) return;
     if (confirm("Delete this timeline item?")) {
       updateData({ timeline: data.timeline.filter((t) => t.id !== id) });
     }
@@ -1535,6 +1314,7 @@ export default function AdminDashboard() {
 
   // Move timeline item up or down
   const moveTimelineItem = (id: string, direction: "up" | "down") => {
+    if (!data) return;
     const timeline = [...data.timeline];
     const index = timeline.findIndex((t) => t.id === id);
     if (index === -1) return;
@@ -1549,6 +1329,7 @@ export default function AdminDashboard() {
 
   // Stat CRUD
   const updateStat = (id: string, updates: Partial<Stat>) => {
+    if (!data) return;
     updateData({
       stats: data.stats.map((s) => (s.id === id ? { ...s, ...updates } : s)),
     });
@@ -1611,9 +1392,7 @@ export default function AdminDashboard() {
     e.target.value = '';
   };
 
-  if (!isLoggedIn) {
-    return <LoginScreen onLogin={handleLogin} />;
-  }
+
 
   if (isLoading) {
     return (
@@ -1622,6 +1401,14 @@ export default function AdminDashboard() {
           <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-[#00a1e0]"></div>
           <p className="text-white/60">Loading portfolio data...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0d2035] to-[#032d60] p-4 text-white">
+        <p>Error loading data. Please refresh.</p>
       </div>
     );
   }

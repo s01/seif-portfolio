@@ -1,6 +1,7 @@
 // Firebase configuration and initialization
 // Using Firestore Lite SDK for 90% smaller bundle size (perfect for read-only operations)
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore/lite";
 
 const firebaseConfig = {
@@ -18,5 +19,6 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firestore Lite (read-only, much smaller bundle)
 export const db = getFirestore(app);
+export const auth = getAuth(app);
 
 export default app;

@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Portfolio from "./components/Portfolio";
+import Login from "./components/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./contexts/AuthContext";
 
 // Lazy-load admin dashboard (only loads when user visits /admin)
 const AdminDashboard = lazy(() => import("./components/AdminDashboard"));
@@ -20,26 +23,33 @@ function LoadingScreen() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Portfolio />} />
-        <Route
-          path="/admin"
-          element={
-            <Suspense fallback={<LoadingScreen />}>
-              <AdminDashboard />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/analytics"
-          element={
-            <Suspense fallback={<LoadingScreen />}>
-              <AnalyticsDashboard />
-            </Suspense>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Portfolio />} />
+          <Route path="/login" element={<Login />} />
+
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/admin"
+              element={
+                <Suspense fallback={<LoadingScreen />}>
+                  <AdminDashboard />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/analytics"
+              element={
+                <Suspense fallback={<LoadingScreen />}>
+                  <AnalyticsDashboard />
+                </Suspense>
+              }
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }

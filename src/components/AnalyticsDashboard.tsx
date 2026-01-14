@@ -1,117 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import { getAnalyticsStats, clearAnalytics, type AnalyticsEvent } from "../analytics";
-import { checkAdminPasswordAsync, setAdminPasswordAsync } from "../data/portfolioData";
-import { Activity, Users, MousePointer, ShieldCheck, Clock, Monitor, Key, LogOut, ArrowLeft, Eye, EyeOff, LayoutDashboard, Smartphone, Briefcase, FileText, Mail, Linkedin, Github, TrendingUp, Zap, Cloud, Trash2, AlertTriangle, RefreshCw, Download } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Activity, Users, MousePointer, Clock, Monitor, LogOut, LayoutDashboard, Smartphone, Briefcase, FileText, Mail, Linkedin, Github, TrendingUp, Zap, Cloud, Trash2, AlertTriangle, RefreshCw, Download } from "lucide-react";
 
 export default function AnalyticsDashboard() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const { logout } = useAuth();
+    const navigate = useNavigate();
 
-    // Auth State
-    useEffect(() => {
-        const session = sessionStorage.getItem("admin_session");
-        if (session === "active") {
-            setIsAuthenticated(true);
-        }
-        setLoading(false);
-    }, []);
-
-    const handleLoginSuccess = () => {
-        sessionStorage.setItem("admin_session", "active");
-        setIsAuthenticated(true);
+    const handleLogout = async () => {
+        await logout();
+        navigate("/login");
     };
-
-    const handleLogout = () => {
-        sessionStorage.removeItem("admin_session");
-        setIsAuthenticated(false);
-    };
-
-    if (loading) return null;
-
-    if (!isAuthenticated) {
-        return <LoginScreen onLogin={handleLoginSuccess} />;
-    }
 
     return <DashboardContent onLogout={handleLogout} />;
-}
-
-// Reuse Login Logic similar to AdminDashboard but simpler
-function LoginScreen({ onLogin }: { onLogin: () => void }) {
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError("");
-
-        try {
-            const isValid = await checkAdminPasswordAsync(password);
-            if (isValid) {
-                onLogin();
-            } else {
-                setError("You are not me , why are you trying to access my dashboard? 😁");
-            }
-        } catch {
-            setError("system_error: Please try again");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <div className="flex min-h-screen items-center justify-center bg-[#0d2035] p-4 text-white">
-            <div className="w-full max-w-sm space-y-8 rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
-                <div className="text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#00a1e0]/20">
-                        <ShieldCheck className="h-8 w-8 text-[#00a1e0]" />
-                    </div>
-                    <h2 className="text-2xl font-bold">Analytics Access</h2>
-                    <p className="mt-2 text-sm text-white/50">Enter admin password to view stats</p>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="relative">
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Admin Password"
-                            className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 pr-12 text-white placeholder-white/30 focus:border-[#00a1e0] focus:outline-none"
-                            autoFocus
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60"
-                        >
-                            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                        </button>
-                    </div>
-
-                    {error && <p className="text-sm text-red-400 font-mono">{error}</p>}
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full rounded-xl bg-[#00a1e0] py-3 font-semibold text-white hover:bg-[#00a1e0]/90 disabled:opacity-50"
-                    >
-                        {loading ? "Verifying..." : "Unlock Dashboard"}
-                    </button>
-                </form>
-                <Link
-                    to="/"
-                    className="mt-6 flex items-center justify-center gap-2 text-sm text-white/40 hover:text-white/60"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back to Portfolio
-                </Link>
-            </div>
-        </div>
-    );
 }
 
 function DashboardContent({ onLogout }: { onLogout: () => void }) {
@@ -124,7 +26,6 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
         deviceStats: { mobile: number; desktop: number };
         conversions: { hire: number; resume: number; email: number; linkedin: number; github: number; trailhead: number; other: number };
     } | null>(null);
-    const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showClearConfirm, setShowClearConfirm] = useState(false);
 
     useEffect(() => {
@@ -177,13 +78,7 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                             <LayoutDashboard className="h-4 w-4" />
                             Content Admin
                         </Link>
-                        <button
-                            onClick={() => setShowPasswordModal(true)}
-                            className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"
-                        >
-                            <Key className="h-4 w-4" />
-                            Change Password
-                        </button>
+
                         <button
                             onClick={() => setShowClearConfirm(true)}
                             className="btn-interactive flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-400 hover:bg-red-500/20"
@@ -358,7 +253,7 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
             </div>
 
 
-            {showPasswordModal && <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />}
+
 
             {showClearConfirm && (
                 <ClearAnalyticsModal
@@ -442,48 +337,7 @@ function ClearAnalyticsModal({ onClose, onConfirm }: { onClose: () => void, onCo
     )
 }
 
-function ChangePasswordModal({ onClose }: { onClose: () => void }) {
-    const [current, setCurrent] = useState("");
-    const [newPass, setNewPass] = useState("");
-    const [confirm, setConfirm] = useState("");
-    const [msg, setMsg] = useState("");
-    const [err, setErr] = useState("");
 
-    const handleUpdate = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setErr(""); setMsg("");
-        if (newPass !== confirm) return setErr("Passwords do not match");
-        if (newPass.length < 4) return setErr("Password too short");
-
-        const valid = await checkAdminPasswordAsync(current);
-        if (!valid) return setErr("Current password incorrect");
-
-        await setAdminPasswordAsync(newPass);
-        setMsg("Password updated successfully");
-        setTimeout(onClose, 1500);
-    };
-
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-            <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0d2035] p-6 shadow-2xl">
-                <h3 className="mb-4 text-xl font-bold text-white">Change Password</h3>
-                <form onSubmit={handleUpdate} className="space-y-4">
-                    <input type="password" placeholder="Current Password" value={current} onChange={e => setCurrent(e.target.value)} className="w-full rounded-lg bg-black/20 px-4 py-2 text-white border border-white/10" required />
-                    <input type="password" placeholder="New Password" value={newPass} onChange={e => setNewPass(e.target.value)} className="w-full rounded-lg bg-black/20 px-4 py-2 text-white border border-white/10" required />
-                    <input type="password" placeholder="Confirm New" value={confirm} onChange={e => setConfirm(e.target.value)} className="w-full rounded-lg bg-black/20 px-4 py-2 text-white border border-white/10" required />
-
-                    {err && <p className="text-red-400 text-sm">{err}</p>}
-                    {msg && <p className="text-green-400 text-sm">{msg}</p>}
-
-                    <div className="flex gap-2 justify-end mt-4">
-                        <button type="button" onClick={onClose} className="px-4 py-2 text-white/60 hover:text-white">Cancel</button>
-                        <button type="submit" className="px-4 py-2 bg-[#00a1e0] text-white rounded-lg">Update</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    )
-}
 
 
 function ConversionCard({ icon: Icon, label, value, color }: any) {
