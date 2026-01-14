@@ -30,6 +30,14 @@ interface TrackingPayload {
         timestamp: number;
         expiresAt: number;
     };
+    // Additional event data (clicks, project views, etc.)
+    eventName?: string;
+    category?: string;
+    label?: string;
+    sessionId?: string;
+    screenSize?: string;
+    ip?: string;
+    [key: string]: any; // Allow any additional properties
 }
 
 /**
@@ -95,18 +103,12 @@ export default async function handler(
         const userAgent = req.headers['user-agent'] || '';
 
         // Prepare document for Firestore
+        // Include ALL data from payload (clicks, project names, etc.)
         const eventDoc = {
-            // Client data
-            ts: payload.ts,
-            path: payload.path,
-            source: payload.source,
-            refDomain: payload.refDomain,
-            utm: payload.utm,
-            linkedinWebview: payload.linkedinWebview,
-            visitorId: payload.visitorId,
-            firstTouch: payload.firstTouch || null,
+            // All client data (including custom event data)
+            ...payload,
 
-            // Server data
+            // Override/add server data
             receivedAt,
             dateStr,
             ipHash,

@@ -257,3 +257,97 @@ export function initTracking(): void {
     // Track initial page view
     trackPageView();
 }
+
+/**
+ * Log any analytics event (clicks, project views, etc.)
+ * This replaces the old logEvent function and sends to the new first-party API
+ * 
+ * @param eventName - Name of the event (e.g., 'click_hire_me', 'view_project')
+ * @param data - Additional event data (e.g., { project: 'Project Name' })
+ */
+export async function logEvent(eventName: string, data: any = {}): Promise<void> {
+    try {
+        // SSR safety
+        if (typeof window === 'undefined') return;
+
+        const path = window.location.pathname;
+
+        // Don't track admin/analytics pages
+        if (EXCLUDED_PATHS.some(excluded => path.startsWith(excluded))) {
+            return;
+        }
+
+        // Generate or retrieve session ID
+        let sessionId = sessionStorage.getItem('analytics_session_id');
+        if (!sessionId) {
+            sessionId = `s_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+            sessionStorage.setItem('analytics_session_id', sessionId);
+        }
+
+        // Get visitor ID
+        const visitorId = getVisitorId();
+
+        // Get user agent info
+        const ua = navigator.userAgent;
+        const linkedinWebview = isLinkedInWebView(ua);
+
+        // Get referrer info
+        const referrer = document.referrer;
+        const refDomain = extractDomain(referrer);
+
+        // Parse UTM params
+        const utm = parseUTMParams(window.location.search);
+
+        // Determine source
+        const source = determineSource(utm, referrer, linkedinWebview);
+
+        // Get first touch
+        const firstTouch = getFirstTouch();
+
+        // Get IP (if available from previous fetch)
+        let ip = sessionStorage.getItem('analytics_client_ip') || undefined;
+
+        // Build comprehensive payload
+        const payload = {
+            // Event info
+            eventName,
+            category: data.category,
+            label: data.label,
+
+            // Custom data (project name, button clicked, etc.)
+            ...data,
+
+            // Page info
+            ts: Date.now(),
+            path,
+
+            // Traffic source
+            source,
+            refDomain,
+            utm,
+            linkedinWebview,
+
+            // Visitor info
+            visitorId,
+            sessionId,
+
+            // Attribution
+            firstTouch: firstTouch || undefined,
+
+            // Technical info
+            userAgent: ua,
+            screenSize: `${window.innerWidth}x${window.innerHeight}`,
+            ip,
+        };
+
+        // Send to API
+        await sendTrackingData(payload);
+    } catch (e) {
+        console.warn('[Track] Error in logEvent:', e);
+    }
+}
+
+/**
+ * Export old analytics functions for backward compatibility
+ */
+export { logEvent as default };
