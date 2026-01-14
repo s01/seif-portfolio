@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { Activity, Users, MousePointer, TrendingUp, LogOut, LayoutDashboard, Linkedin, RefreshCw, Download, Globe, ExternalLink } from "lucide-react";
+import { Activity, Users, MousePointer, TrendingUp, LogOut, LayoutDashboard, Linkedin, RefreshCw, Download, Globe, ExternalLink, Box, Command, Clock } from "lucide-react";
 
 interface AnalyticsSummary {
     totalVisits: number;
@@ -14,6 +14,9 @@ interface AnalyticsSummary {
         webview: number;
         withUTM: number;
     };
+    projectClicks: Array<{ project: string; count: number }>;
+    buttonClicks: Array<{ button: string; count: number }>;
+    recentEvents: Array<any>;
 }
 
 export default function AnalyticsDashboard() {
@@ -136,9 +139,9 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                     <div>
                         <h1 className="flex items-center gap-3 text-3xl font-bold">
                             <Activity className="text-[#00a1e0]" />
-                            LinkedIn Analytics
+                            Portfolio Analytics
                         </h1>
-                        <p className="mt-2 text-white/50">First-party tracking • Last 30 days</p>
+                        <p className="mt-2 text-white/50">Comprehensive tracking & insights • Last 30 days</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <button
@@ -184,7 +187,7 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                     />
                     <StatCard
                         icon={MousePointer}
-                        label="Total Visits"
+                        label="Total Events"
                         value={stats.totalVisits.toLocaleString()}
                         color="text-purple-400"
                         bg="bg-purple-500/10"
@@ -205,42 +208,70 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                     />
                 </div>
 
-                {/* LinkedIn Insights */}
-                <div className="mb-8 rounded-2xl border border-white/10 bg-white/5 p-6">
-                    <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
-                        <Linkedin className="h-5 w-5 text-[#0077b5]" />
-                        LinkedIn Traffic Insights
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <InsightCard
-                            label="Total LinkedIn Visits"
-                            value={stats.linkedInStats.total}
-                            description="All visits from LinkedIn"
-                        />
-                        <InsightCard
-                            label="In-App Browser"
-                            value={stats.linkedInStats.webview}
-                            description="LinkedIn mobile app WebView"
-                            highlight
-                        />
-                        <InsightCard
-                            label="With UTM Tags"
-                            value={stats.linkedInStats.withUTM}
-                            description="Properly tagged campaigns"
-                        />
+                {/* Main Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+
+                    {/* Project Interactions */}
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                        <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
+                            <Box className="h-5 w-5 text-emerald-400" />
+                            Project Interest
+                        </h3>
+                        <div className="space-y-4">
+                            {(stats.projectClicks || []).map((project, i) => (
+                                <div key={i} className="relative">
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span className="font-medium text-white">{project.project}</span>
+                                        <span className="text-white/60">{project.count} clicks</span>
+                                    </div>
+                                    <div className="h-2 w-full overflow-hidden rounded-full bg-white/5">
+                                        <div
+                                            className="h-full bg-emerald-500/50 rounded-full"
+                                            style={{ width: `${(project.count / (stats.projectClicks[0]?.count || 1)) * 100}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                            {(!stats.projectClicks || stats.projectClicks.length === 0) && (
+                                <p className="text-sm text-white/40 italic">No project clicks yet.</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Button Interactions */}
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                        <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
+                            <Command className="h-5 w-5 text-purple-400" />
+                            Top Actions
+                        </h3>
+                        <div className="space-y-3">
+                            {(stats.buttonClicks || []).map((btn, i) => (
+                                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+                                    <span className="text-sm font-medium text-white capitalize">
+                                        {btn.button.replace(/_/g, ' ')}
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs px-2 py-1 rounded bg-purple-500/20 text-purple-300">
+                                            {btn.count}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                            {(!stats.buttonClicks || stats.buttonClicks.length === 0) && (
+                                <p className="text-sm text-white/40 italic">No button interactions yet.</p>
+                            )}
+                        </div>
                     </div>
                 </div>
 
-                {/* Traffic Sources & Top Pages */}
+                {/* Traffic & Pages */}
                 <div className="grid gap-8 md:grid-cols-2 mb-8">
                     {/* Traffic Sources */}
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-                        <div className="mb-6 flex items-center justify-between">
-                            <h3 className="text-lg font-semibold flex items-center gap-2">
-                                <Globe className="h-5 w-5 text-emerald-400" />
-                                Traffic Sources
-                            </h3>
-                        </div>
+                        <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
+                            <Globe className="h-5 w-5 text-blue-400" />
+                            Traffic Sources
+                        </h3>
                         <div className="space-y-4">
                             {Object.entries(stats.visitsBySource)
                                 .sort(([, a], [, b]) => b - a)
@@ -258,7 +289,7 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                                                 <div
                                                     className={`h-full rounded-full ${source === 'linkedin' ? 'bg-[#0077b5]' :
                                                         source === 'direct' ? 'bg-purple-500/50' :
-                                                            'bg-emerald-500/50'
+                                                            'bg-blue-500/50'
                                                         }`}
                                                     style={{ width: `${percentage}%` }}
                                                 />
@@ -266,20 +297,15 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                                         </div>
                                     );
                                 })}
-                            {Object.keys(stats.visitsBySource).length === 0 && (
-                                <p className="text-sm text-white/40 italic">No traffic data yet.</p>
-                            )}
                         </div>
                     </div>
 
                     {/* Top Pages */}
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-                        <div className="mb-6 flex items-center justify-between">
-                            <h3 className="text-lg font-semibold flex items-center gap-2">
-                                <ExternalLink className="h-5 w-5 text-blue-400" />
-                                Top Pages
-                            </h3>
-                        </div>
+                        <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
+                            <ExternalLink className="h-5 w-5 text-orange-400" />
+                            Top Pages
+                        </h3>
                         <div className="space-y-4">
                             {stats.topPages.slice(0, 10).map((page, i) => {
                                 const maxCount = stats.topPages[0]?.count || 1;
@@ -294,22 +320,74 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                                         </div>
                                         <div className="h-2 w-full overflow-hidden rounded-full bg-white/5">
                                             <div
-                                                className="h-full bg-blue-500/50 rounded-full"
+                                                className="h-full bg-orange-500/50 rounded-full"
                                                 style={{ width: `${percentage}%` }}
                                             />
                                         </div>
                                     </div>
                                 );
                             })}
-                            {stats.topPages.length === 0 && (
-                                <p className="text-sm text-white/40 italic">No page views yet.</p>
-                            )}
                         </div>
                     </div>
                 </div>
 
+                {/* Recent Activity Table */}
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-6 mb-8 overflow-hidden">
+                    <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
+                        <Clock className="h-5 w-5 text-teal-400" />
+                        Recent Live Activity (Last 100 Events)
+                    </h3>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left text-sm text-white/70">
+                            <thead className="bg-white/5 text-white">
+                                <tr>
+                                    <th className="px-4 py-3 rounded-tl-lg">Time</th>
+                                    <th className="px-4 py-3">Event</th>
+                                    <th className="px-4 py-3">Visitor IP (Hash)</th>
+                                    <th className="px-4 py-3">Source</th>
+                                    <th className="px-4 py-3">Path</th>
+                                    <th className="px-4 py-3 rounded-tr-lg">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-white/5">
+                                {(stats.recentEvents || []).map((event: any, i: number) => (
+                                    <tr key={i} className="hover:bg-white/5 transition-colors">
+                                        <td className="px-4 py-3 whitespace-nowrap">
+                                            {event.createdAt ? new Date(event.createdAt).toLocaleTimeString() : new Date(event.receivedAt).toLocaleTimeString()}
+                                        </td>
+                                        <td className="px-4 py-3 font-medium text-white">
+                                            {event.eventName || 'Page View'}
+                                        </td>
+                                        <td className="px-4 py-3 font-mono text-xs opacity-70" title={event.ipHash || 'N/A'}>
+                                            {(event.ipHash || 'unknown').substring(0, 8)}...
+                                        </td>
+                                        <td className="px-4 py-3 capitalize">
+                                            <span className={`px-2 py-1 rounded text-xs ${event.source === 'linkedin' ? 'bg-[#0077b5]/20 text-[#0077b5]' : 'bg-white/10'}`}>
+                                                {event.source || 'Direct'}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3 text-xs font-mono">{event.path}</td>
+                                        <td className="px-4 py-3 text-xs opacity-60">
+                                            {event.project ? `Project: ${event.project}` :
+                                                event.label ? `Label: ${event.label}` :
+                                                    event.linkedinWebview ? 'In-App Browser' : '-'}
+                                        </td>
+                                    </tr>
+                                ))}
+                                {(!stats.recentEvents || stats.recentEvents.length === 0) && (
+                                    <tr>
+                                        <td colSpan={6} className="px-4 py-8 text-center text-white/30 italic">
+                                            No recent activity found.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 {/* Daily Visits Chart */}
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-6 mb-8">
                     <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
                         <TrendingUp className="h-5 w-5 text-[#00a1e0]" />
                         Daily Visits (Last 30 Days)
@@ -317,21 +395,6 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                     <DailyVisitsChart data={stats.dailyVisits} />
                 </div>
 
-                {/* How to Add UTM Parameters */}
-                <div className="mt-8 rounded-2xl border border-[#00a1e0]/20 bg-[#00a1e0]/5 p-6">
-                    <h3 className="mb-4 text-lg font-semibold flex items-center gap-2">
-                        💡 Pro Tip: Track LinkedIn Posts
-                    </h3>
-                    <p className="text-white/70 mb-3">
-                        Add UTM parameters to your LinkedIn post links to track campaign performance:
-                    </p>
-                    <code className="block bg-black/30 p-3 rounded-lg text-sm text-[#00a1e0] overflow-x-auto">
-                        https://yoursite.com/?utm_source=linkedin&utm_medium=social&utm_campaign=portfolio_launch
-                    </code>
-                    <p className="text-white/50 text-sm mt-3">
-                        Even without UTM tags, this system detects LinkedIn traffic via referrer and user agent analysis.
-                    </p>
-                </div>
             </div>
         </div>
     );
@@ -435,19 +498,29 @@ function DailyVisitsChart({ data }: { data: Array<{ date: string; count: number 
 }
 
 function exportToCSV(stats: AnalyticsSummary) {
-    const headers = ["Metric", "Value"];
+    const headers = ["Metric", "Value", "Details"];
     const rows = [
-        ["Total Visits", stats.totalVisits.toString()],
-        ["Unique Visitors", stats.uniqueVisitors.toString()],
-        ["LinkedIn Total", stats.linkedInStats.total.toString()],
-        ["LinkedIn WebView", stats.linkedInStats.webview.toString()],
-        ["LinkedIn with UTM", stats.linkedInStats.withUTM.toString()],
-        [""],
-        ["Traffic Sources", "Count"],
-        ...Object.entries(stats.visitsBySource).map(([source, count]) => [source, count.toString()]),
-        [""],
-        ["Top Pages", "Views"],
-        ...stats.topPages.map(page => [page.path, page.count.toString()]),
+        ["Total Visits", stats.totalVisits.toString(), ""],
+        ["Unique Visitors", stats.uniqueVisitors.toString(), ""],
+        ["LinkedIn Total", stats.linkedInStats.total.toString(), ""],
+        ["LinkedIn WebView", stats.linkedInStats.webview.toString(), ""],
+        ["LinkedIn with UTM", stats.linkedInStats.withUTM.toString(), ""],
+        ["", "", ""],
+        ["Traffic Sources", "Count", ""],
+        ...Object.entries(stats.visitsBySource).map(([source, count]) => [source, count.toString(), ""]),
+        ["", "", ""],
+        ["Top Pages", "Views", ""],
+        ...stats.topPages.map(page => [page.path, page.count.toString(), ""]),
+        ["", "", ""],
+        ["Project Clicks", "Clicks", ""],
+        ...(stats.projectClicks || []).map(p => [p.project, p.count.toString(), ""]),
+        ["", "", ""],
+        ["Recent Events", "Type", "Source"],
+        ...(stats.recentEvents || []).map(e => [
+            new Date(e.receivedAt || e.createdAt).toISOString(),
+            e.eventName || 'page_view',
+            e.source
+        ])
     ];
 
     const csvContent = [
@@ -459,7 +532,7 @@ function exportToCSV(stats: AnalyticsSummary) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `linkedin_analytics_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute("download", `analytics_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

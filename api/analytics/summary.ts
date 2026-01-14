@@ -20,6 +20,9 @@ interface AnalyticsSummary {
         webview: number;
         withUTM: number;
     };
+    projectClicks: Array<{ project: string; count: number }>;
+    buttonClicks: Array<{ button: string; count: number }>;
+    recentEvents: Array<any>;
 }
 
 /**
@@ -120,6 +123,9 @@ export default async function handler(
                         webview: 0,
                         withUTM: 0,
                     },
+                    projectClicks: [],
+                    buttonClicks: [],
+                    recentEvents: [],
                 });
             }
             throw queryError;
@@ -130,6 +136,9 @@ export default async function handler(
         const pageViews: Record<string, number> = {};
         const dailyVisits: Record<string, number> = {};
         const uniqueVisitors = new Set<string>();
+        const projectClicks: Record<string, number> = {};
+        const buttonClicks: Record<string, number> = {};
+        const recentEvents: Array<any> = [];
 
         let linkedInTotal = 0;
         let linkedInWebview = 0;
@@ -137,6 +146,16 @@ export default async function handler(
 
         snapshot.forEach((doc: any) => {
             const data = doc.data();
+
+            // Add to recent events (limit to 100)
+            if (recentEvents.length < 100) {
+                recentEvents.push({
+                    id: doc.id,
+                    ...data,
+                    // Convert timestamps to ISO strings for JSON serialization
+                    createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
+                });
+            }
 
             // Count unique visitors
             if (data.visitorId) {
@@ -154,6 +173,19 @@ export default async function handler(
             // Count daily visits
             const date = data.dateStr || 'unknown';
             dailyVisits[date] = (dailyVisits[date] || 0) + 1;
+
+            // Project Clicks (view_project)
+            if (data.eventName === 'view_project' && data.project) {
+                const project = data.project;
+                projectClicks[project] = (projectClicks[project] || 0) + 1;
+            }
+
+            // Button Clicks (click_hire_me, etc.)
+            if (data.eventName && data.eventName.startsWith('click_')) {
+                // Use label or category or event name as button identifier
+                const button = data.label || data.eventName.replace('click_', '');
+                buttonClicks[button] = (buttonClicks[button] || 0) + 1;
+            }
 
             // LinkedIn-specific stats
             if (source === 'linkedin' || data.linkedinWebview) {
@@ -178,6 +210,16 @@ export default async function handler(
             .map(([date, count]) => ({ date, count }))
             .sort((a, b) => a.date.localeCompare(b.date));
 
+        // Format project clicks
+        const projectClicksArray = Object.entries(projectClicks)
+            .map(([project, count]) => ({ project, count }))
+            .sort((a, b) => b.count - a.count);
+
+        // Format button clicks
+        const buttonClicksArray = Object.entries(buttonClicks)
+            .map(([button, count]) => ({ button, count }))
+            .sort((a, b) => b.count - a.count);
+
         // Build summary
         const summary: AnalyticsSummary = {
             totalVisits: snapshot.size,
@@ -190,6 +232,9 @@ export default async function handler(
                 webview: linkedInWebview,
                 withUTM: linkedInWithUTM,
             },
+            projectClicks: projectClicksArray,
+            buttonClicks: buttonClicksArray,
+            recentEvents,
         };
 
         console.log('[Analytics API] Returning summary:', JSON.stringify(summary).substring(0, 200));
