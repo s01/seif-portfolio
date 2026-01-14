@@ -66,6 +66,7 @@ import {
   Clock,
   PartyPopper,
 } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
 import { getPortfolioData, getPortfolioDataAsync, type PortfolioData, type Project } from "../data/portfolioData";
 
 /**
@@ -166,8 +167,6 @@ const ICONS: Record<string, typeof Sparkles> = {
   Database,
   Settings,
 };
-
-
 
 // Official Salesforce Logo - Exact replica
 function SalesforceCloudLogo({ className = "", animate = true, size = "md" }: { className?: string; animate?: boolean; size?: "sm" | "md" | "lg" }) {
@@ -433,7 +432,6 @@ function EinsteinCharacter({ className = "" }: { className?: string }) {
     </motion.svg>
   );
 }
-
 
 // Static Salesforce Background - No animations, purely decorative
 const SalesforceBackground = memo(function SalesforceBackground({ theme = 'night' }: { theme?: 'night' | 'morning' }) {
@@ -969,36 +967,35 @@ function BackToTopButton() {
 }
 
 // Dark/Light Mode Toggle
+
+// Dark/Light Mode Toggle - now uses global theme context implicitly via props passed from parent
+// or we can just export a reusable component. But for now, parent passes it.
 function ThemeToggle({ theme, toggleTheme }: { theme: 'night' | 'morning'; toggleTheme: () => void }) {
+  // Determine icon based on theme
+  const Icon = theme === 'morning' ? Moon : Sun;
+
   return (
     <motion.button
       onClick={toggleTheme}
-      className="btn-interactive rounded-full border border-white/20 bg-white/10 p-2 backdrop-blur-sm"
+      className={cx(
+        "btn-interactive rounded-full border p-2 backdrop-blur-sm",
+        theme === 'morning'
+          ? "border-slate-200 bg-white/50 text-slate-600 hover:bg-white/80"
+          : "border-white/20 bg-white/10 text-yellow-300 hover:bg-white/20"
+      )}
       whileTap={{ scale: 0.9 }}
       aria-label="Toggle theme"
     >
       <AnimatePresence mode="wait">
-        {theme === 'morning' ? (
-          <motion.div
-            key="moon"
-            initial={{ rotate: 90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            exit={{ rotate: -90, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Moon className="h-5 w-5 text-blue-300" />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="sun"
-            initial={{ rotate: -90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            exit={{ rotate: 90, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Sun className="h-5 w-5 text-amber-400 fill-amber-400" />
-          </motion.div>
-        )}
+        <motion.div
+          key={theme}
+          initial={{ rotate: -90, opacity: 0 }}
+          animate={{ rotate: 0, opacity: 1 }}
+          exit={{ rotate: 90, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <Icon className="h-5 w-5" />
+        </motion.div>
       </AnimatePresence>
     </motion.button>
   );
@@ -1730,24 +1727,7 @@ export default function Portfolio() {
   // Toast notification system
   const { toasts, success, error, removeToast } = useToast();
 
-  const [theme, setTheme] = useState<'night' | 'morning'>(() => {
-    if (typeof window !== 'undefined') {
-      // Check if user has manually set a theme preference
-      const savedTheme = localStorage.getItem('theme') as 'night' | 'morning' | null;
-      if (savedTheme) {
-        return savedTheme;
-      }
-
-      // Otherwise, respect system dark mode preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      return prefersDark ? 'night' : 'morning';
-    }
-    return 'night';
-  });
-
-  useEffect(() => {
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+  const { theme, toggleTheme } = useTheme();
 
   // Copy to clipboard function
   const copyToClipboard = async (text: string, label: string) => {
@@ -1776,9 +1756,6 @@ export default function Portfolio() {
     logEvent('share_portfolio', { platform });
     success(`Sharing on ${platform.charAt(0).toUpperCase() + platform.slice(1)}!`);
   };
-
-
-
 
   // Loading state to prevent flash of default content
   const [isDataLoading, setIsDataLoading] = useState(true);
@@ -1895,7 +1872,7 @@ export default function Portfolio() {
     <LazyMotion features={domAnimation} strict>
       <div className={cx("relative min-h-screen overflow-x-hidden font-sans text-white transition-colors duration-500", theme === 'morning' ? 'morning' : '')}>
         <SalesforceBackground theme={theme} />
-        <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} theme={theme} toggleTheme={() => setTheme(t => t === 'night' ? 'morning' : 'night')} />
+        <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} theme={theme} toggleTheme={toggleTheme} />
 
         <main>
           {/* HERO */}

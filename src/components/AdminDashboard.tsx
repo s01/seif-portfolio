@@ -65,7 +65,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 import { useAuth } from "../contexts/AuthContext";
 import {
-
   getPortfolioDataAsync,
   savePortfolioDataAsync,
   resetPortfolioDataAsync,
@@ -82,9 +81,6 @@ import {
   type TimelineItem,
   type Stat,
 } from "../data/portfolioData";
-
-
-
 
 // Collapsible Section
 function Section({
@@ -816,7 +812,6 @@ function LinksEditor({
   );
 }
 
-
 // Project Editor Modal
 function ProjectEditor({
   project,
@@ -1105,6 +1100,7 @@ function ChangePasswordModal({
 export default function AdminDashboard() {
   const { logout } = useAuth();
   const navigate = useNavigate();
+
   const [data, setData] = useState<PortfolioData | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null | "new">(null);
@@ -1391,8 +1387,6 @@ export default function AdminDashboard() {
     // Reset input so same file can be selected again
     e.target.value = '';
   };
-
-
 
   if (isLoading) {
     return (

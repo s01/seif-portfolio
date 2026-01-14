@@ -252,9 +252,6 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                 </div>
             </div>
 
-
-
-
             {showClearConfirm && (
                 <ClearAnalyticsModal
                     onClose={() => setShowClearConfirm(false)}
@@ -336,9 +333,6 @@ function ClearAnalyticsModal({ onClose, onConfirm }: { onClose: () => void, onCo
         </div>
     )
 }
-
-
-
 
 function ConversionCard({ icon: Icon, label, value, color }: any) {
     return (

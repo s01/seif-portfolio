@@ -4,6 +4,7 @@ import Portfolio from "./components/Portfolio";
 import Login from "./components/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 // Lazy-load admin dashboard (only loads when user visits /admin)
 const AdminDashboard = lazy(() => import("./components/AdminDashboard"));
@@ -24,32 +25,34 @@ function LoadingScreen() {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Portfolio />} />
-          <Route path="/login" element={<Login />} />
+      <ThemeProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Portfolio />} />
+            <Route path="/login" element={<Login />} />
 
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route
-              path="/admin"
-              element={
-                <Suspense fallback={<LoadingScreen />}>
-                  <AdminDashboard />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/analytics"
-              element={
-                <Suspense fallback={<LoadingScreen />}>
-                  <AnalyticsDashboard />
-                </Suspense>
-              }
-            />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route
+                path="/admin"
+                element={
+                  <Suspense fallback={<LoadingScreen />}>
+                    <AdminDashboard />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/analytics"
+                element={
+                  <Suspense fallback={<LoadingScreen />}>
+                    <AnalyticsDashboard />
+                  </Suspense>
+                }
+              />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
     </AuthProvider>
   );
 }
