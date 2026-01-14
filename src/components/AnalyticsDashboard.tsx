@@ -208,6 +208,32 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                     />
                 </div>
 
+                {/* LinkedIn Insights */}
+                <div className="mb-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+                    <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
+                        <Linkedin className="h-5 w-5 text-[#0077b5]" />
+                        LinkedIn Traffic Insights
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <InsightCard
+                            label="Total LinkedIn Visits"
+                            value={stats.linkedInStats.total}
+                            description="All visits from LinkedIn"
+                        />
+                        <InsightCard
+                            label="In-App Browser"
+                            value={stats.linkedInStats.webview}
+                            description="LinkedIn mobile app WebView"
+                            highlight
+                        />
+                        <InsightCard
+                            label="With UTM Tags"
+                            value={stats.linkedInStats.withUTM}
+                            description="Properly tagged campaigns"
+                        />
+                    </div>
+                </div>
+
                 {/* Main Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
 
