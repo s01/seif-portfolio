@@ -81,20 +81,49 @@ export default async function handler(
     }
 
     try {
+        console.log('[Analytics API] Starting request');
         const db = getAdminDb();
+        console.log('[Analytics API] Got admin DB');
 
         // Get query parameters
         const daysParam = req.query.days;
         const days = daysParam ? parseInt(daysParam as string, 10) : 30;
+        console.log(`[Analytics API] Querying last ${days} days`);
 
         // Query last N days from main collection
         const { start } = getDateRange(days);
+        console.log(`[Analytics API] Date range start: ${start}`);
 
         const eventsRef = db.collection('analytics_events');
-        const snapshot = await eventsRef
-            .where('dateStr', '>=', start)
-            .orderBy('dateStr', 'desc')
-            .get();
+        console.log('[Analytics API] Got collection reference');
+
+        let snapshot;
+        try {
+            snapshot = await eventsRef
+                .where('dateStr', '>=', start)
+                .orderBy('dateStr', 'desc')
+                .get();
+            console.log(`[Analytics API] Query successful, ${snapshot.size} documents`);
+        } catch (queryError: any) {
+            console.error('[Analytics API] Query error:', queryError);
+            // If collection doesn't exist or is empty, return empty stats
+            if (queryError.code === 9 || queryError.message?.includes('index')) {
+                console.log('[Analytics API] Collection empty or index missing, returning empty stats');
+                return res.status(200).json({
+                    totalVisits: 0,
+                    uniqueVisitors: 0,
+                    visitsBySource: {},
+                    topPages: [],
+                    dailyVisits: [],
+                    linkedInStats: {
+                        total: 0,
+                        webview: 0,
+                        withUTM: 0,
+                    },
+                });
+            }
+            throw queryError;
+        }
 
         // Process events
         const visitsBySource: Record<string, number> = {};
@@ -163,15 +192,19 @@ export default async function handler(
             },
         };
 
+        console.log('[Analytics API] Returning summary:', JSON.stringify(summary).substring(0, 200));
+
         // Set cache headers (cache for 5 minutes)
         res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
 
         return res.status(200).json(summary);
     } catch (error) {
         console.error('[Analytics API] Error:', error);
+        console.error('[Analytics API] Error stack:', error instanceof Error ? error.stack : 'No stack');
         return res.status(500).json({
             error: 'Internal server error',
             message: error instanceof Error ? error.message : 'Unknown error',
+            details: error instanceof Error ? error.stack : undefined,
         });
     }
 }
