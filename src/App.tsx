@@ -1,14 +1,27 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
 import Portfolio from "./components/Portfolio";
 import Login from "./components/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { initTracking, trackPageView } from "./lib/track";
 
 // Lazy-load admin dashboard (only loads when user visits /admin)
 const AdminDashboard = lazy(() => import("./components/AdminDashboard"));
 const AnalyticsDashboard = lazy(() => import("./components/AnalyticsDashboard"));
+
+// Route change tracker component
+function RouteTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Track page view on route change
+    trackPageView();
+  }, [location.pathname, location.search]);
+
+  return null;
+}
 
 // Loading fallback
 function LoadingScreen() {
@@ -23,10 +36,16 @@ function LoadingScreen() {
 }
 
 export default function App() {
+  // Initialize tracking on app mount
+  useEffect(() => {
+    initTracking();
+  }, []);
+
   return (
     <AuthProvider>
       <ThemeProvider>
         <BrowserRouter>
+          <RouteTracker />
           <Routes>
             <Route path="/" element={<Portfolio />} />
             <Route path="/login" element={<Login />} />

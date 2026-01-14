@@ -1,8 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { getAnalyticsStats, clearAnalytics, type AnalyticsEvent } from "../analytics";
-import { Activity, Users, MousePointer, Clock, Monitor, LogOut, LayoutDashboard, Smartphone, Briefcase, FileText, Mail, Linkedin, Github, TrendingUp, Zap, Cloud, Trash2, AlertTriangle, RefreshCw, Download } from "lucide-react";
+import { Activity, Users, MousePointer, TrendingUp, LogOut, LayoutDashboard, Linkedin, RefreshCw, Download, Globe, ExternalLink } from "lucide-react";
+
+interface AnalyticsSummary {
+    totalVisits: number;
+    uniqueVisitors: number;
+    visitsBySource: Record<string, number>;
+    topPages: Array<{ path: string; count: number }>;
+    dailyVisits: Array<{ date: string; count: number }>;
+    linkedInStats: {
+        total: number;
+        webview: number;
+        withUTM: number;
+    };
+}
 
 export default function AnalyticsDashboard() {
     const { logout } = useAuth();
@@ -17,32 +29,105 @@ export default function AnalyticsDashboard() {
 }
 
 function DashboardContent({ onLogout }: { onLogout: () => void }) {
-    const [stats, setStats] = useState<{
-        totalEvents: number;
-        uniqueVisitors: number;
-        breakdown: Record<string, number>;
-        recentEvents: AnalyticsEvent[];
-        topProjects: [string, number][];
-        deviceStats: { mobile: number; desktop: number };
-        conversions: { hire: number; resume: number; email: number; linkedin: number; github: number; trailhead: number; other: number };
-    } | null>(null);
-    const [showClearConfirm, setShowClearConfirm] = useState(false);
+    const [stats, setStats] = useState<AnalyticsSummary | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         loadStats();
     }, []);
 
-    const loadStats = () => {
-        getAnalyticsStats().then(setStats);
+    const loadStats = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            // Check if we're in development mode (API routes don't work with npm run dev)
+            const isDev = import.meta.env.DEV;
+
+            if (isDev) {
+                // In development, show a helpful message
+                throw new Error(
+                    '📍 Analytics API only works in production.\n\n' +
+                    'To test locally, use: vercel dev\n' +
+                    'Or deploy to Vercel: vercel --prod\n\n' +
+                    'The API routes are Vercel serverless functions that don\'t run with "npm run dev".'
+                );
+            }
+
+            // Call the new API endpoint
+            const response = await fetch('/api/analytics/summary?days=30');
+
+            if (!response.ok) {
+                throw new Error(`Failed to load analytics: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            setStats(data);
+        } catch (err) {
+            console.error('[Analytics] Error loading stats:', err);
+            setError(err instanceof Error ? err.message : 'Failed to load analytics');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    if (!stats) {
+    if (loading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-[#0d2035] text-white">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-white/10 border-t-[#00a1e0]"></div>
+                <div className="text-center">
+                    <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/10 border-t-[#00a1e0] mx-auto mb-4"></div>
+                    <p className="text-white/60">Loading analytics...</p>
+                </div>
             </div>
         );
     }
+
+    if (error) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-[#0d2035] text-white p-6">
+                <div className="max-w-2xl text-center">
+                    <div className="mb-4 text-5xl">
+                        {error.includes('📍') ? '📍' : '⚠️'}
+                    </div>
+                    <h2 className="text-2xl font-bold mb-4">
+                        {error.includes('📍') ? 'Development Mode' : 'Error Loading Analytics'}
+                    </h2>
+                    <div className="text-left bg-black/30 rounded-lg p-6 mb-6">
+                        <pre className="text-white/80 whitespace-pre-wrap text-sm font-mono">
+                            {error}
+                        </pre>
+                    </div>
+                    {!error.includes('📍') && (
+                        <button
+                            onClick={loadStats}
+                            className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5 mx-auto"
+                        >
+                            <RefreshCw className="h-4 w-4" />
+                            Retry
+                        </button>
+                    )}
+                    {error.includes('📍') && (
+                        <div className="text-white/60 text-sm">
+                            <p className="mb-2">💡 <strong>Quick Start:</strong></p>
+                            <code className="block bg-black/50 p-3 rounded text-left text-xs">
+                                npm install -g vercel<br />
+                                vercel login<br />
+                                vercel --prod
+                            </code>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    }
+
+    if (!stats) {
+        return null;
+    }
+
+    const engagementRate = stats.uniqueVisitors > 0
+        ? (stats.totalVisits / stats.uniqueVisitors).toFixed(1)
+        : '0';
 
     return (
         <div className="min-h-screen bg-[#0d2035] p-6 text-white md:p-12">
@@ -51,9 +136,9 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                     <div>
                         <h1 className="flex items-center gap-3 text-3xl font-bold">
                             <Activity className="text-[#00a1e0]" />
-                            Analytics Dashboard
+                            LinkedIn Analytics
                         </h1>
-                        <p className="mt-2 text-white/50">Real-time portfolio interactions</p>
+                        <p className="mt-2 text-white/50">First-party tracking • Last 30 days</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <button
@@ -65,27 +150,19 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                             Refresh
                         </button>
                         <button
-                            onClick={() => exportToCSV(stats.recentEvents)}
+                            onClick={() => exportToCSV(stats)}
                             className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"
                         >
                             <Download className="h-4 w-4" />
-                            Export CSV
+                            Export
                         </button>
                         <Link
                             to="/admin"
                             className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"
                         >
                             <LayoutDashboard className="h-4 w-4" />
-                            Content Admin
+                            Admin
                         </Link>
-
-                        <button
-                            onClick={() => setShowClearConfirm(true)}
-                            className="btn-interactive flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-400 hover:bg-red-500/20"
-                        >
-                            <Trash2 className="h-4 w-4" />
-                            Reset
-                        </button>
                         <button
                             onClick={onLogout}
                             className="btn-interactive rounded-lg p-2 text-white/40 hover:bg-white/5 hover:text-white"
@@ -96,16 +173,8 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                     </div>
                 </header>
 
-                {/* Activity Trend Chart */}
-                <div className="mb-8 rounded-2xl border border-white/10 bg-white/5 p-6">
-                    <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
-                        <TrendingUp className="h-5 w-5 text-[#00a1e0]" />
-                        Activity Trend (Last 24h)
-                    </h3>
-                    <ActivityChart events={stats.recentEvents} />
-                </div>
-
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                {/* Key Metrics */}
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-4 mb-8">
                     <StatCard
                         icon={Users}
                         label="Unique Visitors"
@@ -115,255 +184,157 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                     />
                     <StatCard
                         icon={MousePointer}
-                        label="Total Interactions"
-                        value={stats.totalEvents.toLocaleString()}
+                        label="Total Visits"
+                        value={stats.totalVisits.toLocaleString()}
                         color="text-purple-400"
                         bg="bg-purple-500/10"
                     />
                     <StatCard
                         icon={TrendingUp}
                         label="Engagement Rate"
-                        value={`${stats.uniqueVisitors ? ((stats.totalEvents / stats.uniqueVisitors).toFixed(1)) : 0} avg`}
+                        value={`${engagementRate}x avg`}
                         color="text-orange-400"
                         bg="bg-orange-500/10"
                     />
+                    <StatCard
+                        icon={Linkedin}
+                        label="LinkedIn Visits"
+                        value={stats.linkedInStats.total.toLocaleString()}
+                        color="text-[#0077b5]"
+                        bg="bg-[#0077b5]/10"
+                    />
                 </div>
 
-                {/* Conversion Goals */}
-                <div className="mt-8">
-                    <h3 className="mb-4 text-sm font-medium text-white/50 uppercase tracking-wider">Conversion Goals</h3>
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-                        <ConversionCard icon={Zap} label="Hired" value={stats.conversions.hire} color="text-yellow-400" />
-                        <ConversionCard icon={FileText} label="Resumes" value={stats.conversions.resume} color="text-emerald-400" />
-                        <ConversionCard icon={Mail} label="Emails" value={stats.conversions.email} color="text-blue-400" />
-                        <ConversionCard icon={Linkedin} label="LinkedIn" value={stats.conversions.linkedin} color="text-[#0077b5]" />
-                        <ConversionCard icon={Github} label="GitHub" value={stats.conversions.github} color="text-white" />
-                        <ConversionCard icon={Cloud} label="Trailhead" value={stats.conversions.trailhead} color="text-[#00a1e0]" />
+                {/* LinkedIn Insights */}
+                <div className="mb-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+                    <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
+                        <Linkedin className="h-5 w-5 text-[#0077b5]" />
+                        LinkedIn Traffic Insights
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <InsightCard
+                            label="Total LinkedIn Visits"
+                            value={stats.linkedInStats.total}
+                            description="All visits from LinkedIn"
+                        />
+                        <InsightCard
+                            label="In-App Browser"
+                            value={stats.linkedInStats.webview}
+                            description="LinkedIn mobile app WebView"
+                            highlight
+                        />
+                        <InsightCard
+                            label="With UTM Tags"
+                            value={stats.linkedInStats.withUTM}
+                            description="Properly tagged campaigns"
+                        />
                     </div>
                 </div>
 
-                {/* Detailed Breakdown Row */}
-                <div className="mt-8 grid gap-8 md:grid-cols-3">
-                    {/* Top Projects */}
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 md:col-span-2">
+                {/* Traffic Sources & Top Pages */}
+                <div className="grid gap-8 md:grid-cols-2 mb-8">
+                    {/* Traffic Sources */}
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
                         <div className="mb-6 flex items-center justify-between">
                             <h3 className="text-lg font-semibold flex items-center gap-2">
-                                <Briefcase className="h-5 w-5 text-emerald-400" />
-                                Top Projects
+                                <Globe className="h-5 w-5 text-emerald-400" />
+                                Traffic Sources
                             </h3>
                         </div>
                         <div className="space-y-4">
-                            {stats.topProjects.length > 0 ? stats.topProjects.slice(0, 5).map(([name, count], i) => (
-                                <div key={name} className="relative">
-                                    <div className="flex justify-between text-sm mb-1">
-                                        <span className="font-medium text-white">{i + 1}. {name}</span>
-                                        <span className="text-white/60">{count} views</span>
-                                    </div>
-                                    <div className="h-2 w-full overflow-hidden rounded-full bg-white/5">
-                                        <div
-                                            className="h-full bg-emerald-500/50 rounded-full"
-                                            style={{ width: `${(count / stats.topProjects[0][1]) * 100}%` }}
-                                        />
-                                    </div>
-                                </div>
-                            )) : (
-                                <p className="text-sm text-white/40 italic">No project views recorded yet.</p>
+                            {Object.entries(stats.visitsBySource)
+                                .sort(([, a], [, b]) => b - a)
+                                .slice(0, 10)
+                                .map(([source, count]) => {
+                                    const total = stats.totalVisits || 1;
+                                    const percentage = ((count / total) * 100).toFixed(1);
+                                    return (
+                                        <div key={source} className="relative">
+                                            <div className="flex justify-between text-sm mb-1">
+                                                <span className="font-medium text-white capitalize">{source}</span>
+                                                <span className="text-white/60">{count} ({percentage}%)</span>
+                                            </div>
+                                            <div className="h-2 w-full overflow-hidden rounded-full bg-white/5">
+                                                <div
+                                                    className={`h-full rounded-full ${source === 'linkedin' ? 'bg-[#0077b5]' :
+                                                        source === 'direct' ? 'bg-purple-500/50' :
+                                                            'bg-emerald-500/50'
+                                                        }`}
+                                                    style={{ width: `${percentage}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            {Object.keys(stats.visitsBySource).length === 0 && (
+                                <p className="text-sm text-white/40 italic">No traffic data yet.</p>
                             )}
                         </div>
                     </div>
 
-                    {/* Device Breakdown */}
+                    {/* Top Pages */}
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
                         <div className="mb-6 flex items-center justify-between">
                             <h3 className="text-lg font-semibold flex items-center gap-2">
-                                <Monitor className="h-5 w-5 text-blue-400" />
-                                Devices
+                                <ExternalLink className="h-5 w-5 text-blue-400" />
+                                Top Pages
                             </h3>
                         </div>
-                        <div className="space-y-6">
-                            <DeviceBar
-                                icon={Smartphone}
-                                label="Mobile"
-                                value={stats.deviceStats.mobile}
-                                total={stats.totalEvents || 1}
-                                color="bg-purple-500"
-                            />
-                            <DeviceBar
-                                icon={Monitor}
-                                label="Desktop"
-                                value={stats.deviceStats.desktop}
-                                total={stats.totalEvents || 1}
-                                color="bg-blue-500"
-                            />
+                        <div className="space-y-4">
+                            {stats.topPages.slice(0, 10).map((page, i) => {
+                                const maxCount = stats.topPages[0]?.count || 1;
+                                const percentage = ((page.count / maxCount) * 100).toFixed(0);
+                                return (
+                                    <div key={page.path} className="relative">
+                                        <div className="flex justify-between text-sm mb-1">
+                                            <span className="font-medium text-white truncate max-w-[200px]">
+                                                {i + 1}. {page.path}
+                                            </span>
+                                            <span className="text-white/60">{page.count} views</span>
+                                        </div>
+                                        <div className="h-2 w-full overflow-hidden rounded-full bg-white/5">
+                                            <div
+                                                className="h-full bg-blue-500/50 rounded-full"
+                                                style={{ width: `${percentage}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            {stats.topPages.length === 0 && (
+                                <p className="text-sm text-white/40 italic">No page views yet.</p>
+                            )}
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-12 rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-                    <div className="border-b border-white/10 px-6 py-4">
-                        <h2 className="text-lg font-semibold">Interaction Log</h2>
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm">
-                            <thead className="bg-white/5 text-white/60">
-                                <tr>
-                                    <th className="px-6 py-3 font-medium">When</th>
-                                    <th className="px-6 py-3 font-medium">Event</th>
-                                    <th className="px-6 py-3 font-medium">Who (Session)</th>
-                                    <th className="px-6 py-3 font-medium">IP Address</th>
-                                    <th className="px-6 py-3 font-medium">Source</th>
-                                    <th className="px-6 py-3 font-medium">Device</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/5">
-                                {stats.recentEvents.map((event, i) => (
-                                    <tr key={i} className="hover:bg-white/5 transition">
-                                        <td className="whitespace-nowrap px-6 py-4 text-white/80">
-                                            <div className="flex items-center gap-2">
-                                                <Clock className="h-3 w-3 text-white/40" />
-                                                {event.timestamp.toLocaleString()}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${event.eventName === 'page_view' ? 'bg-blue-500/20 text-blue-300' :
-                                                event.eventName.includes('click') ? 'bg-emerald-500/20 text-emerald-300' :
-                                                    'bg-white/10 text-white'
-                                                }`}>
-                                                {event.eventName}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 font-mono text-xs text-white/50">
-                                            {event.sessionId?.slice(0, 8) || 'Unknown'}
-                                        </td>
-                                        <td className="px-6 py-4 font-mono text-xs text-white/50">
-                                            {event.ip || '-'}
-                                        </td>
-                                        <td className="px-6 py-4 text-xs text-white/60 max-w-[150px] truncate" title={event.referrer}>
-                                            {event.referrer ? new URL(event.referrer).hostname : 'Direct'}
-                                        </td>
-                                        <td className="max-w-xs truncate px-6 py-4 text-xs text-white/30" title={event.userAgent}>
-                                            {getBrowserInfo(event.userAgent || '')}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                {/* Daily Visits Chart */}
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                    <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
+                        <TrendingUp className="h-5 w-5 text-[#00a1e0]" />
+                        Daily Visits (Last 30 Days)
+                    </h3>
+                    <DailyVisitsChart data={stats.dailyVisits} />
+                </div>
+
+                {/* How to Add UTM Parameters */}
+                <div className="mt-8 rounded-2xl border border-[#00a1e0]/20 bg-[#00a1e0]/5 p-6">
+                    <h3 className="mb-4 text-lg font-semibold flex items-center gap-2">
+                        💡 Pro Tip: Track LinkedIn Posts
+                    </h3>
+                    <p className="text-white/70 mb-3">
+                        Add UTM parameters to your LinkedIn post links to track campaign performance:
+                    </p>
+                    <code className="block bg-black/30 p-3 rounded-lg text-sm text-[#00a1e0] overflow-x-auto">
+                        https://yoursite.com/?utm_source=linkedin&utm_medium=social&utm_campaign=portfolio_launch
+                    </code>
+                    <p className="text-white/50 text-sm mt-3">
+                        Even without UTM tags, this system detects LinkedIn traffic via referrer and user agent analysis.
+                    </p>
                 </div>
             </div>
-
-            {showClearConfirm && (
-                <ClearAnalyticsModal
-                    onClose={() => setShowClearConfirm(false)}
-                    onConfirm={() => {
-                        loadStats();
-                        setShowClearConfirm(false);
-                    }}
-                />
-            )}
         </div>
     );
-}
-
-function ClearAnalyticsModal({ onClose, onConfirm }: { onClose: () => void, onConfirm: () => void }) {
-    const [loading, setLoading] = useState(false);
-    const [err, setErr] = useState("");
-
-    // Import dynamically to avoid circular dependency issues if any, but regular import is fine here.
-    // We need clearAnalytics from ../analytics
-    // Note: We need to import it at top of file, assuming it's exported.
-
-    const handleClear = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setErr("");
-
-        // Simple safety check - no password needed since they are already logged in as admin
-        // But maybe a "type DELETE" confirmation?
-        // Let's just ask "Are you sure?"
-
-        setLoading(true);
-        // We need to import clearAnalytics.
-        // I will assume it's imported at the top. I need to add it to imports in the first chunk if strict.
-        // Actually I forgot to add it to imports in Chunk 1. I'll use require or assumes I'll fix imports.
-        // I'll fix imports in a separate tool call if this fails, or use window/dynamic... no.
-        // I'll add logic to chunk 1.
-
-        // Wait, I can't restart chunk 1.
-        // I'll assume 'clearAnalytics' is available? use replacement to add it.
-        const success = await clearAnalytics();
-
-        if (success) {
-            onConfirm();
-        } else {
-            setErr("Failed to clear data. Try again.");
-        }
-        setLoading(false);
-    };
-
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-            <div className="w-full max-w-sm rounded-2xl border border-red-500/30 bg-[#0d2035] p-6 shadow-2xl">
-                <div className="mb-4 flex items-center gap-3 text-red-400">
-                    <AlertTriangle className="h-6 w-6" />
-                    <h3 className="text-xl font-bold">Clear All Data?</h3>
-                </div>
-                <p className="text-white/60 mb-6">
-                    This action cannot be undone. All analytics events and statistics will be permanently deleted.
-                </p>
-
-                {err && <p className="mb-4 text-sm text-red-400">{err}</p>}
-
-                <div className="flex gap-3 justify-end">
-                    <button
-                        onClick={onClose}
-                        className="rounded-lg px-4 py-2 text-white/60 hover:bg-white/5 hover:text-white"
-                        disabled={loading}
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={handleClear}
-                        disabled={loading}
-                        className="rounded-lg bg-red-500 px-4 py-2 font-medium text-white hover:bg-red-600 disabled:opacity-50"
-                    >
-                        {loading ? "Deleting..." : "Confirm Delete"}
-                    </button>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-function ConversionCard({ icon: Icon, label, value, color }: any) {
-    return (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4 flex items-center gap-3">
-            <div className={`p-2 rounded-lg bg-white/5 ${color}`}>
-                <Icon className="h-5 w-5" />
-            </div>
-            <div>
-                <p className="text-2xl font-bold text-white">{value}</p>
-                <p className="text-xs text-white/50">{label}</p>
-            </div>
-        </div>
-    )
-}
-
-function DeviceBar({ icon: Icon, label, value, total, color }: any) {
-    const percent = Math.round((value / total) * 100) || 0;
-    return (
-        <div>
-            <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2 text-sm text-white/80">
-                    <Icon className="h-4 w-4 text-white/40" />
-                    {label}
-                </div>
-                <span className="text-sm font-bold text-white">{percent}%</span>
-            </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-white/5">
-                <div className={`h-full ${color}`} style={{ width: `${percent}%` }} />
-            </div>
-        </div>
-    )
 }
 
 function StatCard({ icon: Icon, label, value, color, bg }: any) {
@@ -380,69 +351,39 @@ function StatCard({ icon: Icon, label, value, color, bg }: any) {
     );
 }
 
-function getBrowserInfo(ua: string) {
-    if (ua.includes("Firefox")) return "Firefox";
-    if (ua.includes("Chrome")) return "Chrome";
-    if (ua.includes("Safari")) return "Safari";
-    if (ua.includes("Edge")) return "Edge";
-    return "Unknown";
+function InsightCard({ label, value, description, highlight }: {
+    label: string;
+    value: number;
+    description: string;
+    highlight?: boolean;
+}) {
+    return (
+        <div className={`rounded-xl border ${highlight ? 'border-[#0077b5]/30 bg-[#0077b5]/5' : 'border-white/10 bg-white/5'} p-4`}>
+            <p className="text-3xl font-bold text-white mb-1">{value}</p>
+            <p className="text-sm font-medium text-white/80 mb-1">{label}</p>
+            <p className="text-xs text-white/50">{description}</p>
+        </div>
+    );
 }
 
-function exportToCSV(events: AnalyticsEvent[]) {
-    if (!events || events.length === 0) return;
-
-    const headers = ["Timestamp", "Event Name", "Session ID", "Referrer", "User Agent"];
-    const csvContent = [
-        headers.join(","),
-        ...events.map(e => [
-            new Date(e.timestamp).toISOString(),
-            e.eventName,
-            e.sessionId || "",
-            e.referrer ? `"${e.referrer.replace(/"/g, '""')}"` : "",
-            e.userAgent ? `"${e.userAgent.replace(/"/g, '""')}"` : ""
-        ].join(","))
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `analytics_export_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-function ActivityChart({ events }: { events: AnalyticsEvent[] }) {
-    // Group events by hour (last 24 hours)
-    const hours = Array.from({ length: 24 }, (_, i) => {
-        const d = new Date();
-        d.setHours(d.getHours() - (23 - i), 0, 0, 0);
-        return d;
-    });
-
-    const data = hours.map(hour => {
-        const count = events.filter(e => {
-            const eventTime = new Date(e.timestamp);
-            return eventTime.getHours() === hour.getHours() &&
-                eventTime.getDate() === hour.getDate();
-        }).length;
-        return { hour, count };
-    });
+function DailyVisitsChart({ data }: { data: Array<{ date: string; count: number }> }) {
+    if (!data || data.length === 0) {
+        return <p className="text-white/40 text-sm italic">No data available</p>;
+    }
 
     const maxCount = Math.max(...data.map(d => d.count), 1);
-    const height = 150;
-    const width = 1000; // viewbox width
+    const height = 200;
+    const width = 1000;
 
     return (
         <div className="w-full overflow-x-auto">
             <svg
-                viewBox={`0 0 ${width} ${height + 30}`}
-                className="w-full min-w-[600px] h-48"
+                viewBox={`0 0 ${width} ${height + 40}`}
+                className="w-full min-w-[600px] h-64"
                 style={{ overflow: 'visible' }}
             >
-                {/* Y-axis grid lines */}
-                {[0, 0.5, 1].map(ratio => (
+                {/* Grid lines */}
+                {[0, 0.25, 0.5, 0.75, 1].map(ratio => (
                     <line
                         key={ratio}
                         x1="0"
@@ -457,8 +398,8 @@ function ActivityChart({ events }: { events: AnalyticsEvent[] }) {
                 {/* Bars */}
                 {data.map((d, i) => {
                     const barHeight = (d.count / maxCount) * height;
-                    const x = (i / 24) * width;
-                    const barWidth = (width / 24) - 8;
+                    const x = (i / data.length) * width;
+                    const barWidth = (width / data.length) - 4;
 
                     return (
                         <g key={i}>
@@ -469,20 +410,20 @@ function ActivityChart({ events }: { events: AnalyticsEvent[] }) {
                                 height={barHeight}
                                 fill="#00a1e0"
                                 opacity={0.6 + (d.count / maxCount) * 0.4}
-                                rx="4"
+                                rx="2"
                             >
-                                <title>{d.hour.toLocaleTimeString([], { hour: 'numeric' })}: {d.count} events</title>
+                                <title>{d.date}: {d.count} visits</title>
                             </rect>
-                            {/* X-axis labels (every 4 hours) */}
-                            {i % 4 === 0 && (
+                            {/* Show every 5th date label */}
+                            {i % 5 === 0 && (
                                 <text
                                     x={x + barWidth / 2}
                                     y={height + 20}
                                     fill="rgba(255,255,255,0.4)"
-                                    fontSize="12"
+                                    fontSize="10"
                                     textAnchor="middle"
                                 >
-                                    {d.hour.getHours()}:00
+                                    {new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                 </text>
                             )}
                         </g>
@@ -491,4 +432,35 @@ function ActivityChart({ events }: { events: AnalyticsEvent[] }) {
             </svg>
         </div>
     );
+}
+
+function exportToCSV(stats: AnalyticsSummary) {
+    const headers = ["Metric", "Value"];
+    const rows = [
+        ["Total Visits", stats.totalVisits.toString()],
+        ["Unique Visitors", stats.uniqueVisitors.toString()],
+        ["LinkedIn Total", stats.linkedInStats.total.toString()],
+        ["LinkedIn WebView", stats.linkedInStats.webview.toString()],
+        ["LinkedIn with UTM", stats.linkedInStats.withUTM.toString()],
+        [""],
+        ["Traffic Sources", "Count"],
+        ...Object.entries(stats.visitsBySource).map(([source, count]) => [source, count.toString()]),
+        [""],
+        ["Top Pages", "Views"],
+        ...stats.topPages.map(page => [page.path, page.count.toString()]),
+    ];
+
+    const csvContent = [
+        headers.join(","),
+        ...rows.map(row => row.join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `linkedin_analytics_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }

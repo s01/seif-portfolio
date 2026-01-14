@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ============================================
+    // ANALYTICS COLLECTIONS
+    // Server-side writes only (Firebase Admin SDK)
+    // Authenticated users can read
+    // ============================================
+    
+    // Main analytics collection
+    match /analytics_events/{document=**} {
+      // Only authenticated users (admins) can read
+      allow read: if request.auth != null;
+      
+      // No client writes - only server (Admin SDK) can write
+      allow write: if false;
+    }
+    
+    // Date-partitioned analytics collections
+    // Pattern: analytics_events_2026_01_14
+    match /analytics_events_{date}/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+    
+    // ============================================
+    // YOUR OTHER COLLECTIONS
+    // Add your existing rules below
+    // ============================================
+    
+    // Example: Projects collection (if you have one)
+    // match /projects/{projectId} {
+    //   allow read: if true; // Public read
+    //   allow write: if request.auth != null; // Authenticated write
+    // }
+    
+    // Example: Admin settings
+    // match /settings/{document} {
+    //   allow read: if request.auth != null;
+    //   allow write: if request.auth != null;
+    // }
+    
+    // Default: Deny all access to other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
