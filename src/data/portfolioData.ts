@@ -161,7 +161,7 @@ const DEFAULT_DATA: PortfolioData = {
 
   stats: [
     { id: "1", label: "Certifications", value: "2", icon: "Award" },
-    { id: "2", label: "Trail Badges", value: "120+", icon: "Target" },
+    { id: "2", label: "Trailhead Badges", value: "120+", icon: "Target" },
     { id: "3", label: "Focus Area", value: "Apex + Flow", icon: "Zap" },
     { id: "4", label: "Code Style", value: "Bulk-safe", icon: "Shield" },
   ],
