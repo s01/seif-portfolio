@@ -7,4 +7,4 @@ Disallow: /admin
 Disallow: /analytics
 
 # Sitemap location
-Sitemap: https://seif-portfolio-liart.vercel.app/sitemap.xml
+Sitemap: https://www.seifmohsen.com/sitemap.xml

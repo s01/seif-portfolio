@@ -551,12 +551,12 @@ const SalesforceBackground = memo(function SalesforceBackground({ theme = 'night
         }}
       />
 
-      {/* Static Stars - No animation (Only in night mode) */}
+      {/* Stars (night mode only) - Static positions */}
       {isNight && (
-        <div className="absolute inset-0 bg-static-container">
+        <div className="absolute inset-0">
           {stars.map((star, i) => (
             <div
-              key={`star-${i}`}
+              key={i}
               className="absolute rounded-full bg-white"
               style={{
                 left: `${star.left}%`,
@@ -1707,7 +1707,15 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
 export default function Portfolio() {
   const [theme, setTheme] = useState<'night' | 'morning'>(() => {
     if (typeof window !== 'undefined') {
-      return (localStorage.getItem('theme') as 'night' | 'morning') || 'night';
+      // Check if user has manually set a theme preference
+      const savedTheme = localStorage.getItem('theme') as 'night' | 'morning' | null;
+      if (savedTheme) {
+        return savedTheme;
+      }
+
+      // Otherwise, respect system dark mode preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      return prefersDark ? 'night' : 'morning';
     }
     return 'night';
   });
@@ -1827,7 +1835,7 @@ export default function Portfolio() {
 
   return (
     <LazyMotion features={domAnimation} strict>
-      <div id="top" className={cx("min-h-screen overflow-x-hidden font-sans text-white transition-colors duration-500", theme === 'morning' ? 'morning' : '')}>
+      <div id="top" className={cx("relative min-h-screen overflow-x-hidden font-sans text-white transition-colors duration-500", theme === 'morning' ? 'morning' : '')}>
         <SalesforceBackground theme={theme} />
         <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} theme={theme} toggleTheme={() => setTheme(t => t === 'night' ? 'morning' : 'night')} />
 

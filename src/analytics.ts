@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { collection, addDoc, getDocs, query, writeBatch, doc } from "firebase/firestore/lite";
+import { collection, addDoc, getDocs, query, writeBatch, doc, serverTimestamp } from "firebase/firestore/lite";
 
 const EVENTS_COLLECTION = "analytics_events";
 
@@ -15,18 +15,45 @@ export interface AnalyticsEvent {
     [key: string]: any;
 }
 
+/**
+ * Log an analytics event to Firestore.
+ * - Uses addDoc() for auto-generated unique IDs (no collisions)
+ * - Deduplicates page_view events per session using sessionStorage
+ * - Uses serverTimestamp() for accurate server-side timestamps
+ * - Fails silently if Firestore is unavailable
+ */
 export const logEvent = async (eventName: string, data: any = {}) => {
     try {
+        // SSR safety check
+        if (typeof window === 'undefined') return;
+
+        // Generate or retrieve session ID
         let sessionId = sessionStorage.getItem("analytics_session_id");
         if (!sessionId) {
             sessionId = Math.random().toString(36).substring(2) + Date.now().toString(36);
             sessionStorage.setItem("analytics_session_id", sessionId);
         }
 
+        // Deduplicate page_view events: only log once per session per path
+        if (eventName === 'page_view') {
+            const pathname = window.location.pathname;
+            const dedupeKey = `pv:${pathname}`;
+
+            // Check if we've already logged this page view in this session
+            if (sessionStorage.getItem(dedupeKey)) {
+                console.log('[Analytics] page_view already logged for this session:', pathname);
+                return; // Skip duplicate
+            }
+
+            // Mark this page view as logged
+            sessionStorage.setItem(dedupeKey, 'true');
+        }
+
+        // Log event to Firestore with auto-generated ID
         await addDoc(collection(db, EVENTS_COLLECTION), {
             eventName,
-            timestamp: new Date(), // Stored as Timestamp in Firestore
-            dateStr: new Date().toISOString(),
+            timestamp: serverTimestamp(), // Server-side timestamp (accurate & consistent)
+            dateStr: new Date().toISOString(), // Client-side ISO string for fallback
             sessionId,
             userAgent: navigator.userAgent,
             screenSize: `${window.innerWidth}x${window.innerHeight}`,
