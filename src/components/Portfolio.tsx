@@ -1594,14 +1594,21 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
       transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ y: -4 }}
     >
-      <button
+      <div
         onClick={() => onOpen(p)}
         className={cx(
           "group relative cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm",
           "transition-all duration-300 hover:border-white/20 hover:bg-white/10 w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
           p.featured ? "md:col-span-2" : ""
         )}
-        type="button"
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onOpen(p);
+          }
+        }}
         aria-label={`View details for ${p.title} project`}
       >
         <div
@@ -1713,7 +1720,7 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
             <Sparkles className="h-4 w-4" />
           </div>
         </div>
-      </button>
+      </div>
     </motion.div>
   );
 });
