@@ -239,8 +239,8 @@ export default async function handler(
 
         console.log('[Analytics API] Returning summary:', JSON.stringify(summary).substring(0, 200));
 
-        // Set cache headers (cache for 5 minutes)
-        res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
+        // Set cache headers - short cache for "live" feel (10 seconds)
+        res.setHeader('Cache-Control', 's-maxage=10, stale-while-revalidate=59');
 
         return res.status(200).json(summary);
     } catch (error) {

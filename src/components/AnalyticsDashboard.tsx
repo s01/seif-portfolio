@@ -35,29 +35,38 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
     const [stats, setStats] = useState<AnalyticsSummary | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+    const [autoRefresh, setAutoRefresh] = useState(true);
 
     useEffect(() => {
         loadStats();
-    }, []);
 
-    const loadStats = async () => {
-        setLoading(true);
+        // Auto-refresh interval
+        let interval: any;
+        if (autoRefresh) {
+            interval = setInterval(() => {
+                loadStats(true); // true = silent refresh (no loading spinner)
+            }, 15000); // Refresh every 15 seconds
+        }
+
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [autoRefresh]);
+
+    const loadStats = async (silent = false) => {
+        if (!silent) setLoading(true);
         setError(null);
         try {
-            // Check if we're in development mode (API routes don't work with npm run dev)
+            // Check if we're in development mode
             const isDev = import.meta.env.DEV;
 
             if (isDev) {
-                // In development, show a helpful message
                 throw new Error(
-                    '📍 Analytics API only works in production.\n\n' +
-                    'To test locally, use: vercel dev\n' +
-                    'Or deploy to Vercel: vercel --prod\n\n' +
-                    'The API routes are Vercel serverless functions that don\'t run with "npm run dev".'
+                    '📍 Analytics API only works in production.'
                 );
             }
 
-            // Call the new API endpoint
             const response = await fetch('/api/analytics/summary?days=30');
 
             if (!response.ok) {
@@ -66,11 +75,12 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
 
             const data = await response.json();
             setStats(data);
+            setLastUpdated(new Date());
         } catch (err) {
             console.error('[Analytics] Error loading stats:', err);
             setError(err instanceof Error ? err.message : 'Failed to load analytics');
         } finally {
-            setLoading(false);
+            if (!silent) setLoading(false);
         }
     };
 
@@ -102,7 +112,7 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                     </div>
                     {!error.includes('📍') && (
                         <button
-                            onClick={loadStats}
+                            onClick={() => loadStats(false)}
                             className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5 mx-auto"
                         >
                             <RefreshCw className="h-4 w-4" />
@@ -141,19 +151,35 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                             <Activity className="text-[#00a1e0]" />
                             Portfolio Analytics
                         </h1>
-                        <p className="mt-2 text-white/50">Comprehensive tracking & insights • Last 30 days</p>
+                        <div className="mt-2 flex items-center gap-3 text-sm text-white/50">
+                            <span>Comprehensive tracking • Last 30 days</span>
+                            <span className="flex items-center gap-1.5 rounded-full bg-white/5 px-2 py-0.5 text-xs font-mono">
+                                <span className={`h-1.5 w-1.5 rounded-full ${autoRefresh ? 'animate-pulse bg-emerald-400' : 'bg-white/30'}`} />
+                                {autoRefresh ? `Live (Updated ${lastUpdated.toLocaleTimeString()})` : `Paused (Last: ${lastUpdated.toLocaleTimeString()})`}
+                            </span>
+                        </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <button
-                            onClick={loadStats}
+                            onClick={() => setAutoRefresh(!autoRefresh)}
+                            className={`btn-interactive flex items-center gap-2 rounded-lg border px-4 py-2 text-sm transition-all ${autoRefresh
+                                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
+                                : 'border-white/10 hover:bg-white/5 text-white/60'}`}
+                            title={autoRefresh ? "Pause Live Updates" : "Resume Live Updates"}
+                        >
+                            <Clock className="h-4 w-4" />
+                            {autoRefresh ? "Live On" : "Live Off"}
+                        </button>
+                        <button
+                            onClick={() => loadStats(false)}
                             className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"
                             title="Refresh Data"
                         >
-                            <RefreshCw className="h-4 w-4" />
+                            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
                             Refresh
                         </button>
                         <button
-                            onClick={() => exportToCSV(stats)}
+                            onClick={() => exportToCSV(stats!)}
                             className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"
                         >
                             <Download className="h-4 w-4" />
