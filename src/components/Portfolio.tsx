@@ -1770,7 +1770,7 @@ export default function Portfolio() {
   useEffect(() => {
     // Add timeout to prevent hanging connections
     const timeoutPromise = new Promise<PortfolioData>((resolve) => {
-      setTimeout(() => resolve(getPortfolioData()), 3000); // 3s timeout
+      setTimeout(() => resolve(getPortfolioData()), 8000); // 8s timeout
     });
 
     Promise.race([getPortfolioDataAsync(), timeoutPromise])

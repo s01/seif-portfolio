@@ -150,33 +150,41 @@ const DEFAULT_DATA: PortfolioData = {
   headline: "Salesforce Developer",
   tagline: "Admin • Apex • LWC",
   subheadline:
-    "I ship maintainable Salesforce solutions: clean trigger architecture, bulk-safe Apex, and delightful automations with Flow + LWC.",
+    "I’m a Junior Salesforce Developer who focuses on building maintainable solutions through clean trigger architecture, bulk-safe Apex, and thoughtful automation with Flow and LWC.",
   location: "6th of October City, Giza, Egypt",
   email: "saifmohsen65@gmail.com",
   linkedin: "https://www.linkedin.com/in/saif-mohsen",
   github: "https://github.com/s01",
-  trailhead: "https://www.salesforce.com/trailblazer/seifmohsen",
-  resumeUrl: "",
+  trailhead: "https://www.salesforce.com/trailblazer/saifmohsen",
+  resumeUrl: "https://drive.google.com/drive/folders/1CmJo2pFLvsyfimgO2912EwyBO63WlGIn",
   trailblazerRank: "Ranger",
 
   stats: [
     { id: "1", label: "Certifications", value: "2", icon: "Award" },
-    { id: "2", label: "Trailhead Badges", value: "120+", icon: "Target" },
+    { id: "2", label: "Trail Badges", value: "120+", icon: "Target" },
     { id: "3", label: "Focus Area", value: "Apex + Flow", icon: "Zap" },
     { id: "4", label: "Code Style", value: "Bulk-safe", icon: "Shield" },
   ],
 
   principles: [
     "One Trigger per Object",
-    "No Logic in Triggers",
-    "Handler + Service Pattern",
     "Flow-first (when it fits)",
+    "Bulkified by Design",
+    "Governor Limits Aware",
+    "Meaningful Unit Tests",
+    "Fail Fast with addError()",
+    "Readable > Clever Code",
   ],
 
   certifications: [
-    { id: "1", title: "Salesforce Certified Administrator", issuer: "Salesforce", year: "2025", color: "#00a1e0" },
-    { id: "2", title: "Salesforce Certified Agentforce Specialist", issuer: "Salesforce", year: "2025", color: "#8b5cf6" },
-    { id: "3", title: "ITI — Salesforce Track Graduate", issuer: "Information Technology Institute", year: "2025", color: "#10b981" },
+    {
+      id: "3",
+      title: "ITI — Salesforce Track Graduate",
+      issuer: "Information Technology Institute",
+      year: "January 2026",
+      color: "#10b981",
+      image: "/iti-certification.png",
+    },
   ],
 
   skillGroups: [
@@ -401,7 +409,8 @@ export async function getPortfolioDataAsync(): Promise<PortfolioData> {
     }
 
     return portfolioData;
-  } catch {
+  } catch (error) {
+    console.error("Error fetching portfolio data:", error);
     // Silently fail for network errors - static data works fine
     // No need to spam console with Firebase connection errors
   }

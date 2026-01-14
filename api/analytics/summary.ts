@@ -77,12 +77,12 @@ export default async function handler(
         console.log('[Analytics API] Got admin DB');
 
         // Get query parameters
+        // Get query parameters
         const daysParam = req.query.days;
-        const days = daysParam ? parseInt(daysParam as string, 10) : 30;
+        const days = daysParam
+            ? parseInt(Array.isArray(daysParam) ? daysParam[0] : daysParam, 10)
+            : 30;
         console.log(`[Analytics API] Querying last ${days} days`);
-
-        // Query last N days from main collection
-
 
         // Calculate timestamp for N days ago
         const cutoffTime = Date.now() - (days * 24 * 60 * 60 * 1000);
@@ -100,8 +100,15 @@ export default async function handler(
             console.log(`[Analytics API] Query successful, ${snapshot.size} documents`);
         } catch (queryError: any) {
             console.error('[Analytics API] Query error:', queryError);
-            // If collection doesn't exist or is empty, return empty stats
-            if (queryError.code === 9 || queryError.message?.includes('index')) {
+
+            // Check for index error (code 9, 'FAILED_PRECONDITION', or string match)
+            const isIndexError =
+                queryError.code === 9 ||
+                queryError.code === 'FAILED_PRECONDITION' ||
+                queryError.message?.includes('index') ||
+                String(queryError).toLowerCase().includes('index');
+
+            if (isIndexError) {
                 console.log('[Analytics API] Collection empty or index missing, returning empty stats');
                 return res.status(200).json({
                     totalVisits: 0,
