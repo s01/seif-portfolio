@@ -1822,6 +1822,7 @@ export default function Portfolio() {
   const [category, setCategory] = useState("All");
   const [certImageLightbox, setCertImageLightbox] = useState<{ src: string; alt: string } | null>(null);
   const [showEasterEgg, setShowEasterEgg] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
 
   // Defer animations until after first paint to reduce render delay
   const [animationsEnabled, setAnimationsEnabled] = useState(false);
@@ -2601,9 +2602,17 @@ export default function Portfolio() {
 
         {/* Floating Share Button */}
         <div className="fixed bottom-8 right-8 z-40">
-          <div className="group relative">
-            {/* Share Options (appear on hover) */}
-            <div className="absolute bottom-full right-0 pb-4 flex flex-col gap-3 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 pointer-events-none group-hover:pointer-events-auto min-w-[140px]">
+          <div
+            className="group relative"
+            onMouseLeave={() => setIsShareOpen(false)}
+          >
+            {/* Share Options (appear on hover or when open) */}
+            <div className={cx(
+              "absolute bottom-full right-0 pb-4 flex flex-col gap-3 transition-all duration-300 min-w-[140px]",
+              isShareOpen
+                ? "opacity-100 translate-y-0 pointer-events-auto"
+                : "opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto"
+            )}>
               <button
                 onClick={() => sharePortfolio('linkedin')}
                 className={cx(
@@ -2647,8 +2656,10 @@ export default function Portfolio() {
 
             {/* Main Share Button */}
             <button
+              onClick={() => setIsShareOpen(!isShareOpen)}
               className={cx(
-                "btn-interactive flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-all duration-300 group-hover:rotate-90 md:h-14 md:w-14",
+                "btn-interactive flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-all duration-300 md:h-14 md:w-14",
+                (isShareOpen || "group-hover:rotate-90") && (isShareOpen ? "rotate-90" : "group-hover:rotate-90"),
                 theme === 'morning'
                   ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-blue-500/25'
                   : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-purple-900/40'
