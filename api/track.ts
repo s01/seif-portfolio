@@ -6,7 +6,7 @@
  */
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getAdminDb } from '../src/server/firebaseAdmin';
+import { getAdminDb } from './_lib/firebaseAdmin';
 import { createHash } from 'crypto';
 
 interface TrackingPayload {

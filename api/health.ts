@@ -31,7 +31,7 @@ export default async function handler(
         let firebaseError = null;
 
         try {
-            const { getAdminDb } = await import('../src/server/firebaseAdmin');
+            const { getAdminDb } = await import('./_lib/firebaseAdmin');
             const db = getAdminDb();
             firebaseStatus = 'initialized';
 
