@@ -395,7 +395,7 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                                 <tr>
                                     <th className="px-4 py-3 rounded-tl-lg">Time</th>
                                     <th className="px-4 py-3">Event</th>
-                                    <th className="px-4 py-3">Visitor IP (Hash)</th>
+                                    <th className="px-4 py-3">Visitor IP</th>
                                     <th className="px-4 py-3">Source</th>
                                     <th className="px-4 py-3">Path</th>
                                     <th className="px-4 py-3 rounded-tr-lg">Details</th>
@@ -410,8 +410,8 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                                         <td className="px-4 py-3 font-medium text-white">
                                             {event.eventName || 'Page View'}
                                         </td>
-                                        <td className="px-4 py-3 font-mono text-xs opacity-70" title={event.ipHash || 'N/A'}>
-                                            {(event.ipHash || 'unknown').substring(0, 8)}...
+                                        <td className="px-4 py-3 font-mono text-xs opacity-70" title={event.ip || event.ipHash || 'N/A'}>
+                                            {event.ip || (event.ipHash ? `${event.ipHash.substring(0, 8)}...` : 'unknown')}
                                         </td>
                                         <td className="px-4 py-3 capitalize">
                                             <span className={`px-2 py-1 rounded text-xs ${event.source === 'linkedin' ? 'bg-[#0077b5]/20 text-[#0077b5]' : 'bg-white/10'}`}>

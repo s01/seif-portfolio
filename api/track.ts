@@ -111,6 +111,7 @@ export default async function handler(
             // Override/add server data
             receivedAt,
             dateStr,
+            ip: clientIP,
             ipHash,
             userAgent,
 

@@ -55,19 +55,7 @@ function verifyAuth(req: VercelRequest): boolean {
     return true;
 }
 
-/**
- * Get date range for query (last N days)
- */
-function getDateRange(days: number): { start: string; end: string } {
-    const end = new Date();
-    const start = new Date();
-    start.setDate(start.getDate() - days);
 
-    return {
-        start: start.toISOString().split('T')[0],
-        end: end.toISOString().split('T')[0],
-    };
-}
 
 export default async function handler(
     req: VercelRequest,
@@ -94,8 +82,11 @@ export default async function handler(
         console.log(`[Analytics API] Querying last ${days} days`);
 
         // Query last N days from main collection
-        const { start } = getDateRange(days);
-        console.log(`[Analytics API] Date range start: ${start}`);
+
+
+        // Calculate timestamp for N days ago
+        const cutoffTime = Date.now() - (days * 24 * 60 * 60 * 1000);
+        console.log(`[Analytics API] querying events since: ${new Date(cutoffTime).toISOString()}`);
 
         const eventsRef = db.collection('analytics_events');
         console.log('[Analytics API] Got collection reference');
@@ -103,8 +94,8 @@ export default async function handler(
         let snapshot;
         try {
             snapshot = await eventsRef
-                .where('dateStr', '>=', start)
-                .orderBy('dateStr', 'desc')
+                .where('receivedAt', '>=', cutoffTime)
+                .orderBy('receivedAt', 'desc')
                 .get();
             console.log(`[Analytics API] Query successful, ${snapshot.size} documents`);
         } catch (queryError: any) {

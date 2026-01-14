@@ -5,7 +5,7 @@ import Login from "./components/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { initTracking, trackPageView } from "./lib/track";
+import { trackPageView } from "./lib/track";
 
 // Lazy-load admin dashboard (only loads when user visits /admin)
 const AdminDashboard = lazy(() => import("./components/AdminDashboard"));
@@ -36,10 +36,7 @@ function LoadingScreen() {
 }
 
 export default function App() {
-  // Initialize tracking on app mount
-  useEffect(() => {
-    initTracking();
-  }, []);
+
 
   return (
     <AuthProvider>
