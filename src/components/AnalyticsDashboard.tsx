@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAnalyticsStats, clearAnalytics, type AnalyticsEvent } from "../analytics";
 import { checkAdminPasswordAsync, setAdminPasswordAsync } from "../data/portfolioData";
-import { Activity, Users, MousePointer, ShieldCheck, Clock, Monitor, Key, LogOut, ArrowLeft, Eye, EyeOff, LayoutDashboard, Smartphone, Briefcase, FileText, Mail, Linkedin, Github, TrendingUp, Zap, Cloud, Trash2, AlertTriangle } from "lucide-react";
+import { Activity, Users, MousePointer, ShieldCheck, Clock, Monitor, Key, LogOut, ArrowLeft, Eye, EyeOff, LayoutDashboard, Smartphone, Briefcase, FileText, Mail, Linkedin, Github, TrendingUp, Zap, Cloud, Trash2, AlertTriangle, RefreshCw, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AnalyticsDashboard() {
@@ -53,7 +53,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
             if (isValid) {
                 onLogin();
             } else {
-                setError("access_denied: Invalid password");
+                setError("You are not me , why are you trying to access my dashboard? 😁");
             }
         } catch {
             setError("system_error: Please try again");
@@ -155,36 +155,60 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                         <p className="mt-2 text-white/50">Real-time portfolio interactions</p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <button
+                            onClick={loadStats}
+                            className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"
+                            title="Refresh Data"
+                        >
+                            <RefreshCw className="h-4 w-4" />
+                            Refresh
+                        </button>
+                        <button
+                            onClick={() => exportToCSV(stats.recentEvents)}
+                            className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"
+                        >
+                            <Download className="h-4 w-4" />
+                            Export CSV
+                        </button>
                         <Link
                             to="/admin"
-                            className="flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"
+                            className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"
                         >
                             <LayoutDashboard className="h-4 w-4" />
                             Content Admin
                         </Link>
                         <button
                             onClick={() => setShowPasswordModal(true)}
-                            className="flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"
+                            className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"
                         >
                             <Key className="h-4 w-4" />
                             Change Password
                         </button>
                         <button
                             onClick={() => setShowClearConfirm(true)}
-                            className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-400 hover:bg-red-500/20"
+                            className="btn-interactive flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-400 hover:bg-red-500/20"
                         >
                             <Trash2 className="h-4 w-4" />
-                            Reset Data
+                            Reset
                         </button>
                         <button
                             onClick={onLogout}
-                            className="rounded-lg p-2 text-white/40 hover:bg-white/5 hover:text-white"
+                            className="btn-interactive rounded-lg p-2 text-white/40 hover:bg-white/5 hover:text-white"
                             title="Logout"
                         >
                             <LogOut className="h-5 w-5" />
                         </button>
                     </div>
                 </header>
+
+                {/* Activity Trend Chart */}
+                <div className="mb-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+                    <h3 className="mb-6 text-lg font-semibold flex items-center gap-2">
+                        <TrendingUp className="h-5 w-5 text-[#00a1e0]" />
+                        Activity Trend (Last 24h)
+                    </h3>
+                    <ActivityChart events={stats.recentEvents} />
+                </div>
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     <StatCard
@@ -291,6 +315,7 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                                     <th className="px-6 py-3 font-medium">When</th>
                                     <th className="px-6 py-3 font-medium">Event</th>
                                     <th className="px-6 py-3 font-medium">Who (Session)</th>
+                                    <th className="px-6 py-3 font-medium">IP Address</th>
                                     <th className="px-6 py-3 font-medium">Source</th>
                                     <th className="px-6 py-3 font-medium">Device</th>
                                 </tr>
@@ -314,6 +339,9 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                                         </td>
                                         <td className="px-6 py-4 font-mono text-xs text-white/50">
                                             {event.sessionId?.slice(0, 8) || 'Unknown'}
+                                        </td>
+                                        <td className="px-6 py-4 font-mono text-xs text-white/50">
+                                            {event.ip || '-'}
                                         </td>
                                         <td className="px-6 py-4 text-xs text-white/60 max-w-[150px] truncate" title={event.referrer}>
                                             {event.referrer ? new URL(event.referrer).hostname : 'Direct'}
@@ -510,4 +538,109 @@ function getBrowserInfo(ua: string) {
     if (ua.includes("Safari")) return "Safari";
     if (ua.includes("Edge")) return "Edge";
     return "Unknown";
+}
+
+function exportToCSV(events: AnalyticsEvent[]) {
+    if (!events || events.length === 0) return;
+
+    const headers = ["Timestamp", "Event Name", "Session ID", "Referrer", "User Agent"];
+    const csvContent = [
+        headers.join(","),
+        ...events.map(e => [
+            new Date(e.timestamp).toISOString(),
+            e.eventName,
+            e.sessionId || "",
+            e.referrer ? `"${e.referrer.replace(/"/g, '""')}"` : "",
+            e.userAgent ? `"${e.userAgent.replace(/"/g, '""')}"` : ""
+        ].join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `analytics_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function ActivityChart({ events }: { events: AnalyticsEvent[] }) {
+    // Group events by hour (last 24 hours)
+    const hours = Array.from({ length: 24 }, (_, i) => {
+        const d = new Date();
+        d.setHours(d.getHours() - (23 - i), 0, 0, 0);
+        return d;
+    });
+
+    const data = hours.map(hour => {
+        const count = events.filter(e => {
+            const eventTime = new Date(e.timestamp);
+            return eventTime.getHours() === hour.getHours() &&
+                eventTime.getDate() === hour.getDate();
+        }).length;
+        return { hour, count };
+    });
+
+    const maxCount = Math.max(...data.map(d => d.count), 1);
+    const height = 150;
+    const width = 1000; // viewbox width
+
+    return (
+        <div className="w-full overflow-x-auto">
+            <svg
+                viewBox={`0 0 ${width} ${height + 30}`}
+                className="w-full min-w-[600px] h-48"
+                style={{ overflow: 'visible' }}
+            >
+                {/* Y-axis grid lines */}
+                {[0, 0.5, 1].map(ratio => (
+                    <line
+                        key={ratio}
+                        x1="0"
+                        y1={height * ratio}
+                        x2={width}
+                        y2={height * ratio}
+                        stroke="rgba(255,255,255,0.1)"
+                        strokeDasharray="4 4"
+                    />
+                ))}
+
+                {/* Bars */}
+                {data.map((d, i) => {
+                    const barHeight = (d.count / maxCount) * height;
+                    const x = (i / 24) * width;
+                    const barWidth = (width / 24) - 8;
+
+                    return (
+                        <g key={i}>
+                            <rect
+                                x={x}
+                                y={height - barHeight}
+                                width={barWidth}
+                                height={barHeight}
+                                fill="#00a1e0"
+                                opacity={0.6 + (d.count / maxCount) * 0.4}
+                                rx="4"
+                            >
+                                <title>{d.hour.toLocaleTimeString([], { hour: 'numeric' })}: {d.count} events</title>
+                            </rect>
+                            {/* X-axis labels (every 4 hours) */}
+                            {i % 4 === 0 && (
+                                <text
+                                    x={x + barWidth / 2}
+                                    y={height + 20}
+                                    fill="rgba(255,255,255,0.4)"
+                                    fontSize="12"
+                                    textAnchor="middle"
+                                >
+                                    {d.hour.getHours()}:00
+                                </text>
+                            )}
+                        </g>
+                    );
+                })}
+            </svg>
+        </div>
+    );
 }

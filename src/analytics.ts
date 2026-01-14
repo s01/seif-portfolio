@@ -12,6 +12,7 @@ export interface AnalyticsEvent {
     sessionId?: string;
     userAgent?: string;
     screenSize?: string;
+    ip?: string;
     [key: string]: any;
 }
 
@@ -49,6 +50,22 @@ export const logEvent = async (eventName: string, data: any = {}) => {
             sessionStorage.setItem(dedupeKey, 'true');
         }
 
+        // Fetch IP address if not already in session
+        let ip = sessionStorage.getItem("analytics_client_ip");
+        if (!ip) {
+            try {
+                // Determine IP using free service (only once per session)
+                const res = await fetch('https://api.ipify.org?format=json');
+                if (res.ok) {
+                    const data = await res.json();
+                    ip = data.ip;
+                    if (ip) sessionStorage.setItem("analytics_client_ip", ip);
+                }
+            } catch (err) {
+                console.warn("[Analytics] Could not fetch IP:", err);
+            }
+        }
+
         // Log event to Firestore with auto-generated ID
         await addDoc(collection(db, EVENTS_COLLECTION), {
             eventName,
@@ -58,6 +75,7 @@ export const logEvent = async (eventName: string, data: any = {}) => {
             userAgent: navigator.userAgent,
             screenSize: `${window.innerWidth}x${window.innerHeight}`,
             referrer: document.referrer || '',
+            ip: ip || 'unknown', // Add parsed IP
             ...data
         });
         // Silent success

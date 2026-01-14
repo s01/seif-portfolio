@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, memo, useCallback } from "react";
 import { LazyMotion, domAnimation, m as motion, AnimatePresence } from "framer-motion";
 import { logEvent } from "../analytics";
+import { useToast, ToastContainer } from "./Toast";
 import {
   BadgeCheck,
   BarChart,
@@ -42,6 +43,9 @@ import {
   Workflow,
   Wrench,
   X,
+  Copy,
+  Share2,
+  MessageCircle, // WhatsApp icon
   Youtube,
   Zap,
   Shield,
@@ -890,20 +894,31 @@ function useActiveSection(sectionIds: string[]) {
   const sectionKey = useMemo(() => sectionIds.join(","), [sectionIds]);
 
   useEffect(() => {
-    const obs = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0));
-        if (visible[0]?.target?.id) setActive(visible[0].target.id);
+        // Find the visible section that is closest to the middle/top
+        // With strict rootMargin, usually only one is intersecting.
+        const visible = entries.find((e) => e.isIntersecting);
+        if (visible?.target?.id) {
+          setActive(visible.target.id);
+        }
       },
-      { threshold: [0.15, 0.3] }
+      {
+        // Viewport margin: shrink the "detection zone"
+        // -20% from top (ignore header area)
+        // -60% from bottom (ignore bottom half)
+        // This forces the "active" zone to be the top-center 20% of screen
+        rootMargin: "-20% 0px -60% 0px",
+        threshold: 0,
+      }
     );
+
     sectionIds.forEach((id) => {
       const el = document.getElementById(id);
-      if (el) obs.observe(el);
+      if (el) observer.observe(el);
     });
-    return () => obs.disconnect();
+
+    return () => observer.disconnect();
   }, [sectionKey, sectionIds]);
 
   return active;
@@ -942,7 +957,7 @@ function BackToTopButton() {
             position: 'fixed',
             background: SF.blue,
             bottom: '2rem',
-            right: '2rem',
+            right: '6rem', // Moved to left of Share button
           }}
           aria-label="Back to top"
         >
@@ -1377,7 +1392,7 @@ function ProjectDrawer({ project, onClose, theme }: { project: Project | null; o
               <div className="absolute right-4 top-4 z-10">
                 <button
                   onClick={onClose}
-                  className="rounded-xl border border-white/20 bg-black/40 p-2 text-white/90 backdrop-blur-sm hover:bg-black/60"
+                  className="btn-interactive rounded-xl border border-white/20 bg-black/40 p-2 text-white/90 backdrop-blur-sm hover:bg-black/60"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -1413,13 +1428,13 @@ function ProjectDrawer({ project, onClose, theme }: { project: Project | null; o
                     <>
                       <button
                         onClick={prevImage}
-                        className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100"
+                        className="btn-interactive absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100"
                       >
                         <ChevronLeft className="h-5 w-5" />
                       </button>
                       <button
                         onClick={nextImage}
-                        className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100"
+                        className="btn-interactive absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100"
                       >
                         <ChevronRight className="h-5 w-5" />
                       </button>
@@ -1521,7 +1536,7 @@ function ProjectDrawer({ project, onClose, theme }: { project: Project | null; o
                         href={l.href}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white transition hover:scale-[1.02]"
+                        className="btn-interactive inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-lg"
                         style={{ background: project.colors.accent }}
                       >
                         {l.label}
@@ -1583,7 +1598,7 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
         onClick={() => onOpen(p)}
         className={cx(
           "group relative cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm",
-          "transition-all duration-300 hover:border-white/20 hover:bg-white/10 w-full text-left",
+          "transition-all duration-300 hover:border-white/20 hover:bg-white/10 w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
           p.featured ? "md:col-span-2" : ""
         )}
         type="button"
@@ -1618,14 +1633,14 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
               <>
                 <button
                   onClick={prevCardImage}
-                  className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-1.5 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100 pointer-events-auto"
+                  className="btn-interactive absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-1.5 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100 pointer-events-auto"
                   aria-label="Previous image"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={nextCardImage}
-                  className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-1.5 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100 pointer-events-auto"
+                  className="btn-interactive absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-1.5 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100 pointer-events-auto"
                   aria-label="Next image"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -1691,7 +1706,7 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
           </div>
 
           <div
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white transition-all group-hover:scale-[1.02]"
+            className="btn-interactive mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-lg"
             style={{ background: p.colors.accent }}
           >
             View Details
@@ -1705,6 +1720,9 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
 
 // Main component
 export default function Portfolio() {
+  // Toast notification system
+  const { toasts, success, error, removeToast } = useToast();
+
   const [theme, setTheme] = useState<'night' | 'morning'>(() => {
     if (typeof window !== 'undefined') {
       // Check if user has manually set a theme preference
@@ -1724,13 +1742,45 @@ export default function Portfolio() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  // Copy to clipboard function
+  const copyToClipboard = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      success(`${label} copied to clipboard!`);
+      logEvent('copy_to_clipboard', { type: label });
+    } catch (err) {
+      error('Failed to copy. Please try again.');
+    }
+  };
 
-  const sectionIds = ["work", "skills", "cred", "journey", "contact"];
-  const active = useActiveSection(sectionIds);
+  // Share function
+  const sharePortfolio = async (platform: 'linkedin' | 'twitter' | 'whatsapp') => {
+    const url = 'https://www.seifmohsen.com';
+    const text = 'Check out Seif Mohsen - Salesforce Developer in Egypt 🚀';
+    const fullText = `${text}\n${url}`;
+
+    const shareUrls = {
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&summary=${encodeURIComponent(text)}`,
+      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(fullText)}`,
+    };
+
+    window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+    logEvent('share_portfolio', { platform });
+    success(`Sharing on ${platform.charAt(0).toUpperCase() + platform.slice(1)}!`);
+  };
+
+
+
 
   // Loading state to prevent flash of default content
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [DATA, setDATA] = useState<PortfolioData>(getPortfolioData());
+
+  // Section IDs for active navigation - memoized to prevent re-renders
+  // Dependent on isDataLoading to ensure elements are in DOM before observing
+  const sectionIds = useMemo(() => isDataLoading ? [] : ["top", "work", "skills", "cred", "journey", "contact"], [isDataLoading]);
+  const active = useActiveSection(sectionIds);
 
   // Fetch data from Firestore immediately (with timeout fallback)
   useEffect(() => {
@@ -1835,13 +1885,13 @@ export default function Portfolio() {
 
   return (
     <LazyMotion features={domAnimation} strict>
-      <div id="top" className={cx("relative min-h-screen overflow-x-hidden font-sans text-white transition-colors duration-500", theme === 'morning' ? 'morning' : '')}>
+      <div className={cx("relative min-h-screen overflow-x-hidden font-sans text-white transition-colors duration-500", theme === 'morning' ? 'morning' : '')}>
         <SalesforceBackground theme={theme} />
         <Navbar active={active} onJump={jumpTo} email={DATA.email} github={DATA.github} linkedin={DATA.linkedin} trailhead={DATA.trailhead} theme={theme} toggleTheme={() => setTheme(t => t === 'night' ? 'morning' : 'night')} />
 
         <main>
           {/* HERO */}
-          <header className="relative min-h-screen overflow-x-hidden pt-24">
+          <header id="top" className="relative min-h-screen overflow-x-hidden pt-24">
             <div className="mx-auto max-w-6xl px-4 py-16">
               <div className="grid items-center gap-8 lg:grid-cols-2">
                 {/* Left - Content */}
@@ -1905,10 +1955,15 @@ export default function Portfolio() {
                       <MapPin className="h-4 w-4" style={{ color: SF.blue }} />
                       {DATA.location}
                     </span>
-                    <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm">
-                      <Mail className="h-4 w-4" style={{ color: SF.blue }} />
+                    <button
+                      onClick={() => copyToClipboard(DATA.email, 'Email')}
+                      className="btn-interactive group inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm transition hover:bg-white/25 hover:border-white/30 active:scale-95"
+                      aria-label="Copy email to clipboard"
+                    >
+                      <Mail className="h-4 w-4 transition group-hover:scale-110" style={{ color: SF.blue }} />
                       {DATA.email}
-                    </span>
+                      <Copy className="h-3 w-3 opacity-50 transition group-hover:opacity-100" />
+                    </button>
                   </motion.div>
 
                   {/* CTAs */}
@@ -2106,24 +2161,52 @@ export default function Portfolio() {
               {/* Filters */}
               <div className="mb-8 flex flex-col gap-4 md:flex-row">
                 <div className="relative flex-1">
-                  <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                  <label htmlFor="project-search" className={cx("mb-2 block text-sm font-medium", theme === 'morning' ? 'text-gray-700' : 'text-white/60')}>
+                    Search Projects
+                  </label>
+                  <Search className={cx("pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2", theme === 'morning' ? 'text-gray-400' : 'text-white/40')} style={{ marginTop: '12px' }} />
                   <input
+                    id="project-search"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search projects..."
-                    className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-11 pr-4 text-sm text-white placeholder-white/40 outline-none backdrop-blur-sm transition focus:border-white/30"
+                    className={cx(
+                      "w-full rounded-xl border py-3 pl-11 pr-10 text-sm outline-none backdrop-blur-sm transition",
+                      theme === 'morning'
+                        ? 'border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:border-gray-400'
+                        : 'border-white/10 bg-white/5 text-white placeholder-white/40 focus:border-white/30'
+                    )}
                   />
+                  {query && (
+                    <button
+                      onClick={() => setQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition"
+                      style={{ marginTop: '12px' }}
+                      aria-label="Clear search"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
                 <div className="relative">
-                  <Filter className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                  <label htmlFor="project-category" className={cx("mb-2 block text-sm font-medium", theme === 'morning' ? 'text-gray-700' : 'text-white/60')}>
+                    Filter by Category
+                  </label>
+                  <Filter className={cx("pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2", theme === 'morning' ? 'text-gray-400' : 'text-white/40')} style={{ marginTop: '12px' }} />
                   <select
+                    id="project-category"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full appearance-none rounded-xl border border-white/10 bg-white/5 py-3 pl-11 pr-10 text-sm text-white outline-none backdrop-blur-sm transition focus:border-white/30 md:w-48"
-                    style={{ background: "rgba(255,255,255,0.05)" }}
+                    className={cx(
+                      "w-full appearance-none rounded-xl border py-3 pl-11 pr-10 text-sm outline-none backdrop-blur-sm transition md:w-48",
+                      theme === 'morning'
+                        ? 'border-gray-300 bg-white text-gray-800 focus:border-gray-400'
+                        : 'border-white/10 bg-white/5 text-white focus:border-white/30'
+                    )}
+                    style={{ background: theme === 'morning' ? '#ffffff' : 'rgba(255,255,255,0.05)' }}
                   >
                     {categories.map((c) => (
-                      <option key={c} value={c} style={{ background: SF.navy }}>
+                      <option key={c} value={c} style={{ background: theme === 'morning' ? '#ffffff' : SF.navy }}>
                         {c}
                       </option>
                     ))}
@@ -2131,11 +2214,48 @@ export default function Portfolio() {
                 </div>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
-                {filtered.map((p, i) => (
-                  <ProjectCard key={p.title} p={p} onOpen={handleOpenProject} index={i} />
-                ))}
-              </div>
+              {/* Results Count */}
+              {(query || category !== 'All') && (
+                <div className={cx("mb-4 text-sm", theme === 'morning' ? 'text-gray-600' : 'text-white/50')}>
+                  Showing {filtered.length} of {DATA.projects.length} project{DATA.projects.length !== 1 ? 's' : ''}
+                </div>
+              )}
+
+              {/* Projects Grid or Empty State */}
+              {filtered.length > 0 ? (
+                <div className="grid gap-6 md:grid-cols-2">
+                  {filtered.map((p, i) => (
+                    <ProjectCard key={p.title} p={p} onOpen={handleOpenProject} index={i} />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <div className={cx("mb-4 rounded-full p-6", theme === 'morning' ? 'bg-black/5' : 'bg-white/5')}>
+                    <Search className={cx("h-12 w-12", theme === 'morning' ? 'text-gray-400' : 'text-white/30')} />
+                  </div>
+                  <h3 className={cx("mb-2 text-xl font-semibold", theme === 'morning' ? 'text-gray-800' : 'text-white/80')}>No projects found</h3>
+                  <p className={cx("mb-6 max-w-md text-sm", theme === 'morning' ? 'text-gray-600' : 'text-white/50')}>
+                    {query
+                      ? `No projects match "${query}". Try a different search term.`
+                      : `No projects in the "${category}" category.`
+                    }
+                  </p>
+                  <button
+                    onClick={() => {
+                      setQuery('');
+                      setCategory('All');
+                    }}
+                    className={cx(
+                      "rounded-lg border px-6 py-2 text-sm font-medium transition",
+                      theme === 'morning'
+                        ? 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                        : 'border-white/20 bg-white/5 text-white/80 hover:bg-white/10'
+                    )}
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+              )}
             </div>
           </section>
 
@@ -2478,6 +2598,70 @@ export default function Portfolio() {
             <EasterEggAnimation onClose={() => setShowEasterEgg(false)} />
           )}
         </AnimatePresence>
+
+        {/* Floating Share Button */}
+        <div className="fixed bottom-8 right-8 z-40">
+          <div className="group relative">
+            {/* Share Options (appear on hover) */}
+            <div className="absolute bottom-full right-0 pb-4 flex flex-col gap-3 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 pointer-events-none group-hover:pointer-events-auto min-w-[140px]">
+              <button
+                onClick={() => sharePortfolio('linkedin')}
+                className={cx(
+                  "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium shadow-lg transition hover:scale-105",
+                  theme === 'morning'
+                    ? 'bg-[#0077b5] text-white hover:bg-[#006399]'
+                    : 'bg-[#0077b5] text-white hover:bg-[#006399]'
+                )}
+                aria-label="Share on LinkedIn"
+              >
+                <Linkedin className="h-4 w-4" />
+                LinkedIn
+              </button>
+              <button
+                onClick={() => sharePortfolio('twitter')}
+                className={cx(
+                  "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium shadow-lg transition hover:scale-105",
+                  theme === 'morning'
+                    ? 'bg-[#1DA1F2] text-white hover:bg-[#1a8cd8]'
+                    : 'bg-[#1DA1F2] text-white hover:bg-[#1a8cd8]'
+                )}
+                aria-label="Share on Twitter"
+              >
+                <Twitter className="h-4 w-4" />
+                Twitter
+              </button>
+              <button
+                onClick={() => sharePortfolio('whatsapp')}
+                className={cx(
+                  "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium shadow-lg transition hover:scale-105",
+                  theme === 'morning'
+                    ? 'bg-[#25D366] text-white hover:bg-[#128C7E]'
+                    : 'bg-[#25D366] text-white hover:bg-[#128C7E]'
+                )}
+                aria-label="Share on WhatsApp"
+              >
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp
+              </button>
+            </div>
+
+            {/* Main Share Button */}
+            <button
+              className={cx(
+                "btn-interactive flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-all duration-300 group-hover:rotate-90 md:h-14 md:w-14",
+                theme === 'morning'
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-blue-500/25'
+                  : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-purple-900/40'
+              )}
+              aria-label="Share portfolio"
+            >
+              <Share2 className="h-5 w-5 md:h-6 md:w-6" />
+            </button>
+          </div>
+        </div>
+
+        {/* Toast Notifications */}
+        <ToastContainer toasts={toasts} onClose={removeToast} theme={theme} />
       </div>
     </LazyMotion>
   );

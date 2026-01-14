@@ -128,7 +128,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
         if (isValid) {
           onLogin();
         } else {
-          setError("Incorrect password");
+          setError("You are not me , why are you trying to access my dashboard? 😁");
         }
       }
     } catch (err) {
