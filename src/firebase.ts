@@ -4,13 +4,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore/lite";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA6YKm0PpgfVZbAijvVHB0FS0o2wZHoxrA",
-  authDomain: "seif-portfolio-abe7a.firebaseapp.com",
-  projectId: "seif-portfolio-abe7a",
-  storageBucket: "seif-portfolio-abe7a.firebasestorage.app",
-  messagingSenderId: "649557493606",
-  appId: "1:649557493606:web:1798b5152e6694d93feaa7",
-  measurementId: "G-52J0C1Y9JP"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
