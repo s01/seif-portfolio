@@ -36,23 +36,10 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
-    const [autoRefresh, setAutoRefresh] = useState(true);
 
     useEffect(() => {
         loadStats();
-
-        // Auto-refresh interval
-        let interval: any;
-        if (autoRefresh) {
-            interval = setInterval(() => {
-                loadStats(true); // true = silent refresh (no loading spinner)
-            }, 15000); // Refresh every 15 seconds
-        }
-
-        return () => {
-            if (interval) clearInterval(interval);
-        };
-    }, [autoRefresh]);
+    }, []);
 
     const loadStats = async (silent = false) => {
         if (!silent) setLoading(true);
@@ -154,22 +141,12 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                         <div className="mt-2 flex items-center gap-3 text-sm text-white/50">
                             <span>Comprehensive tracking • Last 30 days</span>
                             <span className="flex items-center gap-1.5 rounded-full bg-white/5 px-2 py-0.5 text-xs font-mono">
-                                <span className={`h-1.5 w-1.5 rounded-full ${autoRefresh ? 'animate-pulse bg-emerald-400' : 'bg-white/30'}`} />
-                                {autoRefresh ? `Live (Updated ${lastUpdated.toLocaleTimeString()})` : `Paused (Last: ${lastUpdated.toLocaleTimeString()})`}
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                                Updated {lastUpdated.toLocaleTimeString()}
                             </span>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => setAutoRefresh(!autoRefresh)}
-                            className={`btn-interactive flex items-center gap-2 rounded-lg border px-4 py-2 text-sm transition-all ${autoRefresh
-                                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
-                                : 'border-white/10 hover:bg-white/5 text-white/60'}`}
-                            title={autoRefresh ? "Pause Live Updates" : "Resume Live Updates"}
-                        >
-                            <Clock className="h-4 w-4" />
-                            {autoRefresh ? "Live On" : "Live Off"}
-                        </button>
                         <button
                             onClick={() => loadStats(false)}
                             className="btn-interactive flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5"

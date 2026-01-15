@@ -122,13 +122,7 @@ export default async function handler(
         // Write to Firestore
         const db = getAdminDb();
 
-        // Use date-partitioned collection for better query performance
-        // Collection name: analytics_events_YYYY_MM_DD
-        const collectionName = `analytics_events_${dateStr.replace(/-/g, '_')}`;
-
-        await db.collection(collectionName).add(eventDoc);
-
-        // Also add to main collection for cross-day queries
+        // Only add to main collection for simplicity and to save write costs
         await db.collection('analytics_events').add(eventDoc);
 
         return res.status(200).json({ success: true });
