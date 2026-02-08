@@ -194,6 +194,14 @@ const DEFAULT_DATA: PortfolioData = {
   ],
   "certifications": [
     {
+      "color": "#00a1e0",
+      "title": "Salesforce Certified Platform App Builder",
+      "year": "February 2026",
+      "issuer": "Salesforce",
+      "id": "4",
+      "image": "/platform-app-builder.png"
+    },
+    {
       "color": "#10b981",
       "title": "ITI — Salesforce Track Graduate",
       "year": "January 2026",
@@ -609,13 +617,25 @@ export async function getPortfolioDataAsync(): Promise<PortfolioData> {
 
     // Load certifications
     try {
-      const certsRef = doc(firebaseDb, FIRESTORE_COLLECTION, CERTIFICATIONS_DOC);
-      const certsSnap = await getDoc(certsRef);
-      if (certsSnap.exists()) {
-        portfolioData.certifications = certsSnap.data().items as Certification[];
+      // Try new v2 collection first
+      const CERTIFICATIONS_COLLECTION_NAME = "certifications_v2";
+      const certsCol = collection(firebaseDb, CERTIFICATIONS_COLLECTION_NAME);
+      const certsSnap = await getDocs(certsCol);
+
+      if (!certsSnap.empty) {
+        portfolioData.certifications = certsSnap.docs
+          .map(doc => doc.data() as Certification)
+          .sort((a, b) => (a.order || 0) - (b.order || 0));
+      } else {
+        // Fallback to legacy single document
+        const certsRef = doc(firebaseDb, FIRESTORE_COLLECTION, CERTIFICATIONS_DOC);
+        const legacySnap = await getDoc(certsRef);
+        if (legacySnap.exists()) {
+          portfolioData.certifications = legacySnap.data().items as Certification[];
+        }
       }
     } catch (e) {
-      console.log("Certifications not found, using defaults");
+      console.log("Certifications load error, using defaults", e);
     }
 
     // Load skills
@@ -678,9 +698,18 @@ export async function savePortfolioDataAsync(data: PortfolioData): Promise<void>
       batch.set(projectRef, project);
     });
 
-    // Save certifications in one document
-    const certsRef = doc(firebaseDb, FIRESTORE_COLLECTION, CERTIFICATIONS_DOC);
-    batch.set(certsRef, { items: certifications });
+    // Save certifications as separate documents (v2) to avoid 1MB limit
+    const CERTIFICATIONS_COLLECTION_NAME = "certifications_v2";
+    certifications.forEach((cert, index) => {
+      const certRef = doc(firebaseDb, CERTIFICATIONS_COLLECTION_NAME, cert.id);
+      // Ensure order is saved so we can sort on retrieval
+      const certWithOrder = { ...cert, order: index };
+      batch.set(certRef, certWithOrder);
+    });
+
+    // Clear legacy certifications document to avoid size limit errors and confusion
+    const oldCertsRef = doc(firebaseDb, FIRESTORE_COLLECTION, CERTIFICATIONS_DOC);
+    batch.delete(oldCertsRef);
 
     // Save skills in one document
     const skillsRef = doc(firebaseDb, FIRESTORE_COLLECTION, SKILLS_DOC);
