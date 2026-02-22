@@ -160,7 +160,7 @@ const DEFAULT_DATA: PortfolioData = {
   "stats": [
     {
       "label": "Certifications",
-      "value": "2",
+      "value": "3",
       "id": "1",
       "icon": "Award"
     },
@@ -550,6 +550,14 @@ const DEFAULT_DATA: PortfolioData = {
     }
   ],
   "timeline": [
+    {
+      "id": "5",
+      "icon": "Briefcase",
+      "details": "Contributing to client projects with a focus on Salesforce development and integrations — building custom solutions, automations, and connecting Salesforce with external systems.",
+      "title": "Salesforce Associate Consultant — ConX.Digital",
+      "year": "(January 2026 – Present)",
+      "subtitle": "Consulting • Implementation • Salesforce Solutions"
+    },
     {
       "id": "1",
       "icon": "GraduationCap",

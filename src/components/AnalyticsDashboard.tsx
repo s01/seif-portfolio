@@ -142,7 +142,7 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                             <span>Comprehensive tracking • Last 30 days</span>
                             <span className="flex items-center gap-1.5 rounded-full bg-white/5 px-2 py-0.5 text-xs font-mono">
                                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                                Updated {lastUpdated.toLocaleTimeString()}
+                                Updated {lastUpdated.toLocaleDateString()} {lastUpdated.toLocaleTimeString()}
                             </span>
                         </div>
                     </div>
@@ -370,7 +370,7 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                         <table className="w-full text-left text-sm text-white/70">
                             <thead className="bg-white/5 text-white">
                                 <tr>
-                                    <th className="px-4 py-3 rounded-tl-lg">Time</th>
+                                    <th className="px-4 py-3 rounded-tl-lg">Date & Time</th>
                                     <th className="px-4 py-3">Event</th>
                                     <th className="px-4 py-3">Visitor IP</th>
                                     <th className="px-4 py-3">Source</th>
@@ -382,7 +382,10 @@ function DashboardContent({ onLogout }: { onLogout: () => void }) {
                                 {(stats.recentEvents || []).map((event: any, i: number) => (
                                     <tr key={i} className="hover:bg-white/5 transition-colors">
                                         <td className="px-4 py-3 whitespace-nowrap">
-                                            {event.createdAt ? new Date(event.createdAt).toLocaleTimeString() : new Date(event.receivedAt).toLocaleTimeString()}
+                                            {(() => {
+                                                const d = new Date(event.createdAt || event.receivedAt);
+                                                return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
+                                            })()}
                                         </td>
                                         <td className="px-4 py-3 font-medium text-white">
                                             {event.eventName || 'Page View'}
