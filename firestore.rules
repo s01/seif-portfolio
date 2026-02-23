@@ -1,47 +1,41 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // ============================================
-    // ANALYTICS COLLECTIONS
-    // Server-side writes only (Firebase Admin SDK)
-    // Authenticated users can read
-    // ============================================
-    
-    // Main analytics collection
-    match /analytics_events/{document=**} {
-      // Only authenticated users (admins) can read
-      allow read: if request.auth != null;
-      
-      // No client writes - only server (Admin SDK) can write
-      allow write: if false;
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == "saifmohsen65@gmail.com";
     }
-    
-    // Date-partitioned analytics collections
-    // Pattern: analytics_events_2026_01_14
-    match /analytics_events_{date}/{document=**} {
-      allow read: if request.auth != null;
-      allow write: if false;
+
+    // ✅ Public read: projects
+    match /projects/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
-    
-    // ============================================
-    // YOUR OTHER COLLECTIONS
-    // Add your existing rules below
-    // ============================================
-    
-    // Example: Projects collection (if you have one)
-    // match /projects/{projectId} {
-    //   allow read: if true; // Public read
-    //   allow write: if request.auth != null; // Authenticated write
-    // }
-    
-    // Example: Admin settings
-    // match /settings/{document} {
-    //   allow read: if request.auth != null;
-    //   allow write: if request.auth != null;
-    // }
-    
-    // Default: Deny all access to other collections
+
+    // ✅ Public read: public settings docs only
+    match /settings/{docId} {
+      allow read: if docId in ['portfolio', 'skills', 'timeline', 'certifications'];
+      allow write: if isAdmin();
+    }
+
+    // ✅ Public read + admin write: certifications_v2
+    match /certifications_v2/{certId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 🔒 Analytics: admin only
+    match /analytics_events/{doc=**} {
+      allow read, write: if isAdmin();
+    }
+
+    // 🔥 Lock sensitive admin doc
+    match /settings/admin {
+      allow read, write: if false;
+    }
+
+    // ❌ Deny everything else
     match /{document=**} {
       allow read, write: if false;
     }

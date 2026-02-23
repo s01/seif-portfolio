@@ -1888,7 +1888,7 @@ export default function Portfolio() {
                     className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/15 px-4 py-2"
                   >
                     <Cloud className="h-5 w-5" style={{ color: SF.blue }} />
-                    <span className="text-sm font-semibold">Trailblazer • Open to Work</span>
+                    <span className="text-sm font-semibold">Trailblazer • ConX.Digital</span>
                     <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
                   </motion.div>
 
