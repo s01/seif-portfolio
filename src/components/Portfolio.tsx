@@ -1653,8 +1653,8 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
 
                 {/* Image count badge */}
                 {hasMultipleImages && (
-                  <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-xs text-white backdrop-blur-sm pointer-events-none">
-                    <ImageIcon className="h-3 w-3" />
+                  <div className="force-white-text absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-xs font-semibold text-white backdrop-blur-sm pointer-events-none">
+                    <ImageIcon className="h-3 w-3 text-white" />
                     {cardImageIndex + 1}/{p.images.length}
                   </div>
                 )}
