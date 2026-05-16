@@ -1437,8 +1437,8 @@ function ProjectDrawer({ project, onClose, theme }: { project: Project | null; o
                       </button>
 
                       {/* Image counter */}
-                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/60 px-3 py-1 backdrop-blur-sm">
-                        <span className="text-xs text-white">
+                      <div className="force-white-text absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/70 px-3 py-1 backdrop-blur-sm">
+                        <span className="text-xs font-semibold text-white">
                           {currentImageIndex + 1} / {images.length}
                         </span>
                       </div>
