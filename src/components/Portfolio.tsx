@@ -1720,12 +1720,14 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
             ))}
           </div>
 
-          <div
-            className="btn-interactive mt-auto inline-flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-lg"
-            style={{ background: p.colors.accent }}
-          >
-            View Details
-            <Sparkles className="h-4 w-4" />
+          <div className="mt-auto pt-8">
+            <div
+              className="btn-interactive inline-flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-lg"
+              style={{ background: p.colors.accent }}
+            >
+              View Details
+              <Sparkles className="h-4 w-4" />
+            </div>
           </div>
         </div>
       </div>
