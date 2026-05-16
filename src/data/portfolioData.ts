@@ -160,7 +160,7 @@ const DEFAULT_DATA: PortfolioData = {
   "stats": [
     {
       "label": "Certifications",
-      "value": "3",
+      "value": "4",
       "id": "1",
       "icon": "Award"
     },
@@ -195,11 +195,11 @@ const DEFAULT_DATA: PortfolioData = {
   "certifications": [
     {
       "color": "#00a1e0",
-      "title": "Salesforce Certified Platform App Builder",
-      "year": "February 2026",
+      "title": "Salesforce Certified Platform Developer",
+      "year": "March 2026",
       "issuer": "Salesforce",
       "id": "4",
-      "image": "/platform-app-builder.png"
+      "image": "/cert-salesforce-certified-platform-developer-4.jpg"
     },
     {
       "color": "#10b981",
