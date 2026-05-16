@@ -1,0 +1,83 @@
+name: Apply project card alignment update
+
+on:
+  push:
+    paths:
+      - .github/workflows/apply-project-card-update.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply-update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Patch Portfolio project cards
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = 'src/components/Portfolio.tsx';
+          let content = fs.readFileSync(path, 'utf8');
+
+          const replacements = [
+            [
+`      whileHover={{ y: -4 }}
+    >
+      <div`,
+`      whileHover={{ y: -4 }}
+      className="h-full"
+    >
+      <div`
+            ],
+            [
+`          "group relative cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm",`,
+`          "group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm",`
+            ],
+            [
+`        <div className="relative p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>`,
+`        <div className="relative flex flex-1 flex-col p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">`
+            ],
+            [
+`              <h3 className="mt-3 text-xl font-bold text-white">{p.title}</h3>
+              <p className="mt-2 text-sm text-white/60">{p.impact}</p>`,
+`              <h3 className="mt-3 text-xl font-bold text-white">{p.title}</h3>
+              <div className="mt-2 flex min-w-0 items-center gap-1 text-sm text-white/60">
+                <p className="min-w-0 flex-1 truncate">{p.description}</p>
+                <span className="shrink-0 font-semibold" style={{ color: p.colors.accent }}>
+                  see more
+                </span>
+              </div>`
+            ],
+            [
+`            className="btn-interactive mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-lg"`,
+`            className="btn-interactive mt-auto inline-flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-lg"`
+            ]
+          ];
+
+          for (const [from, to] of replacements) {
+            if (!content.includes(to)) {
+              if (!content.includes(from)) {
+                throw new Error(`Expected snippet not found: ${from.slice(0, 80)}`);
+              }
+              content = content.replace(from, to);
+            }
+          }
+
+          fs.writeFileSync(path, content);
+          NODE
+      - name: Remove temporary workflow
+        run: rm .github/workflows/apply-project-card-update.yml
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/Portfolio.tsx .github/workflows/apply-project-card-update.yml
+          git commit -m "Align project cards with expandable descriptions"
+          git push origin main
