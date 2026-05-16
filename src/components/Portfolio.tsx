@@ -2357,12 +2357,13 @@ export default function Portfolio() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
+                    className="h-full"
                   >
-                    <SFCard className="overflow-hidden" glow glowColor={cert.color}>
+                    <SFCard className="flex h-full flex-col overflow-hidden" glow glowColor={cert.color}>
                       {/* Certificate Image - Large & Clickable */}
                       {cert.image ? (
                         <div
-                          className="relative h-48 w-full cursor-pointer overflow-hidden group"
+                          className="relative h-48 w-full shrink-0 cursor-pointer overflow-hidden group"
                           onClick={() => setCertImageLightbox({ src: cert.image!, alt: cert.title })}
                         >
                           <img
@@ -2381,7 +2382,7 @@ export default function Portfolio() {
                         </div>
                       ) : (
                         <div
-                          className="grid h-32 w-full place-items-center"
+                          className="grid h-48 w-full shrink-0 place-items-center"
                           style={{ background: `linear-gradient(135deg, ${cert.color}40, ${cert.color}20)` }}
                         >
                           <BadgeCheck className="h-16 w-16" style={{ color: cert.color }} />
@@ -2389,10 +2390,10 @@ export default function Portfolio() {
                       )}
 
                       {/* Certificate Info */}
-                      <div className="p-5">
+                      <div className="flex flex-1 flex-col p-5">
                         <h4 className="font-bold text-white">{cert.title}</h4>
                         <p className="mt-1 text-sm text-white/60">{cert.issuer}</p>
-                        <p className="mt-2 text-xs font-semibold" style={{ color: cert.color }}>{cert.year}</p>
+                        <p className="mt-auto pt-4 text-xs font-semibold" style={{ color: cert.color }}>{cert.year}</p>
                       </div>
                     </SFCard>
                   </motion.div>
