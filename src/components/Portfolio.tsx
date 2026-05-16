@@ -1523,8 +1523,8 @@ function ProjectDrawer({ project, onClose, theme }: { project: Project | null; o
                 </div>
               </div>
 
-              <div className="border-t border-white/10 p-6">
-                <div className="flex flex-wrap gap-3">
+              <div className="border-t border-white/10 p-5 sm:p-6">
+                <div className="grid gap-3 sm:grid-cols-3">
                   {project.links?.map((l) => {
                     const LinkIcon = LINK_ICONS[l.icon || "ExternalLink"] || ExternalLink;
                     return (
@@ -1533,11 +1533,11 @@ function ProjectDrawer({ project, onClose, theme }: { project: Project | null; o
                         href={l.href}
                         target="_blank"
                         rel="noreferrer"
-                        className="btn-interactive inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-lg"
+                        className="btn-interactive inline-flex min-h-12 w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-lg"
                         style={{ background: project.colors.accent }}
                       >
-                        {l.label}
-                        <LinkIcon className="h-4 w-4" />
+                        <span className="min-w-0 truncate">{l.label}</span>
+                        <LinkIcon className="h-4 w-4 shrink-0" />
                       </a>
                     );
                   })}
