@@ -1422,18 +1422,20 @@ function ProjectDrawer({ project, onClose, theme }: { project: Project | null; o
                   </AnimatePresence>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#032d60] via-transparent to-black/20" />
 
-                  {/* Navigation arrows for multiple images - always visible on mobile */}
+                  {/* Navigation arrows for multiple images */}
                   {hasMultipleImages && (
                     <>
                       <button
                         onClick={prevImage}
-                        className="btn-interactive absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100"
+                        className="btn-interactive absolute left-2 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-black/60 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/80 md:block md:opacity-0 md:group-hover:opacity-100"
+                        aria-label="Previous project image"
                       >
                         <ChevronLeft className="h-5 w-5" />
                       </button>
                       <button
                         onClick={nextImage}
-                        className="btn-interactive absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100"
+                        className="btn-interactive absolute right-2 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-black/60 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/80 md:block md:opacity-0 md:group-hover:opacity-100"
+                        aria-label="Next project image"
                       >
                         <ChevronRight className="h-5 w-5" />
                       </button>
