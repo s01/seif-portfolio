@@ -1590,13 +1590,13 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ y: -4 }}
-      className="h-full"
+      className="h-full min-w-0"
     >
       <div
         onClick={() => onOpen(p)}
         className={cx(
-          "group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm",
-          "transition-all duration-300 hover:border-white/20 hover:bg-white/10 w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+          "group relative flex h-full min-w-0 max-w-full cursor-pointer flex-col overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm",
+          "w-full text-left transition-all duration-300 hover:border-white/20 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
           p.featured ? "md:col-span-2" : ""
         )}
         role="button"
@@ -1663,27 +1663,27 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
           </div>
         )}
 
-        <div className="relative flex flex-1 flex-col p-6">
+        <div className="relative flex min-w-0 flex-1 flex-col p-5 sm:p-6">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
                 <span
-                  className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
+                  className="inline-flex max-w-full items-center rounded-full px-3 py-1 text-xs font-semibold"
                   style={{ background: `${p.colors.accent}20`, color: p.colors.accent }}
                 >
                   {p.category}
                 </span>
                 {p.featured && (
-                  <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold text-white"
+                  <span className="inline-flex max-w-full items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold text-white"
                     style={{ background: SF.orange }}
                   >
-                    <Star className="h-3 w-3" /> Featured
+                    <Star className="h-3 w-3 shrink-0" /> Featured
                   </span>
                 )}
               </div>
 
-              <h3 className="mt-3 text-xl font-bold text-white">{p.title}</h3>
-              <div className="mt-2 flex min-w-0 items-center gap-1 text-sm text-white/60">
+              <h3 className="mt-4 break-words text-xl font-bold leading-snug text-white">{p.title}</h3>
+              <div className="mt-2 flex min-w-0 items-center gap-1.5 text-sm leading-6 text-white/60">
                 <p className="min-w-0 flex-1 truncate">{p.description}</p>
                 <span className="shrink-0 font-semibold" style={{ color: p.colors.accent }}>
                   see more
@@ -1704,11 +1704,11 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
             )}
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-6 flex min-w-0 flex-wrap gap-2">
             {p.stack.slice(0, 4).map((t) => (
               <span
                 key={t}
-                className="rounded-lg border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/70"
+                className="max-w-full truncate rounded-lg border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/70"
               >
                 {t}
               </span>
@@ -1716,7 +1716,7 @@ const ProjectCard = memo(function ProjectCard({ p, onOpen, index }: { p: Project
           </div>
 
           <div
-            className="btn-interactive mt-auto inline-flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-lg"
+            className="btn-interactive mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-lg"
             style={{ background: p.colors.accent }}
           >
             View Details
@@ -2140,8 +2140,8 @@ export default function Portfolio() {
           </header>
 
           {/* WORK SECTION */}
-          <section id="work" className="relative py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 3000px' }}>
-            <div className="mx-auto max-w-6xl px-4">
+          <section id="work" className="relative overflow-hidden py-24" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 3000px' }}>
+            <div className="mx-auto w-full max-w-6xl overflow-hidden px-4 sm:px-6">
               <SectionHeader
                 kicker="Featured Projects"
                 title="What I've Built"
@@ -2150,8 +2150,8 @@ export default function Portfolio() {
               />
 
               {/* Filters */}
-              <div className="mb-8 flex flex-col gap-4 md:flex-row">
-                <div className="relative flex-1">
+              <div className="mb-8 flex min-w-0 flex-col gap-4 md:flex-row">
+                <div className="relative min-w-0 flex-1">
                   <label htmlFor="project-search" className={cx("mb-2 block text-sm font-medium", theme === 'morning' ? 'text-gray-700' : 'text-white/60')}>
                     Search Projects
                   </label>
@@ -2179,7 +2179,7 @@ export default function Portfolio() {
                     </button>
                   )}
                 </div>
-                <div className="relative">
+                <div className="relative min-w-0">
                   <label htmlFor="project-category" className={cx("mb-2 block text-sm font-medium", theme === 'morning' ? 'text-gray-700' : 'text-white/60')}>
                     Filter by Category
                   </label>
@@ -2214,7 +2214,7 @@ export default function Portfolio() {
 
               {/* Projects Grid or Empty State */}
               {filtered.length > 0 ? (
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid min-w-0 gap-8 md:grid-cols-2">
                   {filtered.map((p, i) => (
                     <ProjectCard key={p.title} p={p} onOpen={handleOpenProject} index={i} />
                   ))}
