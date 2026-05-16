@@ -1389,9 +1389,11 @@ function ProjectDrawer({ project, onClose, theme }: { project: Project | null; o
               <div className="absolute right-4 top-4 z-10">
                 <button
                   onClick={onClose}
-                  className="btn-interactive rounded-xl border border-white/20 bg-black/40 p-2 text-white/90 backdrop-blur-sm hover:bg-black/60"
+                  className="force-white-text btn-interactive rounded-xl border border-white/20 bg-black/50 p-2 text-white backdrop-blur-sm hover:bg-black/70"
+                  style={{ color: '#ffffff' }}
+                  aria-label="Close project details"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="h-5 w-5" style={{ color: '#ffffff' }} />
                 </button>
               </div>
 
