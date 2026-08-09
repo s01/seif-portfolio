@@ -156,7 +156,7 @@ const DEFAULT_DATA: PortfolioData = {
   "github": "https://github.com/s01",
   "trailhead": "https://www.salesforce.com/trailblazer/saifmohsen",
   "resumeUrl": "https://drive.google.com/drive/folders/1CmJo2pFLvsyfimgO2912EwyBO63WlGIn",
-  "trailblazerRank": "Ranger",
+  "trailblazerRank": "Agentblazer Legend",
   "stats": [
     {
       "label": "Certifications",
@@ -193,6 +193,14 @@ const DEFAULT_DATA: PortfolioData = {
     "Readable > Clever Code"
   ],
   "certifications": [
+    {
+      "color": "#00a1e0",
+      "title": "Salesforce Certified Data 360 Consultant",
+      "year": "June 2026",
+      "issuer": "Salesforce",
+      "id": "6",
+      "image": "/data-360-consultant.jpg"
+    },
     {
       "color": "#00a1e0",
       "title": "Salesforce Certified Platform App Builder",
@@ -653,6 +661,13 @@ export async function getPortfolioDataAsync(): Promise<PortfolioData> {
     } catch (e) {
       console.log("Certifications load error, using defaults", e);
     }
+
+    if (!portfolioData.certifications.some((cert) => cert.id === "6")) {
+      portfolioData.certifications.unshift(DEFAULT_DATA.certifications[0]);
+    }
+    portfolioData.stats = portfolioData.stats.map((stat) =>
+      stat.id === "1" ? { ...stat, value: "5" } : stat
+    );
 
     // Load skills
     try {

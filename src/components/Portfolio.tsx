@@ -1905,7 +1905,7 @@ export default function Portfolio() {
                     className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/15 px-4 py-2"
                   >
                     <Cloud className="h-5 w-5" style={{ color: SF.blue }} />
-                    <span className="text-sm font-semibold">Trailblazer • ConX.Digital</span>
+                    <span className="text-sm font-semibold">Agentblazer Legend • ConX.Digital</span>
                     <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
                   </motion.div>
 
@@ -2080,18 +2080,18 @@ export default function Portfolio() {
                       <CodeyCharacter className="h-20 w-20 md:h-28 md:w-28" />
                     </motion.div>
 
-                    {/* Trailhead Ranger badge - positioned inside on mobile, outside on desktop */}
+                    {/* Agentblazer Legend badge - positioned inside on mobile, outside on desktop */}
                     <motion.div
                       className="absolute right-0 top-2 md:-right-8 md:top-0"
                       animate={!animationsEnabled ? undefined : { rotate: [0, 5, 0] }}
                       transition={animationsEnabled ? { duration: 4, repeat: 3, ease: "easeInOut" } : { duration: 0 }} // Finite: 3 rotations then stop
                     >
                       <img
-                        src="/ranger.png"
-                        alt="Trailhead Ranger Badge"
+                        src="/agentblazer-legend.png"
+                        alt="Agentblazer Legend Badge"
                         className="h-20 w-auto md:h-24 drop-shadow-lg"
-                        width="177"
-                        height="142"
+                        width="288"
+                        height="288"
                       />
                     </motion.div>
                   </div>
